@@ -1,6 +1,7 @@
 package org.ubc.de2vtt;
 
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -22,6 +23,14 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+    // This call will result in better error messages if you
+	// try to do things in the wrong thread.
+	// From tutorial 2
+	StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+			.detectDiskReads().detectDiskWrites().detectNetwork()
+			.penaltyLog().build());
+        
         setContentView(R.layout.activity_main);
         
         mContext = getApplicationContext();

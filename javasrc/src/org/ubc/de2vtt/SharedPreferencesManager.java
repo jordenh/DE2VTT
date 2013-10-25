@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 public class SharedPreferencesManager {
-	private final String TAG = SharedPreferencesManager.class.getSimpleName();
+	//private final String TAG = SharedPreferencesManager.class.getSimpleName();
 	
 	private static final String SHARED_PREFS_NAME = "DE2VTTPrefs";
 	
