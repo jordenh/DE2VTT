@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 
 import android.os.AsyncTask;
 
+// Async task used to connect to sockets
 public class SocketConnect extends AsyncTask<String, Integer, Socket> {
 
 	// The main parcel of work for this thread.  Opens a socket
@@ -29,8 +30,8 @@ public class SocketConnect extends AsyncTask<String, Integer, Socket> {
 	// After executing the doInBackground method, this is 
 	// automatically called, in the UI (main) thread to store
 	// the socket in this app's persistent storage
-//	protected void onPostExecute(Socket s) {
-//		MyApplication myApp = (MyApplication) MainActivity.getApplication();
-//		myApp.sock = s;
-//	}
+	protected void onPostExecute(Socket s) {
+		Messenger msg = Messenger.GetSharedInstance();
+		msg.setSocket(s);
+	}
 }

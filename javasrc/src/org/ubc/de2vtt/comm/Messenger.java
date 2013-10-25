@@ -8,6 +8,8 @@ import java.util.TimerTask;
 
 import android.util.Log;
 
+// Singleton class used to send/receive messages via middleman
+// Most code copied or adapted from platform tutorial 2
 public class Messenger {
 	static final String TAG = Messenger.class.getSimpleName();
 
@@ -26,10 +28,7 @@ public class Messenger {
 		mSocket = null;
 	}
 
-	// Route called when the user presses "connect"
 	public void openSocket(String ip, Integer port) {
-		//TextView msgbox = (TextView) findViewById(R.id.error_message_box);
-
 		// Make sure the socket is not already opened 
 		
 		if (mSocket != null && mSocket.isConnected() && !mSocket.isClosed()) {
@@ -46,8 +45,8 @@ public class Messenger {
 	}
 	
 	public void sendMessage(String msg) {		
-		// Get the message from the box
-
+		if (mSocket == null || mSocket.isClosed() || 
+				!mSocket.isConnected()) return;
 		// Create an array of bytes.  First byte will be the
 		// message length, and the next ones will be the message
 		byte buf[] = new byte[msg.length() + 1];
@@ -67,8 +66,33 @@ public class Messenger {
 			e.printStackTrace();
 		}
 	}
+	
+	public String recieveMessage() {
+		String msg = null;
+		if (mSocket != null && mSocket.isConnected() 
+				&& !mSocket.isClosed()) {
 
-	// Called when the user closes a socket
+			try {
+				InputStream in = mSocket.getInputStream();
+
+				// See if any bytes are available from the Middleman
+				int bytes_avail = in.available();
+				if (bytes_avail > 0) {
+					
+					// If so, read them in and create a sring
+					byte buf[] = new byte[bytes_avail];
+					in.read(buf);
+
+					msg = new String(buf, 0, bytes_avail, "US-ASCII");
+					
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
+		}
+		return msg;
+	}
+
 	public void closeSocket() {
 		try {
 			mSocket.getOutputStream().close();
@@ -78,6 +102,14 @@ public class Messenger {
 		}
 	}
 	
+	// Used by SocketConnect to set the socket once the connection occurs async 
+	public void setSocket(Socket sock) {
+		mSocket = sock;
+	}
+	
+	// Not particularly useful here.
+	// Could be useful going forward to manage message timers in another file
+	// Otherwise we'll need these timers everywhere we want to receive info
 	public class TCPReadTimerTask extends TimerTask {
 		public void run() {
 			if (mSocket != null && mSocket.isConnected() && !mSocket.isClosed()) {

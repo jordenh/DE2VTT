@@ -1,5 +1,7 @@
 package org.ubc.de2vtt;
 
+import org.ubc.de2vtt.comm.ConnectionFragment;
+
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.app.Activity;
@@ -68,6 +70,10 @@ public class MainActivity extends Activity {
     	Bundle args = new Bundle();
     	//args.putInt(PlaceholderFragment., value);
     	fragment.setArguments(args);
+    	
+    	if (position == 2) {
+    		fragment = new ConnectionFragment();
+    	}
     	
     	FragmentManager fragmentManager = getFragmentManager();
     	fragmentManager.beginTransaction()
