@@ -39,10 +39,22 @@ public class SharedPreferencesManager {
 		return mEditor.commit();
 	}
 	
+	public boolean putString(String key, String val) {
+		mEditor.putString(key, val);
+		return mEditor.commit();
+	}
+	
 	/**
 	 * @return value in shared prefs matching key, otherwise defaultValue
 	 */
 	public int getInt(String key, int defaultValue) {
 		return mSharedPrefs.getInt(key, defaultValue);
+	}
+	
+	/**
+	 * @return value in shared prefs matching key, otherwise defaultVal
+	 */
+	public String getString(String key, String defaultVal) {
+		return mSharedPrefs.getString(key, defaultVal);
 	}
 }

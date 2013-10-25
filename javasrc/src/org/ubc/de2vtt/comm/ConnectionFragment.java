@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.ubc.de2vtt.R;
+import org.ubc.de2vtt.SharedPreferencesManager;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class ConnectionFragment extends Fragment {
+	private static final String SHARED_PREFS_IP = "ip";	
 	
 	private View mParentView;
 	private Activity mActivity;
@@ -26,6 +28,8 @@ public class ConnectionFragment extends Fragment {
 		mParentView = inflater.inflate(R.layout.fragment_connection,  container, false);
 		
 		// TODO: save/load ip
+		SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
+		setConnectToIP(man.getString(SHARED_PREFS_IP, "0.0.0.0"));
 		
 		setupOnClickListeners();
 		
@@ -78,7 +82,10 @@ public class ConnectionFragment extends Fragment {
 		Messenger msg = Messenger.GetSharedInstance();
 		String ip = getConnectToIP();
 		Integer port = getConnectToPort();
+		
 		msg.openSocket(ip, port);
+		SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
+		man.putString(SHARED_PREFS_IP, ip);
 	}
 	
 	public void sendMessage() {
@@ -110,6 +117,19 @@ public class ConnectionFragment extends Fragment {
 		return addr;
 	}
 	
+	private void setConnectToIP(String ip) {
+		String[] nums = ip.split("\\.");
+		
+		EditText et = (EditText) mParentView.findViewById(R.id.ip1);
+		et.setText(nums[0]);
+		et = (EditText) mParentView.findViewById(R.id.ip2);
+		et.setText(nums[1]);
+		et = (EditText) mParentView.findViewById(R.id.ip3);
+		et.setText(nums[2]);
+		et = (EditText) mParentView.findViewById(R.id.ip4);
+		et.setText(nums[3]);
+	}
+	
 	public Integer getConnectToPort() {
 		Integer port;
 		EditText text_port;
@@ -127,7 +147,7 @@ public class ConnectionFragment extends Fragment {
 			mActivity.runOnUiThread(new Runnable() {
 				public void run() {
 					EditText et = (EditText) mParentView.findViewById(R.id.RecvdMessage);
-					if (msg.length() > 0) {
+					if (msg != null && msg.length() > 0) {
 						et.setText(msg);
 					}
 				}
