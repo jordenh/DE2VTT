@@ -26,3 +26,9 @@ javasrc/local.properties
 # Eclipse project files
 javasrc/.classpath
 javasrc/.project
+
+#Stupid, god awful, bsp generated files
+*.elf
+*.map
+*.objdump
+Makefile
