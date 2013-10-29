@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:inputType="number"
-            android:text="50002" />
+            android:text="@string/default_port" />
 
     </LinearLayout>
 
@@ -77,27 +77,28 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Send Message"
+        android:text="@string/send_button"
         android:id="@+id/btnSendMessage" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Disconnect" 
+        android:text="@string/label_disconnect" 
         android:id="@+id/btnCloseSocket"/>
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:text="Message to send:" />
+        android:text="@string/tabel_send" />
 
     <EditText
         android:id="@+id/MessageText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:text="Hi" >
+        android:text=""
+        android:inputType="text" >
 
         <requestFocus />
     </EditText>
@@ -106,7 +107,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:text="Message Received:" />
+        android:text="@string/label_recieved" />
 
     <EditText
         android:id="@+id/RecvdMessage"
@@ -119,7 +120,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:text="Errors:" />
+        android:text="@string/label_errors" />
 
     <EditText
         android:id="@+id/error_message_box"
