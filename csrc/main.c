@@ -1,8 +1,37 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include "audio.h"
+#include "timer.h"
+#include "sd_card.h"
+#include "vga.h"
+#include "bmp.h"
+#include "input.h"
+#include "io.h"
+#include "system.h"
+#include "altera_nios2_qsys_irq.h"
+#include "sys/alt_irq.h"
 #include "altera_up_avalon_rs232.h"
-#include <string.h>
+
+
+int init(void) {
+	if (openSdCard() == -1) {
+		printf("Error: Failed to open sd card\n");
+		return -1;
+	} else {
+		printf("Opened SD card\n");
+	}
+
+	initVga();
+	//parseBmps();
+	setupAudio();
+
+	initHardwareTimer();
+
+	return 0;
+}
 
 int main() {
+	//********* new ******************************************
 	int i;
 	unsigned char data;
 	unsigned char parity;
@@ -50,5 +79,30 @@ int main() {
 	printf("\n");
 	printf("Message Echo Complete\n");
 
+	//***********************************
+
+	if (init() == -1)
+		return -1;
+
+	startHardwareTimer();
+
+	// main game loop;
+	while (1) {
+		if (hasHardwareTimerExpired() == 1) {
+			startHardwareTimer();
+
+			handleKeyInput();
+			handleSwitchInput();
+
+			swapBuffers();
+
+
+			playEpicMusic();
+		}
+	}
+
+	freeBmps();
 	return 0;
 }
+
+

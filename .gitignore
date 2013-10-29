@@ -32,3 +32,7 @@ javasrc/.project
 *.map
 *.objdump
 Makefile
+
+*.o
+*.d
+*.force_relink
