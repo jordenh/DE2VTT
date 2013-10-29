@@ -74,7 +74,7 @@ public class ConnectionFragment extends Fragment {
 		});
 	}
 	
-	public void onDestroyView() {
+	public void onPause() {
 		mTimerTask.cancel();
 	}
 	
