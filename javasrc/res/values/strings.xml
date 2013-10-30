@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">DE2VTT</string>
+    <string name="app_name">WING</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 
     <string-array name="app_drawer_array">
         <item>Tabletop</item>
         <item>Game Config</item>
+        <item>Send Image</item>
         <item>Connection</item>
     </string-array>
+    
+    <string name="drawer_close">close drawer</string>
+    <string name="drawer_open">open drawer</string>
     
     <!-- Connection Fragment -->
     <string name="connect">Connect</string>

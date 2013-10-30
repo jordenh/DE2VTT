@@ -8,8 +8,12 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,15 +25,18 @@ public class MainActivity extends Activity {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private static Context mContext;
+	private ActionBarDrawerToggle mDrawerToggle;
+	private String mTitle;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mTitle = "WING";
         
-    // This call will result in better error messages if you
-	// try to do things in the wrong thread.
-	// From tutorial 2
-	StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+	    // This call will result in better error messages if you
+		// try to do things in the wrong thread.
+		// From tutorial 2
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
 			.detectDiskReads().detectDiskWrites().detectNetwork()
 			.penaltyLog().build());
         
@@ -44,6 +51,28 @@ public class MainActivity extends Activity {
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mDrawerItems));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(R.string.app_name);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 
     }
 
@@ -54,6 +83,32 @@ public class MainActivity extends Activity {
         //return true;
     	return false;
     }
+    
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+          return true;
+        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
+    }
+
  
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
@@ -71,7 +126,7 @@ public class MainActivity extends Activity {
     	//args.putInt(PlaceholderFragment., value);
     	fragment.setArguments(args);
     	
-    	if (position == 2) {
+    	if (position == 3) {
     		fragment = new ConnectionFragment();
     	}
     	
@@ -82,6 +137,7 @@ public class MainActivity extends Activity {
     	
     	mDrawerList.setItemChecked(position, true);
     	setTitle(mDrawerItems[position]);
+    	mTitle = mDrawerItems[position];
     	mDrawerLayout.closeDrawer(mDrawerList);
     }
     
