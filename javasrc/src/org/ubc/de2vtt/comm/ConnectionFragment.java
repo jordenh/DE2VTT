@@ -94,7 +94,7 @@ public class ConnectionFragment extends Fragment {
 		EditText et = (EditText)mParentView.findViewById(R.id.MessageText);
 		String msg = et.getText().toString();
 		
-		messenger.sendMessage(msg);
+		messenger.sendStringMessage(msg);
 	}
 	
 	public void closeSocket() {
@@ -143,7 +143,7 @@ public class ConnectionFragment extends Fragment {
 	public class TCPReadTimerTask extends TimerTask {
 		public void run() {
 			Messenger messenger = Messenger.GetSharedInstance();
-			final String msg = messenger.recieveMessage();
+			final String msg = messenger.recieveStringMessage();
 			mActivity.runOnUiThread(new Runnable() {
 				public void run() {
 					EditText et = (EditText) mParentView.findViewById(R.id.RecvdMessage);

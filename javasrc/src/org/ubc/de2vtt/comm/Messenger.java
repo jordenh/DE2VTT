@@ -1,9 +1,11 @@
 package org.ubc.de2vtt.comm;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.TimerTask;
 
 import android.util.Log;
@@ -44,14 +46,16 @@ public class Messenger {
 		new SocketConnect().execute(ip, port.toString());
 	}
 	
-	public void sendMessage(String msg) {		
+	public void sendStringMessage(String msg) {		
 		if (mSocket == null || mSocket.isClosed() || 
 				!mSocket.isConnected()) return;
 		// Create an array of bytes.  First byte will be the
 		// message length, and the next ones will be the message
-		byte buf[] = new byte[msg.length() + 1];
-		buf[0] = (byte) msg.length(); 
-		System.arraycopy(msg.getBytes(), 0, buf, 1, msg.length());
+		byte buf[] = new byte[msg.length() + 4];
+		byte lenBuf[] = ByteBuffer.allocate(4).putInt(msg.length()).array();
+		System.arraycopy(lenBuf, 0, buf, 0, lenBuf.length);
+		
+		System.arraycopy(msg.getBytes(), 0, buf, 4, msg.length());
 
 		// Now send through the output stream of the socket
 		OutputStream out;
@@ -67,7 +71,32 @@ public class Messenger {
 		}
 	}
 	
-	public String recieveMessage() {
+	public void sendMessage(Message msg) {		
+		if (mSocket == null || mSocket.isClosed() || 
+				!mSocket.isConnected()) return;
+		// Create an array of bytes.  First byte will be the
+		// message length, and the next ones will be the message
+		byte args[] = msg.GetByteArray();
+		byte buf[] = new byte[args.length + 1];
+		
+		// Now send through the output stream of the socket
+		OutputStream out;
+		try {
+			out = mSocket.getOutputStream();
+			
+			// Hopefully this buffer will allow us to send longer messages
+			BufferedOutputStream bufOut = new BufferedOutputStream(out, 128);
+			try {
+				bufOut.write(buf, 0, buf.length);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String recieveStringMessage() {
 		String msg = null;
 		if (mSocket != null && mSocket.isConnected() 
 				&& !mSocket.isClosed()) {
@@ -84,6 +113,33 @@ public class Messenger {
 					in.read(buf);
 
 					msg = new String(buf, 0, bytes_avail, "US-ASCII");
+					
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
+		}
+		return msg;
+	}
+	
+	// 256 bytes in middleman buffer
+	public Message recieveMessage() {
+		Message msg = null;
+		if (mSocket != null && mSocket.isConnected() 
+				&& !mSocket.isClosed()) {
+
+			try {
+				InputStream in = mSocket.getInputStream();
+
+				// See if any bytes are available from the Middleman
+				int bytes_avail = in.available();
+				if (bytes_avail > 0) {
+					
+					// If so, read them in and create a sring
+					byte buf[] = new byte[bytes_avail];
+					in.read(buf);
+
+					msg = new Message(buf);
 					
 				}
 			} catch (IOException e) {
@@ -121,7 +177,7 @@ public class Messenger {
 					int bytes_avail = in.available();
 					if (bytes_avail > 0) {
 
-						// If so, read them in and create a sring
+						// If so, read them in and create a string
 						byte buf[] = new byte[bytes_avail];
 						in.read(buf);
 
