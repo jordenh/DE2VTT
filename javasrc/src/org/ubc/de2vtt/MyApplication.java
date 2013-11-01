@@ -9,6 +9,8 @@ public class MyApplication extends Application {
 	private static final String TAG = MyApplication.class.getSimpleName();
 	Socket sock = null;
 	
+	public static byte id = 0;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();

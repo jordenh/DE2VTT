@@ -100,9 +100,8 @@ int main() {
 
 			swapBuffers();
 
-
-
 			//playEpicMusic();
+
 		}
 	}
 
