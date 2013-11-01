@@ -34,14 +34,9 @@ public class Messenger {
 		// Make sure the socket is not already opened 
 		
 		if (mSocket != null && mSocket.isConnected() && !mSocket.isClosed()) {
-			//msgbox.setText("Socket already open");
 			Log.e(TAG, "Socket already open");
 			return;
 		}
-		
-		// open the socket.  SocketConnect is a new subclass
-	    // (defined below).  This creates an instance of the subclass
-		// and executes the code in it.
 		
 		new SocketConnector().execute(ip, port.toString());
 	}
@@ -62,7 +57,6 @@ public class Messenger {
 				!mSocket.isConnected()) return;
 		byte buf[] = msg.GetArrayToSend();		
 		
-		// Now send through the output stream of the socket
 		OutputStream out;
 		try {
 			out = mSocket.getOutputStream();
@@ -77,7 +71,6 @@ public class Messenger {
 		}
 	}
 	
-	// 256 bytes in middleman buffer
 	public synchronized Received recieveMessage() {
 		Received rcv = null;
 		if (mSocket != null && mSocket.isConnected() 
