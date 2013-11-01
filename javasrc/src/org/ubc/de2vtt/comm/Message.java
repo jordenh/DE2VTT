@@ -21,10 +21,6 @@ public class Message {
 	public static Received GetReceived(byte[] recvBuf) {
 		MyApplication.id = recvBuf[0];
 		
-		//byte[] lengthBytes = new byte[4];
-		//System.arraycopy(recvBuf, 1, lengthBytes, 0, lengthBytes.length);
-		//int len = byteArrayToInt(lengthBytes);
-		
 		Command cmd = Command.Convert(recvBuf[5]);
 		
 		byte [] args = new byte[recvBuf.length - 6];
@@ -32,14 +28,6 @@ public class Message {
 		
 		return new Received(cmd, args);
 	}
-	
-//	private int byteArrayToInt(byte[] b) 
-//	{
-//	    return   b[3] & 0xFF |
-//	            (b[2] & 0xFF) << 8 |
-//	            (b[1] & 0xFF) << 16 |
-//	            (b[0] & 0xFF) << 24;
-//	}
 	
 	public byte[] GetArrayToSend() {
 		byte[] args = send.ToByteArray();

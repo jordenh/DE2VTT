@@ -27,7 +27,6 @@ public class ConnectionFragment extends Fragment {
 			Bundle savedInstanceState) {
 		mParentView = inflater.inflate(R.layout.fragment_connection,  container, false);
 		
-		// TODO: save/load ip
 		SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
 		setConnectToIP(man.getString(SHARED_PREFS_IP, "0.0.0.0"));
 		
@@ -147,18 +146,28 @@ public class ConnectionFragment extends Fragment {
 	public class TCPReadTimerTask extends TimerTask {
 		public void run() {
 			Messenger messenger = Messenger.GetSharedInstance();
+			if (messenger.isConnected()) {
+				getMessage(messenger);
+			}
+		}
+
+		private void getMessage(Messenger messenger) {
 			Received rcv = messenger.recieveMessage();
 			if (rcv != null) {
-				final String msgStr = rcv.DataToString();
-				mActivity.runOnUiThread(new Runnable() {
-					public void run() {
-						EditText et = (EditText) mParentView.findViewById(R.id.RecvdMessage);
-						if (msgStr != null && msgStr.length() > 0) {
-							et.setText(msgStr);
-						}
-					}
-				});
+				updateReceivedField(rcv);
 			}
+		}
+
+		private void updateReceivedField(Received rcv) {
+			final String msgStr = rcv.DataToString();
+			mActivity.runOnUiThread(new Runnable() {
+				public void run() {
+					EditText et = (EditText) mParentView.findViewById(R.id.RecvdMessage);
+					if (msgStr != null && msgStr.length() > 0) {
+						et.setText(msgStr);
+					}
+				}
+			});
 		}
 	}
 }
