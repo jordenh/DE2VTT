@@ -74,8 +74,12 @@ public class ConnectionFragment extends Fragment {
 		});
 	}
 	
+	@Override
 	public void onPause() {
-		mTimerTask.cancel();
+		super.onPause();
+		if (mTimerTask != null) {
+			mTimerTask.cancel();
+		}
 	}
 	
 	public void openSocket() {

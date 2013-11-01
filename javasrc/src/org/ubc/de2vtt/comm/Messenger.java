@@ -14,7 +14,8 @@ import android.util.Log;
 // Most code copied or adapted from platform tutorial 2
 public class Messenger {
 	static final String TAG = Messenger.class.getSimpleName();
-
+	private static final int MAX_SEND = 128;
+	
 	private Socket mSocket;
 	
 	static Messenger mSharedInstance;
@@ -77,7 +78,11 @@ public class Messenger {
 		// Create an array of bytes.  First byte will be the
 		// message length, and the next ones will be the message
 		byte args[] = msg.GetByteArray();
-		byte buf[] = new byte[args.length + 1];
+		byte buf[] = new byte[args.length + 4];
+		byte lenBuf[] = ByteBuffer.allocate(4).putInt(args.length).array();
+		System.arraycopy(lenBuf, 0, buf, 0, lenBuf.length);
+		
+		System.arraycopy(args, 0, buf, 4, args.length);
 		
 		// Now send through the output stream of the socket
 		OutputStream out;

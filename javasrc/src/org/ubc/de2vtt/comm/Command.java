@@ -10,7 +10,6 @@ public enum Command {
 	MOVE_TOKEN((byte)6),
 	HANDSHAKE((byte)7);
 	
-	public String name;
 	public byte code;
 	
 	private Command(byte c) {
