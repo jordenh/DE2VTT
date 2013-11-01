@@ -112,11 +112,31 @@ message getMessage(void){
 	alt_up_rs232_read_data(uart, &data, &parity);
 	inMsg.androidID = (int) data;
 
-	//obtain length
-	for(i = 0; i < sizeof(msgLen) / ; i++) {
-		alt_up_rs232_read_data(uart, &data, &parity);
+	//stub for enforcing unique ID's for phones.
+	for(i = 0; i < sizeof(connUsers) / sizeof(connUsers[0]) ; i++){
+		if(inMsg.androidID == connUsers[i]){
+			printf("android %d sending to DE2 already in system\n", connUsers[i]);
+			break;
+		}
+		if(i == sizeof(connUsers) / sizeof(connUsers[0]) - 1) {
+			for(i = 0; i < sizeof(connUsers) / sizeof(connUsers[0]) ; i++){
+				if(connUsers[i] == 0) {
+					printf("DE2 communicating with new android - ID %d\n", inMsg.androidID);
+					connUsers[i] = inMsg.androidID;
+					break;
+				}
+				if (i == sizeof(connUsers) / sizeof(connUsers[0]) - 1){
+					printf("Error in getMessage - new android Device trying to communicate, and no open channles.\n");
+				}
+			}
+		}
 	}
-	inMsg.len = (int) data;
+
+	//obtain length
+	for(i = 0; i < (sizeof(msgLen) / sizeof(msgLen[0])); i++) {
+		alt_up_rs232_read_data(uart, (msgLen + i), &parity);
+		inMsg.len += pow(16,((sizeof(msgLen) / sizeof(msgLen[0])) - 1 - i)) * (int) msgLen[i];
+	}
 
 	printf("About to receive %d characters:\n", inMsg.len);
 

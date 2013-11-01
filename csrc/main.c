@@ -98,8 +98,6 @@ int main() {
 			handleKeyInput();
 			handleSwitchInput();
 
-			swapBuffers();
-
 			//playEpicMusic();
 
 		}
