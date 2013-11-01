@@ -3,8 +3,7 @@ package org.ubc.de2vtt.comm;
 import java.nio.ByteBuffer;
 
 import org.ubc.de2vtt.MyApplication;
-
-import android.util.Log;
+import org.ubc.de2vtt.sendables.Sendable;
 
 public class Message {
 	private static String TAG = Message.class.getSimpleName();

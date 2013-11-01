@@ -2,6 +2,8 @@ package org.ubc.de2vtt.comm;
 
 import java.io.UnsupportedEncodingException;
 
+import org.ubc.de2vtt.sendables.Sendable;
+
 public class Received implements Sendable {
 	private byte[] data;
 	private Command cmd;

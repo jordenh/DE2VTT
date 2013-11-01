@@ -1,12 +1,12 @@
 package org.ubc.de2vtt.comm;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.util.TimerTask;
+
+import org.ubc.de2vtt.sendables.SendableString;
 
 import android.util.Log;
 
@@ -44,7 +44,7 @@ public class Messenger {
 	    // (defined below).  This creates an instance of the subclass
 		// and executes the code in it.
 		
-		new SocketConnect().execute(ip, port.toString());
+		new SocketConnector().execute(ip, port.toString());
 	}
 	
 	public void sendStringMessage(String str) {		

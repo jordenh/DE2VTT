@@ -9,7 +9,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -120,14 +119,12 @@ public class MainActivity extends Activity {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			selectItem(position);
-			
 		}
     }
     
     private void selectItem(int position) {
     	Fragment fragment = new PlaceholderFragment();
     	Bundle args = new Bundle();
-    	//args.putInt(PlaceholderFragment., value);
     	fragment.setArguments(args);
     	
     	if (position == 3) {

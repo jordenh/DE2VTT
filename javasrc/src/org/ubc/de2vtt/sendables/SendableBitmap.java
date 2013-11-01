@@ -1,4 +1,4 @@
-package org.ubc.de2vtt.comm;
+package org.ubc.de2vtt.sendables;
 
 import java.nio.ByteBuffer;
 
