@@ -147,15 +147,18 @@ public class ConnectionFragment extends Fragment {
 	public class TCPReadTimerTask extends TimerTask {
 		public void run() {
 			Messenger messenger = Messenger.GetSharedInstance();
-			final String msg = messenger.recieveStringMessage();
-			mActivity.runOnUiThread(new Runnable() {
-				public void run() {
-					EditText et = (EditText) mParentView.findViewById(R.id.RecvdMessage);
-					if (msg != null && msg.length() > 0) {
-						et.setText(msg);
+			Received rcv = messenger.recieveMessage();
+			if (rcv != null) {
+				final String msgStr = rcv.DataToString();
+				mActivity.runOnUiThread(new Runnable() {
+					public void run() {
+						EditText et = (EditText) mParentView.findViewById(R.id.RecvdMessage);
+						if (msgStr != null && msgStr.length() > 0) {
+							et.setText(msgStr);
+						}
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 }

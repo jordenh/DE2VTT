@@ -47,52 +47,25 @@ public class Messenger {
 		new SocketConnect().execute(ip, port.toString());
 	}
 	
-	public void sendStringMessage(String msg) {		
-		if (mSocket == null || mSocket.isClosed() || 
-				!mSocket.isConnected()) return;
-		// Create an array of bytes.  First byte will be the
-		// message length, and the next ones will be the message
-		byte buf[] = new byte[msg.length() + 4];
-		byte lenBuf[] = ByteBuffer.allocate(4).putInt(msg.length()).array();
-		System.arraycopy(lenBuf, 0, buf, 0, lenBuf.length);
-		
-		System.arraycopy(msg.getBytes(), 0, buf, 4, msg.length());
+	public void sendStringMessage(String str) {		
+		SendableString sendStr = new SendableString(str);
+		Message msg = new Message(Command.HANDSHAKE, sendStr);
 
-		// Now send through the output stream of the socket
-		OutputStream out;
-		try {
-			out = mSocket.getOutputStream();
-			try {
-				out.write(buf, 0, msg.length() + 1);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		sendMessage(msg);
 	}
 	
 	public void sendMessage(Message msg) {		
 		if (mSocket == null || mSocket.isClosed() || 
 				!mSocket.isConnected()) return;
-		// Create an array of bytes.  First byte will be the
-		// message length, and the next ones will be the message
-		byte args[] = msg.GetByteArray();
-		byte buf[] = new byte[args.length + 4];
-		byte lenBuf[] = ByteBuffer.allocate(4).putInt(args.length).array();
-		System.arraycopy(lenBuf, 0, buf, 0, lenBuf.length);
-		
-		System.arraycopy(args, 0, buf, 4, args.length);
+		byte buf[] = msg.GetArrayToSend();		
 		
 		// Now send through the output stream of the socket
 		OutputStream out;
 		try {
 			out = mSocket.getOutputStream();
 			
-			// Hopefully this buffer will allow us to send longer messages
-			BufferedOutputStream bufOut = new BufferedOutputStream(out, 128);
 			try {
-				bufOut.write(buf, 0, buf.length);
+				out.write(buf, 0, buf.length);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -101,35 +74,9 @@ public class Messenger {
 		}
 	}
 	
-	public String recieveStringMessage() {
-		String msg = null;
-		if (mSocket != null && mSocket.isConnected() 
-				&& !mSocket.isClosed()) {
-
-			try {
-				InputStream in = mSocket.getInputStream();
-
-				// See if any bytes are available from the Middleman
-				int bytes_avail = in.available();
-				if (bytes_avail > 0) {
-					
-					// If so, read them in and create a sring
-					byte buf[] = new byte[bytes_avail];
-					in.read(buf);
-
-					msg = new String(buf, 0, bytes_avail, "US-ASCII");
-					
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}			
-		}
-		return msg;
-	}
-	
 	// 256 bytes in middleman buffer
-	public Message recieveMessage() {
-		Message msg = null;
+	public Received recieveMessage() {
+		Received rcv = null;
 		if (mSocket != null && mSocket.isConnected() 
 				&& !mSocket.isClosed()) {
 
@@ -140,18 +87,17 @@ public class Messenger {
 				int bytes_avail = in.available();
 				if (bytes_avail > 0) {
 					
-					// If so, read them in and create a sring
+					// If so, read them in
 					byte buf[] = new byte[bytes_avail];
 					in.read(buf);
 
-					msg = new Message(buf);
-					
+					rcv = Message.GetReceived(buf);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}			
 		}
-		return msg;
+		return rcv;
 	}
 
 	public void closeSocket() {
