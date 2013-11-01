@@ -6,11 +6,12 @@
 #include "vga.h"
 #include "bmp.h"
 #include "input.h"
+#include "message.h"
 #include "io.h"
 #include "system.h"
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
-#include "altera_up_avalon_rs232.h"
+
 
 
 int init(void) {
@@ -24,6 +25,7 @@ int init(void) {
 	initVga();
 	//parseBmps();
 	setupAudio();
+	setupIO();
 
 	initHardwareTimer();
 
@@ -32,6 +34,7 @@ int init(void) {
 
 int main() {
 	//********* new ******************************************
+	/*
 	int i;
 	unsigned char data;
 	unsigned char parity;
@@ -80,6 +83,7 @@ int main() {
 	printf("Message Echo Complete\n");
 
 	//***********************************
+	 */
 
 	if (init() == -1)
 		return -1;
@@ -97,7 +101,8 @@ int main() {
 			swapBuffers();
 
 
-			playEpicMusic();
+
+			//playEpicMusic();
 		}
 	}
 
