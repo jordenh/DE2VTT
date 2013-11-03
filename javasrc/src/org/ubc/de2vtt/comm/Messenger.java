@@ -1,12 +1,12 @@
 package org.ubc.de2vtt.comm;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.util.TimerTask;
+
+import org.ubc.de2vtt.sendables.SendableString;
 
 import android.util.Log;
 
@@ -14,7 +14,6 @@ import android.util.Log;
 // Most code copied or adapted from platform tutorial 2
 public class Messenger {
 	static final String TAG = Messenger.class.getSimpleName();
-	private static final int MAX_SEND = 128;
 	
 	private Socket mSocket;
 	
@@ -31,7 +30,7 @@ public class Messenger {
 		mSocket = null;
 	}
 
-	public void openSocket(String ip, Integer port) {
+	public synchronized void openSocket(String ip, Integer port) {
 		// Make sure the socket is not already opened 
 		
 		if (mSocket != null && mSocket.isConnected() && !mSocket.isClosed()) {
@@ -44,7 +43,11 @@ public class Messenger {
 	    // (defined below).  This creates an instance of the subclass
 		// and executes the code in it.
 		
-		new SocketConnect().execute(ip, port.toString());
+		new SocketConnector().execute(ip, port.toString());
+	}
+	
+	public synchronized boolean isConnected() {
+		return mSocket.isConnected() && !mSocket.isClosed();
 	}
 	
 	public void sendStringMessage(String str) {		
@@ -54,7 +57,7 @@ public class Messenger {
 		sendMessage(msg);
 	}
 	
-	public void sendMessage(Message msg) {		
+	public synchronized void sendMessage(Message msg) {		
 		if (mSocket == null || mSocket.isClosed() || 
 				!mSocket.isConnected()) return;
 		byte buf[] = msg.GetArrayToSend();		
@@ -75,7 +78,7 @@ public class Messenger {
 	}
 	
 	// 256 bytes in middleman buffer
-	public Received recieveMessage() {
+	public synchronized Received recieveMessage() {
 		Received rcv = null;
 		if (mSocket != null && mSocket.isConnected() 
 				&& !mSocket.isClosed()) {
@@ -100,7 +103,7 @@ public class Messenger {
 		return rcv;
 	}
 
-	public void closeSocket() {
+	public synchronized void closeSocket() {
 		try {
 			mSocket.getOutputStream().close();
 			mSocket.close();

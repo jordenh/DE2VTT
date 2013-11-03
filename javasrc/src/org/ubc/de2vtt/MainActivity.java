@@ -9,7 +9,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -52,7 +51,18 @@ public class MainActivity extends Activity {
                 R.layout.drawer_list_item, mDrawerItems));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+        setupDrawerToggle();
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+    }
+
+	private void setupDrawerToggle() {
+		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
 
             /** Called when a drawer has settled in a completely closed state. */
@@ -67,14 +77,7 @@ public class MainActivity extends Activity {
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
-
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
-    }
+	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -120,14 +123,12 @@ public class MainActivity extends Activity {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			selectItem(position);
-			
 		}
     }
     
     private void selectItem(int position) {
     	Fragment fragment = new PlaceholderFragment();
     	Bundle args = new Bundle();
-    	//args.putInt(PlaceholderFragment., value);
     	fragment.setArguments(args);
     	
     	if (position == 3) {

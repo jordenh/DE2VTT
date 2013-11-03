@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 import android.os.AsyncTask;
 
 // Async task used to connect to sockets
-public class SocketConnect extends AsyncTask<String, Integer, Socket> {
+public class SocketConnector extends AsyncTask<String, Integer, Socket> {
 
 	// The main parcel of work for this thread.  Opens a socket
 	// to connect to the specified IP.
