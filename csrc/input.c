@@ -144,17 +144,19 @@ void sendMessage(message sendMsg){
 	int i;
 	unsigned char data;
 	unsigned char parity;
+	unsigned char msgLen[4];
 
 	// Start with the android ID, since we are interfacing many androids
-	//alt_up_rs232_write_data(uart, (unsigned char) sendMsg.androidID);
+	alt_up_rs232_write_data(uart, (unsigned char) sendMsg.androidID);
 
 	printf("starting to send message, with length: %d\n", strlen(sendMsg.buffer));
-	alt_up_rs232_write_data(uart, 'a');
-	alt_up_rs232_write_data(uart, 'b');
-	alt_up_rs232_write_data(uart, 'c');
 
 	// Start with the number of bytes in our message
 	alt_up_rs232_write_data(uart, (unsigned char) strlen(sendMsg.buffer));
+	for(i = 0; i < (sizeof(msgLen) / sizeof(msgLen[0])); i++) {
+		msgLen[i] = (sendMsg.len / pow(16,((sizeof(msgLen) / sizeof(msgLen[0])) - 1 - i))) % 16;
+		alt_up_rs232_write_data(uart, msgLen[i]);
+	}
 
 	// Now send the actual message to the Middleman
 	for (i = 0; i < strlen(sendMsg.buffer); i++) {
