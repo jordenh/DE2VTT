@@ -11,7 +11,9 @@ typedef struct message {
 
 } message;
 
+boolean isIDSaved(void);
 
+void storeNewID(int ID);
 
 
 #endif /* MESSAGE_H_ */

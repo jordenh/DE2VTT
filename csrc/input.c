@@ -2,7 +2,7 @@
 
 message interMsg;
 alt_up_rs232_dev* uart;
-int connUsers[5] = {0,0,0,0,0};
+
 
 void setupIO(void) {
 	//printf("UART Initialization\n");
@@ -99,6 +99,7 @@ void handleSwitchInput(void){
 }
 
 
+
 message getMessage(void){
 	int i;
 	unsigned char data;
@@ -106,30 +107,15 @@ message getMessage(void){
 	unsigned char msgLen[4];
 	message inMsg;
 
-	while (alt_up_rs232_get_used_space_in_read_FIFO(uart) == 0) {};
+	while (alt_up_rs232_get_used_space_in_read_FIFO(uart) == 0) {}; // TBD - have this step time out.
 
 	//obtain android ID
 	alt_up_rs232_read_data(uart, &data, &parity);
 	inMsg.androidID = (int) data;
 
-	//stub for enforcing unique ID's for phones.
-	for(i = 0; i < sizeof(connUsers) / sizeof(connUsers[0]) ; i++){
-		if(inMsg.androidID == connUsers[i]){
-			printf("android %d sending to DE2 already in system\n", connUsers[i]);
-			break;
-		}
-		if(i == sizeof(connUsers) / sizeof(connUsers[0]) - 1) {
-			for(i = 0; i < sizeof(connUsers) / sizeof(connUsers[0]) ; i++){
-				if(connUsers[i] == 0) {
-					printf("DE2 communicating with new android - ID %d\n", inMsg.androidID);
-					connUsers[i] = inMsg.androidID;
-					break;
-				}
-				if (i == sizeof(connUsers) / sizeof(connUsers[0]) - 1){
-					printf("Error in getMessage - new android Device trying to communicate, and no open channles.\n");
-				}
-			}
-		}
+	if(isIDSaved(inMsg.androidID) == false) {
+		if (storeNewID(inMsg.androidID)  == false)
+			printf("Error adding Android ID, ID array full\n");
 	}
 
 	//obtain length
