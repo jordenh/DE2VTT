@@ -33,7 +33,7 @@ public class Messenger {
 	public synchronized void openSocket(String ip, Integer port) {
 		// Make sure the socket is not already opened 
 		
-		if (mSocket != null && mSocket.isConnected() && !mSocket.isClosed()) {
+		if (isConnected()) {
 			Log.e(TAG, "Socket already open");
 			return;
 		}
@@ -42,19 +42,19 @@ public class Messenger {
 	}
 	
 	public synchronized boolean isConnected() {
-		return mSocket.isConnected() && !mSocket.isClosed();
+		return mSocket != null && mSocket.isConnected() && !mSocket.isClosed();
 	}
 	
 	public void sendStringMessage(String str) {		
-		SendableString sendStr = new SendableString(str);
-		Message msg = new Message(Command.HANDSHAKE, sendStr);
-
-		sendMessage(msg);
-	}
+		if (isConnected()) {
+			SendableString sendStr = new SendableString(str);
+			Message msg = new Message(Command.HANDSHAKE, sendStr);
 	
+			sendMessage(msg);
+		}
+	}
+
 	public synchronized void sendMessage(Message msg) {		
-		if (mSocket == null || mSocket.isClosed() || 
-				!mSocket.isConnected()) return;
 		byte buf[] = msg.GetArrayToSend();		
 		
 		OutputStream out;
@@ -73,8 +73,7 @@ public class Messenger {
 	
 	public synchronized Received recieveMessage() {
 		Received rcv = null;
-		if (mSocket != null && mSocket.isConnected() 
-				&& !mSocket.isClosed()) {
+		if (isConnected()) {
 
 			try {
 				InputStream in = mSocket.getInputStream();
@@ -97,11 +96,13 @@ public class Messenger {
 	}
 
 	public synchronized void closeSocket() {
-		try {
-			mSocket.getOutputStream().close();
-			mSocket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (isConnected()) {
+			try {
+				mSocket.getOutputStream().close();
+				mSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -121,7 +122,7 @@ public class Messenger {
 					InputStream in = mSocket.getInputStream();
 
 					// See if any bytes are available from the Middleman
-					int bytes_avail = in.available();
+					 	int bytes_avail = in.available();
 					if (bytes_avail > 0) {
 
 						// If so, read them in and create a string
