@@ -1,0 +1,3 @@
+[submodule "MiddleMan"]
+	path = MiddleMan
+	url = git://github.com/BlueMonday/MiddleMan.git
