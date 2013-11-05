@@ -18,6 +18,12 @@ public class Message {
 		this.dir = Direction.OUT;
 	}
 	
+	public Message(Command cmd) {
+		this.cmd = cmd;
+		this.send = null;
+		this.dir = Direction.OUT;
+	}
+	
 	public static Received GetReceived(byte[] recvBuf) {
 		MyApplication.id = recvBuf[0];
 		
