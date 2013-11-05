@@ -97,7 +97,7 @@ public class ConnectionFragment extends Fragment {
 		EditText et = (EditText)mParentView.findViewById(R.id.MessageText);
 		String msg = et.getText().toString();
 		
-		messenger.sendStringMessage(msg);
+		//messenger.sendStringMessage(msg);
 	}
 	
 	public void closeSocket() {
@@ -134,40 +134,40 @@ public class ConnectionFragment extends Fragment {
 	}
 	
 	public Integer getConnectToPort() {
-		Integer port;
-		EditText text_port;
+        Integer port;
+        EditText text_port;
 
-		text_port = (EditText) mParentView.findViewById(R.id.port);
-		port = Integer.parseInt(text_port.getText().toString());
+        text_port = (EditText) mParentView.findViewById(R.id.port);
+        port = Integer.parseInt(text_port.getText().toString());
 
-		return port;
-	}
-	
-	public class TCPReadTimerTask extends TimerTask {
-		public void run() {
-			Messenger messenger = Messenger.GetSharedInstance();
-			if (messenger.isConnected()) {
-				getMessage(messenger);
-			}
-		}
+        return port;
+}
 
-		private void getMessage(Messenger messenger) {
-			Received rcv = messenger.recieveMessage();
-			if (rcv != null) {
-				updateReceivedField(rcv);
-			}
-		}
+public class TCPReadTimerTask extends TimerTask {
+        public void run() {
+                Messenger messenger = Messenger.GetSharedInstance();
+                if (messenger.isConnected()) {
+                        getMessage(messenger);
+                }
+        }
 
-		private void updateReceivedField(Received rcv) {
-			final String msgStr = rcv.DataToString();
-			mActivity.runOnUiThread(new Runnable() {
-				public void run() {
-					EditText et = (EditText) mParentView.findViewById(R.id.RecvdMessage);
-					if (msgStr != null && msgStr.length() > 0) {
-						et.setText(msgStr);
-					}
-				}
-			});
-		}
-	}
+        private void getMessage(Messenger messenger) {
+                Received rcv = messenger.recieveMessage();
+                if (rcv != null) {
+                        updateReceivedField(rcv);
+                }
+        }
+
+        private void updateReceivedField(Received rcv) {
+                final String msgStr = rcv.DataToString();
+                mActivity.runOnUiThread(new Runnable() {
+                        public void run() {
+                                EditText et = (EditText) mParentView.findViewById(R.id.RecvdMessage);
+                                if (msgStr != null && msgStr.length() > 0) {
+                                        et.setText(msgStr);
+                                }
+                        }
+                });
+        }
+}
 }

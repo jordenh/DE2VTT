@@ -1,6 +1,7 @@
 package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.ConnectionFragment;
+import org.ubc.de2vtt.sendimage.SendImageFragment;
 
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -131,7 +132,9 @@ public class MainActivity extends Activity {
     	Bundle args = new Bundle();
     	fragment.setArguments(args);
     	
-    	if (position == 3) {
+    	if (position == 2) {
+    		fragment = new SendImageFragment();
+    	} else if (position == 3) {
     		fragment = new ConnectionFragment();
     	}
     	
