@@ -39,7 +39,12 @@ public class SendImageFragment extends Fragment {
 	}
 
 	private void setupOnClickListeners() {
-		
+		Button pickBtn = (Button) mParentView.findViewById(R.id.btnPickImage);
+		pickBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				pickImage(v);
+			}
+		});
 	}
 	
 	public void pickImage(View View) {
@@ -62,7 +67,7 @@ public class SendImageFragment extends Fragment {
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
-			ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgView);
+			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
 			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         }
     }
