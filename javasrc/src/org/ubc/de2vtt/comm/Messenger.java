@@ -46,28 +46,28 @@ public class Messenger {
 	}
 	
 	public void sendStringMessage(String str) {		
-		if (isConnected()) {
-			SendableString sendStr = new SendableString(str);
-			Message msg = new Message(Command.HANDSHAKE, sendStr);
-	
-			sendMessage(msg);
-		}
+		SendableString sendStr = new SendableString(str);
+		Message msg = new Message(Command.HANDSHAKE, sendStr);
+
+		sendMessage(msg);
 	}
 
 	public synchronized void sendMessage(Message msg) {		
 		byte buf[] = msg.GetArrayToSend();		
-		
-		OutputStream out;
-		try {
-			out = mSocket.getOutputStream();
-			
+		if (isConnected()) {
 			try {
-				out.write(buf, 0, buf.length);
+				OutputStream out = mSocket.getOutputStream();
+				
+				try {
+					out.write(buf, 0, buf.length);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		} else {
+			Log.v(TAG, "Attempt to send without opening socket.");
 		}
 	}
 	
@@ -76,21 +76,27 @@ public class Messenger {
 		if (isConnected()) {
 
 			try {
-				InputStream in = mSocket.getInputStream();
-
-				// See if any bytes are available from the Middleman
-				int bytes_avail = in.available();
-				if (bytes_avail > 0) {
-					
-					// If so, read them in
-					byte buf[] = new byte[bytes_avail];
-					in.read(buf);
-
-					rcv = Message.GetReceived(buf);
-				}
+				rcv = getMessage(rcv);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}			
+		} else {
+			Log.v(TAG, "Attempt to receive message from non-open socket.");
+		}
+		return rcv;
+	}
+
+	private Received getMessage(Received rcv) throws IOException {
+		InputStream in = mSocket.getInputStream();
+
+		// See if any bytes are available from the Middleman
+		int bytes_avail = in.available();
+		if (bytes_avail > 0) {
+			// If so, read them in
+			byte buf[] = new byte[bytes_avail];
+			in.read(buf);
+
+			rcv = Message.GetReceived(buf);
 		}
 		return rcv;
 	}
@@ -103,48 +109,19 @@ public class Messenger {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		} else {
+			Log.v(TAG, "Attempt to close non-open socket.");
 		}
 	}
 	
 	// Used by SocketConnect to set the socket once the connection occurs async 
-	public void setSocket(Socket sock) {
+	public synchronized void setSocket(Socket sock) {
 		mSocket = sock;
 	}
 	
-	// Not particularly useful here.
-	// Could be useful going forward to manage message timers in another file
-	// Otherwise we'll need these timers everywhere we want to receive info
-	public class TCPReadTimerTask extends TimerTask {
-		public void run() {
-			if (mSocket != null && mSocket.isConnected() && !mSocket.isClosed()) {
-
-				try {
-					InputStream in = mSocket.getInputStream();
-
-					// See if any bytes are available from the Middleman
-					 	int bytes_avail = in.available();
-					if (bytes_avail > 0) {
-
-						// If so, read them in and create a string
-						byte buf[] = new byte[bytes_avail];
-						in.read(buf);
-
-						//final String s = new String(buf, 0, bytes_avail, "US-ASCII");
-
-						// As explained in the tutorials, the GUI can not be
-						// updated in an asyncrhonous task. So, update the GUI
-						// using the UI thread.
-//						runOnUiThread(new Runnable() {
-//							public void run() {
-//								// Do Something
-//							}
-//						});
-
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+	// TODO:
+	// probably want to put a timer into the main activity
+	// maybe keep a queue of messages to be received
+	// each fragment could have something for dealing with incoming data
+	// perhaps only of a specific type
 }
