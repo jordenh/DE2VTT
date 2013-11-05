@@ -22,6 +22,7 @@ public class ConnectionFragment extends Fragment {
 	private View mParentView;
 	private Activity mActivity;
 	private TCPReadTimerTask mTimerTask;
+	private Messenger mMessenger = Messenger.GetSharedInstance();
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -82,27 +83,23 @@ public class ConnectionFragment extends Fragment {
 	}
 	
 	public void openSocket() {
-		Messenger msg = Messenger.GetSharedInstance();
 		String ip = getConnectToIP();
 		Integer port = getConnectToPort();
 		
-		msg.openSocket(ip, port);
+		mMessenger.openSocket(ip, port);
 		SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
 		man.putString(SHARED_PREFS_IP, ip);
 	}
 	
-	public void sendMessage() {
-		Messenger messenger = Messenger.GetSharedInstance();
-		
+	public void sendMessage() {		
 		EditText et = (EditText)mParentView.findViewById(R.id.MessageText);
 		String msg = et.getText().toString();
 		
-		//messenger.sendStringMessage(msg);
+		mMessenger.sendStringMessage(msg);
 	}
 	
 	public void closeSocket() {
-		Messenger messenger = Messenger.GetSharedInstance();
-		messenger.closeSocket();
+		mMessenger.closeSocket();
 	}
 	
 	// Construct an IP address from the four boxes
@@ -144,30 +141,30 @@ public class ConnectionFragment extends Fragment {
 }
 
 public class TCPReadTimerTask extends TimerTask {
-        public void run() {
-                Messenger messenger = Messenger.GetSharedInstance();
-                if (messenger.isConnected()) {
-                        getMessage(messenger);
-                }
+    public void run() {
+        Messenger messenger = Messenger.GetSharedInstance();
+        if (messenger.isConnected()) {
+        	getMessage(messenger);
         }
+    }
 
-        private void getMessage(Messenger messenger) {
-                Received rcv = messenger.recieveMessage();
-                if (rcv != null) {
-                        updateReceivedField(rcv);
-                }
+    private void getMessage(Messenger messenger) {
+        Received rcv = messenger.recieveMessage();
+        if (rcv != null) {
+            updateReceivedField(rcv);
         }
+    }
 
-        private void updateReceivedField(Received rcv) {
-                final String msgStr = rcv.DataToString();
-                mActivity.runOnUiThread(new Runnable() {
-                        public void run() {
-                                EditText et = (EditText) mParentView.findViewById(R.id.RecvdMessage);
-                                if (msgStr != null && msgStr.length() > 0) {
-                                        et.setText(msgStr);
-                                }
-                        }
-                });
-        }
+    private void updateReceivedField(Received rcv) {
+        final String msgStr = rcv.DataToString();
+        mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                EditText et = (EditText) mParentView.findViewById(R.id.RecvdMessage);
+                if (msgStr != null && msgStr.length() > 0) {
+                    et.setText(msgStr);
+                }
+            }
+        });
+    }
 }
 }

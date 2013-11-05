@@ -19,5 +19,4 @@ public class SendableString implements Sendable {
 	public byte[] ToByteArray() {
 		return str.getBytes();
 	}
-
 }
