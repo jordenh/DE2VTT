@@ -129,9 +129,9 @@ public class SendImageFragment extends Fragment {
 			cursor.close();
 			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
 			bitmap = BitmapFactory.decodeFile(picturePath);
-			//imageView.setImageBitmap(bitmap);
+			imageView.setImageBitmap(bitmap);
 			
-			receiver = new Receiver(new TCPReadTimerTask());
+			//receiver = new Receiver(new TCPReadTimerTask());
         }
     }
 	
