@@ -132,7 +132,7 @@ public class MainActivity extends Activity {
     	Fragment fragment = new PlaceholderFragment();
     	Bundle args = new Bundle();
     	fragment.setArguments(args);
-    	
+
     	switch (position) {
 	    	case 3:
 	    		fragment = new SendImageFragment();
@@ -142,7 +142,6 @@ public class MainActivity extends Activity {
 	    		break;
     	}
    
-    	
     	FragmentManager fragmentManager = getFragmentManager();
     	fragmentManager.beginTransaction()
     		.replace(R.id.content_frame, fragment)
