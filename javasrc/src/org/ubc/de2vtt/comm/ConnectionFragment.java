@@ -35,7 +35,7 @@ public class ConnectionFragment extends Fragment {
 		
 		mActivity = this.getActivity();
 		
-		receiver = new Receiver(new TCPReadTimerTask());
+		receiver = new SingleReceiver(new TCPReadTimerTask());
 		updateButtonStatus();
 		
 		return mParentView;

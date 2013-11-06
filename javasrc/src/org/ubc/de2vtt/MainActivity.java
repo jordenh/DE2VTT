@@ -4,7 +4,6 @@ import org.ubc.de2vtt.comm.ConnectionFragment;
 
 import org.ubc.de2vtt.sendimage.SendImageFragment;
 
-
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.app.Activity;

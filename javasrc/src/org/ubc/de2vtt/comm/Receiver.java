@@ -2,13 +2,12 @@ package org.ubc.de2vtt.comm;
 
 import java.util.Timer;
 
-public class Receiver {
-	private Timer timer;
-	private ReceiveTask task;
+public abstract class Receiver {
+	protected Timer timer;
+	protected ReceiveTask task;
 	
-	public Receiver(ReceiveTask task) {
+	public Receiver() {
 		timer = new Timer();
-		timer.schedule(task, 3000, 500);
 	}
 	
 	public boolean isTaskNull() {
