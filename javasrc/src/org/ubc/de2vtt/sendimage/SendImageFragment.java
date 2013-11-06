@@ -31,7 +31,7 @@ public class SendImageFragment extends Fragment {
 	
 	protected View mParentView;
 	private Activity mActivity;
-	private Receiver receiver;
+	//private Receiver receiver;
 	
 	private static final int REQUEST_CODE = 1;
     private Bitmap bitmap;
@@ -153,7 +153,7 @@ public class SendImageFragment extends Fragment {
         }
     }
 	
-	public class TCPReadTimerTask extends ReceiveTask {
+	private class TCPReadTimerTask extends ReceiveTask {
 		@Override
 		protected void performAction(Received rcv) {
 			bitmap = rcv.DataToBitmap();
@@ -166,7 +166,7 @@ public class SendImageFragment extends Fragment {
 				}		
 			});
 			
-			receiver.cancel();
+			//receiver.cancel();
 		}
 	}
 }

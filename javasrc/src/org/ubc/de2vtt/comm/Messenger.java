@@ -120,6 +120,6 @@ public class Messenger {
 	}
 	
 	public static boolean readyToSend() {
-		return mSharedInstance.isConnected();
+		return GetSharedInstance().isConnected();
 	}
 }

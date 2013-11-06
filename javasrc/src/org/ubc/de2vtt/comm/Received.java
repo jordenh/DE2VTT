@@ -30,7 +30,8 @@ public class Received implements Sendable {
 		System.arraycopy(recvBuf, 5, args, 0, args.length);
 		
 		if (length != args.length) {
-			throw new ReceivedLengthMismatchException();
+			//throw new ReceivedLengthMismatchException();
+			Log.e(TAG, "Received length mismatch wanted: " + length + " got: " + args.length);
 		}
 		
 		this.cmd = cmd;
