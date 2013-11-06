@@ -146,7 +146,6 @@ public class MainActivity extends Activity {
     		break;
     	}
    
-    	
     	FragmentManager fragmentManager = getFragmentManager();
     	fragmentManager.beginTransaction()
     		.replace(R.id.content_frame, fragment)
