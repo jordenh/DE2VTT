@@ -12,6 +12,7 @@
 typedef struct message {
 	unsigned int androidID;
 	unsigned int len;
+	unsigned int command;
 	unsigned char * buffer; // max 126 bytes
 
 } message;
