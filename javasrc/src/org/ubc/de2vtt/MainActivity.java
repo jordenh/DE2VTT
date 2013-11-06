@@ -1,7 +1,7 @@
 package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.ConnectionFragment;
-import org.ubc.de2vtt.tabletop.TableTopFragment;
+//import org.ubc.de2vtt.tabletop.TableTopFragment;
 import org.ubc.de2vtt.sendimage.SendImageFragment;
 
 import android.os.Bundle;
@@ -135,7 +135,7 @@ public class MainActivity extends Activity {
     	
     	switch (position) {
     	case 0:
-    		fragment = new TableTopFragment();
+    		//fragment = new TableTopFragment();
     		break;
     	case 2:
     		fragment = new SendImageFragment();
