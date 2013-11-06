@@ -1,7 +1,8 @@
 package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.ConnectionFragment;
-import org.ubc.de2vtt.tabletop.TableTopFragment;
+import org.ubc.de2vtt.sendimage.SendImageFragment;
+import org.ubc.de2vtt.movetoken.MoveTokenFragment;
 
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -133,11 +134,12 @@ public class MainActivity extends Activity {
     	fragment.setArguments(args);
     	
     	switch (position) {
-    	case 0:
-    		fragment = new TableTopFragment();
-    	case 3:
-    		fragment = new ConnectionFragment();
-    		break;
+	    	case 3:
+	    		fragment = new SendImageFragment();
+	    		break;
+	    	case 4:
+	    		fragment = new ConnectionFragment();
+	    		break;
     	}
    
     	
