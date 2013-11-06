@@ -118,4 +118,8 @@ public class Messenger {
 	public synchronized void setSocket(Socket sock) {
 		mSocket = sock;
 	}
+	
+	public static boolean readyToSend() {
+		return mSharedInstance.isConnected();
+	}
 }

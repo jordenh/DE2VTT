@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 
 public class SendImageFragment extends Fragment {
@@ -36,24 +35,27 @@ public class SendImageFragment extends Fragment {
 	
 	private static final int REQUEST_CODE = 1;
     private Bitmap bitmap;
-    private ImageView imageView;
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mParentView = inflater.inflate(R.layout.fragment_sendimage,  container, false);
 	
 		setupOnClickListeners();
 		
-		ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
-		imageView.buildDrawingCache();
-		bitmap = imageView.getDrawingCache();
+		if (bitmap != null) {
+			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
+			imageView.setImageBitmap(bitmap);
+
+		}
+		
+		updateButtonState();
 		
 		mActivity = this.getActivity();
 		
 		return mParentView;
 	}
 
-	private void setupOnClickListeners() {
+	private void setupOnClickListeners() {		
 		Button pickBtn = (Button) mParentView.findViewById(R.id.btnPickImage);
 		pickBtn.setOnClickListener(new OnClickListener() {
 			
@@ -80,6 +82,21 @@ public class SendImageFragment extends Fragment {
 				sendMap();
 			}
 		});
+	}
+	
+	private void updateButtonState() {
+		boolean canSend = Messenger.readyToSend();
+		
+		Button sendMapBtn = (Button) mParentView.findViewById(R.id.btnSendMap);
+		sendMapBtn.setEnabled(canSend);
+		
+		Button sendTokBtn = (Button) mParentView.findViewById(R.id.btnSendToken);
+		sendTokBtn.setEnabled(canSend);
+		
+		if (bitmap == null) {
+			sendMapBtn.setEnabled(false);
+			sendTokBtn.setEnabled(false);
+		}
 	}
 	
 	public void pickImage(View View) {
@@ -132,6 +149,7 @@ public class SendImageFragment extends Fragment {
 			imageView.setImageBitmap(bitmap);
 			
 			//receiver = new Receiver(new TCPReadTimerTask());
+			updateButtonState();
         }
     }
 	

@@ -27,7 +27,7 @@
     <string name="label_disconnect">Disconnect</string>
     
     <!-- Send Image Fragment -->
-    <string name="pick_image">Pick Image</string>
+    <string name="pick_image">Select Image</string>
     <string name="send_token">Send Token</string>
     <string name="send_map">Send Map</string>
 </resources>
