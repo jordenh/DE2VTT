@@ -131,12 +131,29 @@
 
 <!-- </LinearLayout> -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="fill_parent"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" 
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <Button android:text="Button" android:id="@+id/btnPickImage"
-        android:onClick="pickImage" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></Button>
+    
+    <Button 
+        android:text="@string/pick_image" 
+        android:id="@+id/btnPickImage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    
+    <Button 
+        android:text="@string/send_token" 
+        android:id="@+id/btnSendToken"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    
+    <Button 
+        android:text="@string/send_map" 
+        android:id="@+id/btnSendMap" 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
     <ImageView
         android:id="@+id/imgView"
@@ -144,6 +161,10 @@
         android:layout_height="wrap_content"
         android:src="@drawable/earth" />
 
-    <ImageView android:id="@+id/result" android:src="@drawable/earth"
-        android:layout_width="match_parent" android:layout_height="match_parent"></ImageView>
+    <ImageView 
+        android:id="@+id/result" 
+        android:src="@drawable/earth"
+        android:layout_width="match_parent" 
+        android:layout_height="match_parent" />
+        
 </LinearLayout>

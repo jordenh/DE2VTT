@@ -1,6 +1,7 @@
 package org.ubc.de2vtt.comm;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -18,7 +19,9 @@ public class SocketConnector extends AsyncTask<String, Integer, Socket> {
 		Integer port = Integer.decode(params[1]);
 
 		try {
-			socket = new Socket(ip, port);
+			socket = new Socket();
+			socket.bind(null);
+			socket.connect(new InetSocketAddress(ip, port), 1500);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

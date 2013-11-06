@@ -1,6 +1,8 @@
 package org.ubc.de2vtt.comm;
 
-public enum Command {
+import android.util.Log;
+
+public enum Command {	
 	CONNECT((byte)0),
 	DISCONNECT((byte)1),
 	SEND_MAP((byte)2),
@@ -15,8 +17,30 @@ public enum Command {
 	private Command(byte c) {
 		code = c;
 	}
-	
+
 	public static Command Convert(byte b) {
-		return Command.values()[b];
+		
+		//return Command.values()[b];
+		switch (b) {
+		case (byte)0:
+			return CONNECT;
+		case (byte)1:
+			return DISCONNECT;
+		case (byte)2:
+			return SEND_MAP;
+		case (byte)3:
+			return SEND_TOKEN;
+		case (byte)4:
+			return GET_DM;
+		case (byte)5:
+			return RELEASE_DM;
+		case (byte)6:
+			return MOVE_TOKEN;
+		case (byte)7:
+			return HANDSHAKE;
+		default:
+			Log.v("Command", "Attempt to convert invalid command.");
+			return HANDSHAKE;
+		}
 	}
 }
