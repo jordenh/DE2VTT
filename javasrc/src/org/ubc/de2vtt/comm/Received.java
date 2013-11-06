@@ -58,6 +58,4 @@ public class Received implements Sendable {
 			throw new InvalidParameterException("Attempt to convert non-bmp data to bmp.");
 		}
 	}
-	
-	// Something to use the request to decide to do something with the data
 }
