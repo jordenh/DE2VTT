@@ -12,14 +12,8 @@
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
 
-void setupIO(void);
-
 void handleKeyInput(void);
 
 void handleSwitchInput(void);
-
-message getMessage(void);
-
-void sendMessage(message sendMsg);
 
 #endif /* INPUT_H_ */

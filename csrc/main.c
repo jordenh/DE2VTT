@@ -25,7 +25,7 @@ int init(void) {
 	initVga();
 	//parseBmps();
 	setupAudio();
-	setupIO();
+	setupMessage();
 
 	initHardwareTimer();
 
