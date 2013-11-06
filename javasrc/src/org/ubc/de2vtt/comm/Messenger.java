@@ -96,7 +96,7 @@ public class Messenger {
 			byte buf[] = new byte[bytes_avail];
 			in.read(buf);
 
-			rcv = Message.GetReceived(buf);
+			rcv = new Received(buf);
 		}
 		return rcv;
 	}
@@ -118,10 +118,4 @@ public class Messenger {
 	public synchronized void setSocket(Socket sock) {
 		mSocket = sock;
 	}
-	
-	// TODO:
-	// probably want to put a timer into the main activity
-	// maybe keep a queue of messages to be received
-	// each fragment could have something for dealing with incoming data
-	// perhaps only of a specific type
 }

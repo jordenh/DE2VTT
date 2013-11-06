@@ -4,6 +4,9 @@ import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
+import org.ubc.de2vtt.comm.ReceiveTask;
+import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.Receiver;
 import org.ubc.de2vtt.sendables.SendableBitmap;
 
 import android.app.Activity;
@@ -27,8 +30,9 @@ import android.widget.ImageView;
 public class SendImageFragment extends Fragment {
 	private static final String TAG = SendImageFragment.class.getSimpleName();	
 	
-	private View mParentView;
+	protected View mParentView;
 	private Activity mActivity;
+	private Receiver receiver;
 	
 	private static final int REQUEST_CODE = 1;
     private Bitmap bitmap;
@@ -87,17 +91,18 @@ public class SendImageFragment extends Fragment {
     }
 	
 	public void sendToken() {
-		sendImage(Command.SEND_TOKEN);
+		sendImage(Command.SEND_TOKEN, 30, 30);
 	}
 	
 	public void sendMap() {
-		sendImage(Command.SEND_MAP);
+		sendImage(Command.SEND_MAP, 340, 260);
 	}
 	
-	public void sendImage(Command cmd) {
+	public void sendImage(Command cmd, int x, int y) {
 		if (cmd == Command.SEND_MAP || cmd == Command.SEND_TOKEN) {
 			if (bitmap != null) {
-				SendableBitmap bmp = new SendableBitmap(bitmap);
+				Bitmap scaled = Bitmap.createScaledBitmap(bitmap, x, y, false);
+				SendableBitmap bmp = new SendableBitmap(scaled);
 				Message msg = new Message(cmd, bmp);
 				Messenger messenger = Messenger.GetSharedInstance();
 				
@@ -124,9 +129,29 @@ public class SendImageFragment extends Fragment {
 			cursor.close();
 			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
 			bitmap = BitmapFactory.decodeFile(picturePath);
-			imageView.setImageResource(0);
-			imageView.setImageBitmap(bitmap);
+			//imageView.setImageBitmap(bitmap);
+			
+			receiver = new Receiver(new TCPReadTimerTask());
         }
     }
+	
+	public class TCPReadTimerTask extends ReceiveTask {
+		@Override
+		protected void performAction(Received rcv) {
+			bitmap = rcv.DataToBitmap();
+			
+			mActivity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
+					imageView.setImageBitmap(bitmap);
+				}		
+			});
+			
+			receiver.cancel();
+		}
+	}
 }
+
+
 
