@@ -50,6 +50,7 @@ message getMessage(void){
 
 	//obtain android ID
 	inMsg.androidID = (int) fgetc(uart);
+	printf("I got msg from ID %d", inMsg.androidID);
 
 	if(isIDSaved(inMsg) == 0) {
 		if (storeNewID(inMsg.androidID)  == 0)
@@ -59,7 +60,7 @@ message getMessage(void){
 	//obtain length
 	for(i = 0; i < (sizeof(msgLen) / sizeof(msgLen[0])); i++) {
 		msgLen[i] = fgetc(uart);
-		inMsg.len += pow(16,((sizeof(msgLen) / sizeof(msgLen[0])) - 1 - i)) * (int) msgLen[i];
+		inMsg.len += pow(256,((sizeof(msgLen) / sizeof(msgLen[0])) - 1 - i)) * (int) msgLen[i];
 	}
 
 	printf("About to receive %d characters:\n", inMsg.len);
@@ -87,14 +88,14 @@ void sendMessage(message sendMsg){
 	}
 
 	// Start with the android ID, since we are interfacing many androids
-	//alt_up_rs232_write_data(uart, (unsigned char) sendMsg.androidID);
 	fputc((unsigned char) sendMsg.androidID, uart);
 
 	printf("starting to send message, with length: %d\n", sendMsg.len);
 
 	// Start with the number of bytes in our message
 	for(i = 0; i < (sizeof(msgLen) / sizeof(msgLen[0])); i++) {
-		msgLen[i] = (int)(sendMsg.len / pow(16,((sizeof(msgLen) / sizeof(msgLen[0])) - 1 - i))) % 16;
+		msgLen[i] = (int)(sendMsg.len / pow(256,((sizeof(msgLen) / sizeof(msgLen[0])) - 1 - i))) % 256;
+		printf("msgLen[i] = %d", msgLen[i]);
 		fputc(msgLen[i], uart);
 	}
 

@@ -44,9 +44,9 @@ void handleKeyInput(void){
 		edgeDetect1 = 0;
 
 		//Temporary Hard coded stuff:
-		interMsg.androidID = 2;
-		interMsg.len = 5;
-		interMsg.buffer = "hello";
+	//	interMsg.androidID = 2;
+	//	interMsg.len = 5;
+	//	interMsg.buffer = "hello";
 
 
 		if(interMsg.buffer != NULL) {

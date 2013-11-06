@@ -8,6 +8,9 @@ public class SendableBitmap implements Sendable {
 	private Bitmap bmp;
 	
 	public SendableBitmap(Bitmap bmp) {
+		if (bmp == null) {
+			throw new NullPointerException();
+		}
 		this.bmp = bmp;
 	}
 	

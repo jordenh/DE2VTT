@@ -1,0 +1,163 @@
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" -->
+<!--     xmlns:tools="http://schemas.android.com/tools" -->
+<!--     android:layout_width="fill_parent" -->
+<!--     android:layout_height="fill_parent" -->
+<!--     android:orientation="vertical" > -->
+
+<!--     <LinearLayout -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:orientation="horizontal" > -->
+
+<!--         <TextView -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_weight="1" -->
+<!--             android:gravity="center" -->
+<!--             android:text="@string/label_ip" /> -->
+
+<!--         <EditText -->
+<!--             android:id="@+id/ip1" -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_weight="1" -->
+<!--             android:inputType="number" /> -->
+
+<!--         <EditText -->
+<!--             android:id="@+id/ip2" -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_weight="1" -->
+<!--             android:inputType="number" /> -->
+
+<!--         <EditText -->
+<!--             android:id="@+id/ip3" -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_weight="1" -->
+<!--             android:inputType="number"/> -->
+
+<!--         <EditText -->
+<!--             android:id="@+id/ip4" -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_weight="1" -->
+<!--             android:inputType="number" /> -->
+
+<!--     </LinearLayout> -->
+
+<!--     <LinearLayout -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:orientation="horizontal" > -->
+
+<!--         <TextView -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_weight="1" -->
+<!--             android:gravity="center" -->
+<!--             android:text="@string/label_port" /> -->
+
+<!--         <EditText -->
+<!--             android:id="@+id/port" -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_weight="4" -->
+<!--             android:inputType="number" -->
+<!--             android:text="@string/default_port" /> -->
+
+<!--     </LinearLayout> -->
+
+<!--     <Button -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:text="@string/connect"  -->
+<!--         android:id="@+id/btnConnect"/> -->
+
+<!--     <Button -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:text="@string/send_button" -->
+<!--         android:id="@+id/btnSendMessage" /> -->
+
+<!--     <Button -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:text="@string/label_disconnect"  -->
+<!--         android:id="@+id/btnCloseSocket"/> -->
+
+<!--     <TextView -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:gravity="left" -->
+<!--         android:text="@string/tabel_send" /> -->
+
+<!--     <EditText -->
+<!--         android:id="@+id/MessageText" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:ems="10" -->
+<!--         android:text="" -->
+<!--         android:inputType="text" > -->
+
+<!--         <requestFocus /> -->
+<!--     </EditText> -->
+
+<!--     <TextView -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:gravity="left" -->
+<!--         android:text="@string/label_recieved" /> -->
+
+<!--     <EditText -->
+<!--         android:id="@+id/RecvdMessage" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:ems="10" -->
+<!--         android:inputType="number" /> -->
+
+<!--     <TextView -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:gravity="left" -->
+<!--         android:text="@string/label_errors" /> -->
+
+<!--     <EditText -->
+<!--         android:id="@+id/error_message_box" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:ems="10" -->
+<!--         android:inputType="number" /> -->
+
+<!-- </LinearLayout> -->
+
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+    <Button 
+        android:text="@string/pick_image" 
+        android:id="@+id/btnPickImage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    
+    <Button 
+        android:text="@string/send_token" 
+        android:id="@+id/btnSendToken"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    
+    <Button 
+        android:text="@string/send_map" 
+        android:id="@+id/btnSendMap" 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/imgView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+        
+</LinearLayout>
