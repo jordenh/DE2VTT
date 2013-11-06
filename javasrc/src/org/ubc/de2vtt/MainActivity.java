@@ -1,6 +1,7 @@
 package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.ConnectionFragment;
+import org.ubc.de2vtt.tabletop.TableTopFragment;
 
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -131,9 +132,14 @@ public class MainActivity extends Activity {
     	Bundle args = new Bundle();
     	fragment.setArguments(args);
     	
-    	if (position == 3) {
+    	switch (position) {
+    	case 0:
+    		fragment = new TableTopFragment();
+    	case 3:
     		fragment = new ConnectionFragment();
+    		break;
     	}
+   
     	
     	FragmentManager fragmentManager = getFragmentManager();
     	fragmentManager.beginTransaction()
