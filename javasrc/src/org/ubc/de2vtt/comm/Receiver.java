@@ -15,6 +15,10 @@ public abstract class Receiver {
 	}
 	
 	public void cancel() {
-		timer.cancel();
+		if (task != null) {
+			timer.cancel();
+			task.cancel();
+			timer.purge();
+		}
 	}
 }

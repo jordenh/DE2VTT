@@ -4,6 +4,6 @@ public class SingleReceiver extends Receiver {
 	
 	public SingleReceiver(ReceiveTask task) {
 		super();
-		timer.schedule(task, 3000, 500);
+		timer.schedule(task, 100);
 	}
 }

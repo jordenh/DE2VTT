@@ -23,6 +23,7 @@ public class ConnectionFragment extends Fragment {
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
 	private Receiver receiver;
+	private boolean active;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -34,8 +35,9 @@ public class ConnectionFragment extends Fragment {
 		setupOnClickListeners();
 		
 		mActivity = this.getActivity();
+		active = true;
 		
-		receiver = new SingleReceiver(new TCPReadTimerTask());
+		receiver = new SingleReceiver(new ConnectionFragmentReceiveTask());
 		updateButtonStatus();
 		
 		return mParentView;
@@ -76,9 +78,8 @@ public class ConnectionFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		if (!receiver.isTaskNull()) {
-			receiver.cancel();
-		}
+		receiver.cancel();
+		active = false;
 	}
 	
 	public void openSocket() {
@@ -163,10 +164,12 @@ public class ConnectionFragment extends Fragment {
 		btn.setEnabled(!canSend);
 	}
 
-	public class TCPReadTimerTask extends ReceiveTask {
+	public class ConnectionFragmentReceiveTask extends ReceiveTask {
 	    protected void performAction(Received rcv) {
 	    	Log.v(TAG, "Timer fires.");
-	    	updateReceivedField(rcv);
+	    	if (active) {
+	    		updateReceivedField(rcv);
+	    	}
 	    }
 	    
 	    private void updateReceivedField(Received rcv) {
