@@ -21,6 +21,8 @@ public class Messenger {
 	static final String TAG = Messenger.class.getSimpleName();
 	
 	private Socket mSocket;
+	private String ip;
+	private String port;
 	
 	static Messenger mSharedInstance;
 	static ReentrantLock mutex = new ReentrantLock(true);
@@ -34,17 +36,50 @@ public class Messenger {
 	
 	protected Messenger() {
 		mSocket = null;
+		ip = null;
+		port = null;
+	}
+	
+	public synchronized void resetSocket() {
+		if (ip == null || port == null) {
+			Log.e(TAG, "Unable to reset null socket.");
+		} 
+		else if (!isConnected()) {
+			Log.e(TAG, "Cannot reset non-connected socket.");
+		} else {
+			closeSocket();
+			openSocket(ip, port);
+		}
+	}
+	
+	public synchronized void openSocket(String ip, Integer port) {
+		openSocket(ip, port.toString());
 	}
 
-	public synchronized void openSocket(String ip, Integer port) {
+	public synchronized void openSocket(String ip, String port) {
 		// Make sure the socket is not already opened 
 		
 		if (isConnected()) {
 			Log.e(TAG, "Socket already open");
 			return;
 		}
+		this.ip = ip;
+		this.port = port;
 		
-		new SocketConnector().execute(ip, port.toString());
+		new SocketConnector().execute(this.ip, this.port);
+	}
+	
+	public synchronized void closeSocket() {
+		if (isConnected()) {
+			try {
+				mSocket.getOutputStream().close();
+				mSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.v(TAG, "Attempt to close non-open socket.");
+		}
 	}
 	
 	public synchronized boolean isConnected() {
@@ -77,12 +112,12 @@ public class Messenger {
 	private class SocketSender extends AsyncTask<Message, Integer, Void> {
 		@Override
 		protected Void doInBackground(Message... msg) {
-			//mutex.lock();
+			mutex.lock();
 			try {
 				sendMessage(msg[0]);
 			}
 			finally {
-				//mutex.unlock();
+				mutex.unlock();
 			}
 			return null;
 		}	
@@ -116,6 +151,7 @@ public class Messenger {
 			r = task.get(3000, TimeUnit.MILLISECONDS);
 		} catch (TimeoutException e) {
 			Log.e(TAG, "Receive timed out.");
+			resetSocket();
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			Log.e(TAG, "Receive interrupted out.");
@@ -168,19 +204,6 @@ public class Messenger {
 				rcv = new Received(buf);
 			}
 			return rcv;
-		}
-	}
-
-	public synchronized void closeSocket() {
-		if (isConnected()) {
-			try {
-				mSocket.getOutputStream().close();
-				mSocket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			Log.v(TAG, "Attempt to close non-open socket.");
 		}
 	}
 	
