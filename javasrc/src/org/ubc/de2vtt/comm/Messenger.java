@@ -31,12 +31,7 @@ public class Messenger {
 	public static Messenger GetSharedInstance() {
 		if (mSharedInstance == null) {
 			mSharedInstance = new Messenger();
-			SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
-			mSharedInstance.ip = man.getString(ConnectionFragment.SHARED_PREFS_IP, null);
-			mSharedInstance.port = man.getString(ConnectionFragment.SHARED_PREFS_PORT, null);
-			if (mSharedInstance.ip != null && mSharedInstance.port != null) {
-				mSharedInstance.openSocket(mSharedInstance.ip, mSharedInstance.port);
-			}
+			connectWithPrevValues();
 		}
 		return mSharedInstance;
 	}
@@ -45,6 +40,15 @@ public class Messenger {
 		mSocket = null;
 		ip = null;
 		port = null;
+	}
+
+	private static void connectWithPrevValues() {
+		SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
+		mSharedInstance.ip = man.getString(ConnectionFragment.SHARED_PREFS_IP, null);
+		mSharedInstance.port = man.getString(ConnectionFragment.SHARED_PREFS_PORT, null);
+		if (mSharedInstance.ip != null && mSharedInstance.port != null) {
+			mSharedInstance.openSocket(mSharedInstance.ip, mSharedInstance.port);
+		}
 	}
 	
 	public synchronized void resetSocket() {

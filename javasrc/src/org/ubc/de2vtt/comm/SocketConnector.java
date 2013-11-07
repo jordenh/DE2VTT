@@ -27,8 +27,6 @@ public class SocketConnector extends AsyncTask<String, Integer, Socket> {
 
 		try {
 			socket = new Socket();
-			//socket.setReceiveBufferSize(1024);
-			///socket.setSendBufferSize(1024);
 			socket.bind(null);
 			socket.connect(new InetSocketAddress(ip, port), 1500);
 		} catch (UnknownHostException e) {
