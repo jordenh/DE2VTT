@@ -123,7 +123,8 @@ public class SendImageFragment extends Fragment {
 				Message msg = new Message(cmd, bmp);
 				Messenger messenger = Messenger.GetSharedInstance();
 				
-				messenger.sendMessage(msg);
+				messenger.send(msg);
+				updateButtonState();
 			} else {
 				Log.v(TAG, "Attempt to send null bitmap.");
 			}

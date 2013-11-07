@@ -11,7 +11,7 @@ public abstract class ReceiveTask extends TimerTask {
 	}
 	
 	private void getMessage(Messenger messenger) {
-        Received rcv = messenger.recieveMessage();
+        Received rcv = messenger.receive();
         if (rcv != null) {
             performAction(rcv);
         }

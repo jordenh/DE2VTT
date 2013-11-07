@@ -109,6 +109,8 @@ public class ConnectionFragment extends Fragment {
 		String msg = et.getText().toString();
 		
 		mMessenger.sendStringMessage(msg);
+		// TODO: possible change to a rearm
+		receiver = new SingleReceiver(new ConnectionFragmentReceiveTask());
 	}
 	
 	public void closeSocket() {

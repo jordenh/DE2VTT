@@ -43,6 +43,12 @@ public class Received implements Sendable {
 		data = b;
 	}
 	
+	public void set(Received other) {
+		this.cmd = other.cmd;
+		this.data = new byte[other.data.length];
+		System.arraycopy(other.data, 0, this.data, 0, other.data.length);
+	}
+	
 	@Override
 	public byte[] ToByteArray() {
 		return data;
