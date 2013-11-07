@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.ubc.de2vtt.sendables.SendableString;
 
@@ -22,6 +23,7 @@ public class Messenger {
 	private Socket mSocket;
 	
 	static Messenger mSharedInstance;
+	static ReentrantLock mutex = new ReentrantLock(true);
 	
 	public static Messenger GetSharedInstance() {
 		if (mSharedInstance == null) {
@@ -75,28 +77,34 @@ public class Messenger {
 	private class SocketSender extends AsyncTask<Message, Integer, Void> {
 		@Override
 		protected Void doInBackground(Message... msg) {
-			Messenger.GetSharedInstance().sendMessage(msg[0]);
+			//mutex.lock();
+			try {
+				sendMessage(msg[0]);
+			}
+			finally {
+				//mutex.unlock();
+			}
 			return null;
 		}	
-	}
-	
-	private synchronized void sendMessage(Message msg) {		
-		byte buf[] = msg.GetArrayToSend();		
-		if (isConnected()) {
-			try {
-				OutputStream out = mSocket.getOutputStream();
-				Log.v(TAG, "Sending " + buf.length + " bytes.");
+		
+		private void sendMessage(Message msg) {		
+			byte buf[] = msg.GetArrayToSend();		
+			if (isConnected()) {
 				try {
-					out.write(buf, 0, buf.length);
-					Log.v(TAG, "Send complete.");
+					OutputStream out = mSocket.getOutputStream();
+					Log.v(TAG, "Sending " + buf.length + " bytes.");
+					try {
+						out.write(buf, 0, buf.length);
+						Log.v(TAG, "Send complete.");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			} else {
+				Log.v(TAG, "Attempt to send without opening socket.");
 			}
-		} else {
-			Log.v(TAG, "Attempt to send without opening socket.");
 		}
 	}
 	
@@ -119,43 +127,48 @@ public class Messenger {
 		return r;
 	}
 	
-	public synchronized Received receiveMessage() {
-		Received rcv = null;
-		if (isConnected()) {
-
-			try {
-				rcv = getMessage(rcv);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}			
-		} else {
-			Log.v(TAG, "Attempt to receive message from non-open socket.");
-		}
-		return rcv;
-	}
-	
 	private class SocketReceiver extends AsyncTask<Void, Integer, Received> {
 		@Override
 		protected Received doInBackground(Void... i) {
-			Received r = receiveMessage();
+			//mutex.lock();
+			Received r = null;
+			try {
+				r = receiveMessage();
+			}
+			finally {
+				//mutex.unlock();
+			}
 			return r;
 		}
 		
-	}
-
-	private Received getMessage(Received rcv) throws IOException {
-		InputStream in = mSocket.getInputStream();
-
-		// See if any bytes are available from the Middleman
-		int bytes_avail = in.available();
-		if (bytes_avail > 0) {
-			// If so, read them in
-			byte buf[] = new byte[bytes_avail];
-			in.read(buf);
-
-			rcv = new Received(buf);
+		public Received receiveMessage() {
+			Received rcv = null;
+			if (isConnected()) {
+				try {
+					rcv = getMessage(rcv);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}			
+			} else {
+				Log.v(TAG, "Attempt to receive message from non-open socket.");
+			}
+			return rcv;
 		}
-		return rcv;
+		
+		private Received getMessage(Received rcv) throws IOException {
+			InputStream in = mSocket.getInputStream();
+
+			// See if any bytes are available from the Middleman
+			int bytes_avail = in.available();
+			if (bytes_avail > 0) {
+				// If so, read them in
+				byte buf[] = new byte[bytes_avail];
+				in.read(buf);
+
+				rcv = new Received(buf);
+			}
+			return rcv;
+		}
 	}
 
 	public synchronized void closeSocket() {
