@@ -68,6 +68,7 @@ public class SendImageFragment extends Fragment {
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
 			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
+			imageView.setImageResource(0);
 			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         }
     }

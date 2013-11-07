@@ -134,6 +134,9 @@ public class MainActivity extends Activity {
     	fragment.setArguments(args);
 
     	switch (position) {
+    		case 1:
+    			fragment = new MoveTokenFragment();
+    			break;
 	    	case 3:
 	    		fragment = new SendImageFragment();
 	    		break;
