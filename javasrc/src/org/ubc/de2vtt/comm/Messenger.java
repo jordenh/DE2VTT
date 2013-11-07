@@ -5,9 +5,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.ReentrantLock;
 
+import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.sendables.SendableString;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 // Singleton class used to send/receive messages via middleman
@@ -16,91 +22,64 @@ public class Messenger {
 	static final String TAG = Messenger.class.getSimpleName();
 	
 	private Socket mSocket;
+	private String ip;
+	private String port;
 	
 	static Messenger mSharedInstance;
+	static ReentrantLock mutex = new ReentrantLock(true);
 	
 	public static Messenger GetSharedInstance() {
 		if (mSharedInstance == null) {
 			mSharedInstance = new Messenger();
+			connectWithPrevValues();
 		}
 		return mSharedInstance;
 	}
 	
 	protected Messenger() {
 		mSocket = null;
+		ip = null;
+		port = null;
 	}
 
+	private static void connectWithPrevValues() {
+		SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
+		mSharedInstance.ip = man.getString(ConnectionFragment.SHARED_PREFS_IP, null);
+		mSharedInstance.port = man.getString(ConnectionFragment.SHARED_PREFS_PORT, null);
+		if (mSharedInstance.ip != null && mSharedInstance.port != null) {
+			mSharedInstance.openSocket(mSharedInstance.ip, mSharedInstance.port);
+		}
+	}
+	
+	public synchronized void resetSocket() {
+		if (ip == null || port == null) {
+			Log.e(TAG, "Unable to reset null socket.");
+		} 
+		else {
+			if (isConnected()) {
+				closeSocket();
+			}
+			openSocket(ip, port);
+		}
+	}
+	
 	public synchronized void openSocket(String ip, Integer port) {
+		openSocket(ip, port.toString());
+	}
+
+	public synchronized void openSocket(String ip, String port) {
 		// Make sure the socket is not already opened 
 		
 		if (isConnected()) {
 			Log.e(TAG, "Socket already open");
 			return;
 		}
+		this.ip = ip;
+		this.port = port;
 		
-		new SocketConnector().execute(ip, port.toString());
+		new SocketConnector().execute(this.ip, this.port);
 	}
 	
-	public synchronized boolean isConnected() {
-		return mSocket != null && mSocket.isConnected() && !mSocket.isClosed();
-	}
-	
-	public void sendStringMessage(String str) {		
-		SendableString sendStr = new SendableString(str);
-		Message msg = new Message(Command.HANDSHAKE, sendStr);
-
-		sendMessage(msg);
-	}
-
-	public synchronized void sendMessage(Message msg) {		
-		byte buf[] = msg.GetArrayToSend();		
-		if (isConnected()) {
-			try {
-				OutputStream out = mSocket.getOutputStream();
-				
-				try {
-					out.write(buf, 0, buf.length);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			Log.v(TAG, "Attempt to send without opening socket.");
-		}
-	}
-	
-	public synchronized Received recieveMessage() {
-		Received rcv = null;
-		if (isConnected()) {
-
-			try {
-				rcv = getMessage(rcv);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}			
-		} else {
-			Log.v(TAG, "Attempt to receive message from non-open socket.");
-		}
-		return rcv;
-	}
-
-	private Received getMessage(Received rcv) throws IOException {
-		InputStream in = mSocket.getInputStream();
-
-		// See if any bytes are available from the Middleman
-		int bytes_avail = in.available();
-		if (bytes_avail > 0) {
-			// If so, read them in
-			byte buf[] = new byte[bytes_avail];
-			in.read(buf);
-
-			rcv = new Received(buf);
-		}
-		return rcv;
-	}
-
 	public synchronized void closeSocket() {
 		if (isConnected()) {
 			try {
@@ -111,6 +90,154 @@ public class Messenger {
 			}
 		} else {
 			Log.v(TAG, "Attempt to close non-open socket.");
+		}
+	}
+	
+	public synchronized boolean isConnected() {
+		return mSocket != null && mSocket.isConnected() && !mSocket.isClosed();
+	}
+	
+	public void sendStringMessage(String str) {		
+		SendableString sendStr = new SendableString(str);
+		Message msg = new Message(Command.HANDSHAKE, sendStr);
+
+		send(msg);
+	}
+
+	public void send(Message msg) {
+		new SocketSender().execute(msg);
+	}
+
+	private void attemptSendRecovery(Message msg) {
+		SocketSender s;
+		msg.setDelay(1501);
+		s = (SocketSender) new SocketSender().execute(msg);
+		try {
+			s.get(5000, TimeUnit.MILLISECONDS);
+		} catch (Exception ee) {
+			Log.e(TAG, "Double send fail.");
+			ee.printStackTrace();
+		}
+	}
+	
+	private class SocketSender extends AsyncTask<Message, Integer, Void> {
+		@Override
+		protected Void doInBackground(Message... msg) {
+			mutex.lock();
+			try {
+				Thread.sleep(msg[0].getDelay());
+				sendMessage(msg[0]);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			finally {
+				mutex.unlock();
+			}
+			return null;
+		}	
+		
+		private void sendMessage(Message msg) {		
+			byte buf[] = msg.GetArrayToSend();	
+			if (!isConnected()) {
+				resetSocket();
+			}
+			
+			if (isConnected()) {
+				try {
+					OutputStream out = mSocket.getOutputStream();
+					Log.v(TAG, "Sending " + buf.length + " bytes.");
+					try {
+						out.write(buf, 0, buf.length);
+						Log.v(TAG, "Send complete.");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.v(TAG, "Attempt to send without opening socket.");
+			}
+		}
+	}
+	
+	public Received receive() {
+		SocketReceiver task = (SocketReceiver) new SocketReceiver();
+		task.execute();
+		Received r = null;
+		try {
+			r = task.get(3000, TimeUnit.MILLISECONDS);
+		} catch (TimeoutException e) {
+			Log.e(TAG, "Receive timed out.");
+			resetSocket();
+			//r = attemptReceiveRecovery(r);
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			resetSocket();
+			Log.e(TAG, "Receive interrupted out.");
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			resetSocket();
+			Log.e(TAG, "Receive computation mucket up.");
+			e.printStackTrace();
+		}
+		return r;
+	}
+
+	private Received attemptReceiveRecovery(Received r) {
+		SocketReceiver task;
+		task = (SocketReceiver) new SocketReceiver();
+		task.execute();
+		try {
+			r = task.get(3000, TimeUnit.MILLISECONDS);
+		} catch (Exception ee) {
+			Log.e(TAG, "Double recceive fail.");
+			ee.printStackTrace();
+		}
+		return r;
+	}
+	
+	private class SocketReceiver extends AsyncTask<Void, Integer, Received> {
+		@Override
+		protected Received doInBackground(Void... i) {
+			mutex.lock();
+			Received r = null;
+			try {
+				r = receiveMessage();
+			}
+			finally {
+				mutex.unlock();
+			}
+			return r;
+		}
+		
+		public Received receiveMessage() {
+			Received rcv = null;
+			if (isConnected()) {
+				try {
+					rcv = getMessage(rcv);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}			
+			} else {
+				Log.v(TAG, "Attempt to receive message from non-open socket.");
+			}
+			return rcv;
+		}
+		
+		private Received getMessage(Received rcv) throws IOException {
+			InputStream in = mSocket.getInputStream();
+
+			// See if any bytes are available from the Middleman
+			int bytes_avail = in.available();
+			if (bytes_avail > 0) {
+				// If so, read them in
+				byte buf[] = new byte[bytes_avail];
+				in.read(buf);
+
+				rcv = new Received(buf);
+			}
+			return rcv;
 		}
 	}
 	

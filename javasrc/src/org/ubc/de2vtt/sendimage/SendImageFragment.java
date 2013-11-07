@@ -7,6 +7,7 @@ import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.Receiver;
+import org.ubc.de2vtt.comm.SingleReceiver;
 import org.ubc.de2vtt.sendables.SendableBitmap;
 
 import android.app.Activity;
@@ -31,7 +32,7 @@ public class SendImageFragment extends Fragment {
 	
 	protected View mParentView;
 	private Activity mActivity;
-	//private Receiver receiver;
+	private Receiver receiver;
 	
 	private static final int REQUEST_CODE = 1;
     private Bitmap bitmap;
@@ -123,7 +124,9 @@ public class SendImageFragment extends Fragment {
 				Message msg = new Message(cmd, bmp);
 				Messenger messenger = Messenger.GetSharedInstance();
 				
-				messenger.sendMessage(msg);
+				messenger.send(msg);
+				receiver = new SingleReceiver(new SendImageReceiveTask());
+				updateButtonState();
 			} else {
 				Log.v(TAG, "Attempt to send null bitmap.");
 			}
@@ -156,18 +159,19 @@ public class SendImageFragment extends Fragment {
         }
     }
 	
-	private class TCPReadTimerTask extends ReceiveTask {
+	private class SendImageReceiveTask extends ReceiveTask {
 		@Override
 		protected void performAction(Received rcv) {
-			bitmap = rcv.DataToBitmap();
-			
-			mActivity.runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
-					imageView.setImageBitmap(bitmap);
-				}		
-			});
+			Log.v(TAG, "Receive action called.");
+//			bitmap = rcv.DataToBitmap();
+//			
+//			mActivity.runOnUiThread(new Runnable() {
+//				@Override
+//				public void run() {
+//					ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
+//					imageView.setImageBitmap(bitmap);
+//				}		
+//			});
 			
 			//receiver.cancel();
 		}

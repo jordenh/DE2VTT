@@ -1,7 +1,7 @@
 package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.ConnectionFragment;
-
+import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.sendimage.SendImageFragment;
 import org.ubc.de2vtt.movetoken.MoveTokenFragment;
 
@@ -61,7 +61,9 @@ public class MainActivity extends Activity {
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-
+        
+        // Attempt to connect
+        Messenger.GetSharedInstance();
     }
 
 	private void setupDrawerToggle() {
