@@ -1,10 +1,8 @@
 package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.ConnectionFragment;
-<<<<<<< HEAD
+
 //import org.ubc.de2vtt.tabletop.TableTopFragment;
-=======
->>>>>>> 5b7b8f63ce93c61504f7f2000aea9a9cf6d28f8a
 import org.ubc.de2vtt.sendimage.SendImageFragment;
 
 import android.os.Bundle;
@@ -135,7 +133,6 @@ public class MainActivity extends Activity {
     	Fragment fragment = new PlaceholderFragment();
     	Bundle args = new Bundle();
     	fragment.setArguments(args);
-<<<<<<< HEAD
     	
     	switch (position) {
     	case 0:
@@ -147,16 +144,6 @@ public class MainActivity extends Activity {
     	case 3:
     		fragment = new ConnectionFragment();
     		break;
-=======
-
-    	switch (position) {
-	    	case 2:
-	    		fragment = new SendImageFragment();
-	    		break;
-	    	case 3:
-	    		fragment = new ConnectionFragment();
-	    		break;
->>>>>>> 5b7b8f63ce93c61504f7f2000aea9a9cf6d28f8a
     	}
    
     	FragmentManager fragmentManager = getFragmentManager();

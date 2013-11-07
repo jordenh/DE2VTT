@@ -6,6 +6,7 @@ int connUserIDs[5] = {0,0,0,0,0};
 FILE* uart;
 
 void setupMessage(void) {
+
 	//printf("UART Initialization\n");
 	uart = fopen("/dev/uart_0", "r+"); //should set to RS232_0_NAME
 
@@ -13,9 +14,15 @@ void setupMessage(void) {
 		printf("ERROR - uart not opened properly");
 	}
 
+	fputc((unsigned char) 0, uart);
+	fputc((unsigned char) 0, uart);
+	fputc((unsigned char) 0, uart);
+	fputc((unsigned char) 0, uart);
+	fputc((unsigned char) 7, uart);
+
 	//clear buffer:
 	char c;
-	while((c = fgetc(uart)) != '\n' && c != EOF);
+	//while((c = fgetc(uart)) != '\n' && c != EOF);
 
 	printf("I'm escaping! yay\n");
 }
@@ -67,7 +74,7 @@ message getMessage(void){
 	//obtain length
 	for(i = ((sizeof(msgLen) / sizeof(msgLen[0])) - 1); i >= 0; i--) {
 		msgLen[i] = fgetc(uart);
-		inMsg.len += (0xF & msgLen[i]) << i*8;//pow(256,((sizeof(msgLen) / sizeof(msgLen[0])) - 1 - i)) * (int) msgLen[i];
+		inMsg.len += (0xFF & msgLen[i]) << i*8;//pow(256,((sizeof(msgLen) / sizeof(msgLen[0])) - 1 - i)) * (int) msgLen[i];
 	}
 
 	printf("About to receive %d characters:\n", inMsg.len);
@@ -94,7 +101,8 @@ void sendMessage(message sendMsg){
 	int i;
 	unsigned char msgLen[4];
 
-	if(sendMsg.buffer == NULL){
+	if(sendMsg.buffer == NULL || uart == NULL){
+		printf("Error in sendMessage, buffer or uart is null!");
 		return;
 	}
 
@@ -106,7 +114,7 @@ void sendMessage(message sendMsg){
 	// Start with the number of bytes in our message
 	for(i = ((sizeof(msgLen) / sizeof(msgLen[0])) - 1); i >= 0; i--) {
 		//msgLen[i] = (int)(sendMsg.len / pow(256,((sizeof(msgLen) / sizeof(msgLen[0])) - 1 - i))) % 256;
-		msgLen[i] = (sendMsg.len  >> i*8) & (0xF);
+		msgLen[i] = (sendMsg.len  >> i*8) & (0xFF);
 		printf("msgLen[i] = %d\n", msgLen[i]);
 		fputc(msgLen[i], uart);
 	}

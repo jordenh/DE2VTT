@@ -2,6 +2,8 @@
 
 message interMsg;
 
+extern FILE* uart;
+
 void handleKeyInput(void){
 	static char keyInput;
 	static short int edgeDetect0 = 0;
@@ -65,6 +67,8 @@ void handleKeyInput(void){
 		edgeDetect3 = 1;
 	} else if (key3 && (edgeDetect3 == 1)) {
 		edgeDetect3 = 0;
+		printf("printing in key3 to ser\n");
+		fputc((unsigned char) 1, uart);
 	}
 }
 

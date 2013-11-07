@@ -1,3 +1,82 @@
+/*#include <stdio.h>
+#include <stdlib.h>
+#include<string.h>
+#include "audio.h"
+#include "timer.h"
+#include "sd_card.h"
+#include "vga.h"
+#include "bmp.h"
+#include "input.h"
+#include "io.h"
+#include "system.h"
+#include "altera_nios2_qsys_irq.h"
+#include "sys/alt_irq.h"
+
+int init(void) {
+	if (openSdCard() == -1) {
+		printf("Error: Failed to open sd card\n");
+		return -1;
+	} else {
+		printf("Opened SD card\n");
+	}
+
+	initVga();
+	//parseBmps();
+	//setupAudio();
+
+	initHardwareTimer();
+
+	return 0;
+}
+
+int main() {
+	int length;
+	char* msg = "0Detected the character 't'.\n";
+	FILE* fp;
+	char cmd[128];
+
+	fp = fopen ("/dev/uart_0", "r+"); //Open file for reading and writing
+
+	if (fp)
+	{
+		fputc(strlen(msg), fp);
+		fwrite (msg, strlen(msg), 1, fp);
+
+		while(1) {
+			length = (int) fgetc(fp);
+			fread(cmd, length, 1, fp);
+			printf("%s", cmd);
+		}
+
+		fclose (fp);
+	}
+	//***********************************
+
+	return;
+	if (init() == -1)
+		return -1;
+
+	startHardwareTimer();
+
+	// main game loop;
+	while (1) {
+		if (hasHardwareTimerExpired() == 1) {
+			startHardwareTimer();
+
+			handleKeyInput();
+			handleSwitchInput();
+
+
+			playEpicMusic();
+		}
+	}
+
+	return 0;
+}
+
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "audio.h"
@@ -82,8 +161,8 @@ int main() {
 	printf("\n");
 	printf("Message Echo Complete\n");
 
-	//***********************************
-	 */
+	// ***********************************
+	*/
 
 	if (init() == -1)
 		return -1;
