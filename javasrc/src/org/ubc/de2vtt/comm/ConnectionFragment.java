@@ -17,7 +17,8 @@ import android.widget.EditText;
 
 public class ConnectionFragment extends Fragment {
 	private static final String TAG = ConnectionFragment.class.getSimpleName();
-	private static final String SHARED_PREFS_IP = "ip";	
+	public static final String SHARED_PREFS_IP = "ip";	
+	public static final String SHARED_PREFS_PORT = "port";
 	
 	private View mParentView;
 	private Activity mActivity;
@@ -31,6 +32,7 @@ public class ConnectionFragment extends Fragment {
 		
 		SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
 		setConnectToIP(man.getString(SHARED_PREFS_IP, "0.0.0.0"));
+		setConnectToPort(man.getString(SHARED_PREFS_PORT, "50002"));
 		
 		setupOnClickListeners();
 		
@@ -89,6 +91,7 @@ public class ConnectionFragment extends Fragment {
 		mMessenger.openSocket(ip, port);
 		SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
 		man.putString(SHARED_PREFS_IP, ip);
+		man.putString(SHARED_PREFS_PORT, port.toString());
 		
 		final Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
@@ -144,6 +147,11 @@ public class ConnectionFragment extends Fragment {
 		et.setText(nums[2]);
 		et = (EditText) mParentView.findViewById(R.id.ip4);
 		et.setText(nums[3]);
+	}
+	
+	private void setConnectToPort(String port) {
+		EditText et = (EditText) mParentView.findViewById(R.id.port);
+		et.setText(port);
 	}
 	
 	public Integer getConnectToPort() {

@@ -10,6 +10,7 @@ public class Message {
 	private Command cmd; 
 	private Sendable send;
 	private Direction dir;
+	private int delay = 0;
 	
 	public Message(Command cmd, Sendable send) {
 		this.cmd = cmd;
@@ -42,6 +43,14 @@ public class Message {
 	
 	public Direction GetDirection() {
 		return dir;
+	}
+	
+	public void setDelay(int d) {
+		delay = d;
+	}
+	
+	public int getDelay() {
+		return delay;
 	}
 	
 	public enum Direction {

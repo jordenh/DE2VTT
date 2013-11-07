@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.sendables.SendableString;
 
 import android.os.AsyncTask;
@@ -30,6 +31,12 @@ public class Messenger {
 	public static Messenger GetSharedInstance() {
 		if (mSharedInstance == null) {
 			mSharedInstance = new Messenger();
+			SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
+			mSharedInstance.ip = man.getString(ConnectionFragment.SHARED_PREFS_IP, null);
+			mSharedInstance.port = man.getString(ConnectionFragment.SHARED_PREFS_PORT, null);
+			if (mSharedInstance.ip != null && mSharedInstance.port != null) {
+				mSharedInstance.openSocket(mSharedInstance.ip, mSharedInstance.port);
+			}
 		}
 		return mSharedInstance;
 	}
@@ -44,10 +51,10 @@ public class Messenger {
 		if (ip == null || port == null) {
 			Log.e(TAG, "Unable to reset null socket.");
 		} 
-		else if (!isConnected()) {
-			Log.e(TAG, "Cannot reset non-connected socket.");
-		} else {
-			closeSocket();
+		else {
+			if (isConnected()) {
+				closeSocket();
+			}
 			openSocket(ip, port);
 		}
 	}
@@ -95,18 +102,18 @@ public class Messenger {
 
 	public void send(Message msg) {
 		new SocketSender().execute(msg);
-//		try {
-//			s.get(5000, TimeUnit.MILLISECONDS);
-//		} catch (InterruptedException e) {
-//			closeSocket();
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			closeSocket();
-//			e.printStackTrace();
-//		} catch (TimeoutException e) {
-//			closeSocket();
-//			e.printStackTrace();
-//		}
+	}
+
+	private void attemptSendRecovery(Message msg) {
+		SocketSender s;
+		msg.setDelay(1501);
+		s = (SocketSender) new SocketSender().execute(msg);
+		try {
+			s.get(5000, TimeUnit.MILLISECONDS);
+		} catch (Exception ee) {
+			Log.e(TAG, "Double send fail.");
+			ee.printStackTrace();
+		}
 	}
 	
 	private class SocketSender extends AsyncTask<Message, Integer, Void> {
@@ -114,7 +121,10 @@ public class Messenger {
 		protected Void doInBackground(Message... msg) {
 			mutex.lock();
 			try {
+				Thread.sleep(msg[0].getDelay());
 				sendMessage(msg[0]);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			finally {
 				mutex.unlock();
@@ -123,7 +133,11 @@ public class Messenger {
 		}	
 		
 		private void sendMessage(Message msg) {		
-			byte buf[] = msg.GetArrayToSend();		
+			byte buf[] = msg.GetArrayToSend();	
+			if (!isConnected()) {
+				resetSocket();
+			}
+			
 			if (isConnected()) {
 				try {
 					OutputStream out = mSocket.getOutputStream();
@@ -152,13 +166,29 @@ public class Messenger {
 		} catch (TimeoutException e) {
 			Log.e(TAG, "Receive timed out.");
 			resetSocket();
+			//r = attemptReceiveRecovery(r);
 			e.printStackTrace();
 		} catch (InterruptedException e) {
+			resetSocket();
 			Log.e(TAG, "Receive interrupted out.");
 			e.printStackTrace();
 		} catch (ExecutionException e) {
+			resetSocket();
 			Log.e(TAG, "Receive computation mucket up.");
 			e.printStackTrace();
+		}
+		return r;
+	}
+
+	private Received attemptReceiveRecovery(Received r) {
+		SocketReceiver task;
+		task = (SocketReceiver) new SocketReceiver();
+		task.execute();
+		try {
+			r = task.get(3000, TimeUnit.MILLISECONDS);
+		} catch (Exception ee) {
+			Log.e(TAG, "Double recceive fail.");
+			ee.printStackTrace();
 		}
 		return r;
 	}
@@ -166,13 +196,13 @@ public class Messenger {
 	private class SocketReceiver extends AsyncTask<Void, Integer, Received> {
 		@Override
 		protected Received doInBackground(Void... i) {
-			//mutex.lock();
+			mutex.lock();
 			Received r = null;
 			try {
 				r = receiveMessage();
 			}
 			finally {
-				//mutex.unlock();
+				mutex.unlock();
 			}
 			return r;
 		}
