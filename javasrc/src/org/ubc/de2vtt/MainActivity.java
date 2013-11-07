@@ -1,6 +1,7 @@
 package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.ConnectionFragment;
+
 import org.ubc.de2vtt.sendimage.SendImageFragment;
 import org.ubc.de2vtt.movetoken.MoveTokenFragment;
 
@@ -132,7 +133,7 @@ public class MainActivity extends Activity {
     	Fragment fragment = new PlaceholderFragment();
     	Bundle args = new Bundle();
     	fragment.setArguments(args);
-
+    	
     	switch (position) {
     		case 1:
     			fragment = new MoveTokenFragment();

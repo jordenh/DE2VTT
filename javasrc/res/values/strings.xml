@@ -26,4 +26,9 @@
     <string name="tabel_send">Message to Send:</string>
     <string name="send_button">Send Message</string>
     <string name="label_disconnect">Disconnect</string>
+    
+    <!-- Send Image Fragment -->
+    <string name="pick_image">Select Image</string>
+    <string name="send_token">Send Token</string>
+    <string name="send_map">Send Map</string>
 </resources>
