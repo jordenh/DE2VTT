@@ -7,14 +7,19 @@
 
     <string-array name="app_drawer_array">
         <item>Tabletop</item>
+        <item>Tokens</item>
         <item>Game Config</item>
         <item>Send Image</item>
         <item>Connection</item>
     </string-array>
-    
+
     <string name="drawer_close">close drawer</string>
     <string name="drawer_open">open drawer</string>
     
+    <string name="button_save">Save</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_edit">Edit</string>
+
     <!-- Connection Fragment -->
     <string name="connect">Connect</string>
     <string name="label_port">Port</string>
@@ -25,9 +30,14 @@
     <string name="tabel_send">Message to Send:</string>
     <string name="send_button">Send Message</string>
     <string name="label_disconnect">Disconnect</string>
-    
+
     <!-- Send Image Fragment -->
     <string name="pick_image">Select Image</string>
     <string name="send_token">Send Token</string>
     <string name="send_map">Send Map</string>
+    
+    <!-- Token Activity -->
+    <string name="title_activity_token">Token Settings</string>
+    <string name="view_tabletop">View on Tabletop</string>
+
 </resources>
