@@ -50,6 +50,14 @@ public class Received implements Sendable {
 		System.arraycopy(other.data, 0, this.data, 0, other.data.length);
 	}
 	
+	public byte[] getData() {
+		return data;
+	}
+	
+	public Command getCommand() {
+		return cmd;
+	}
+	
 	@Override
 	public byte[] ToByteArray() {
 		return data;
