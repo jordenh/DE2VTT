@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 
 import org.ubc.de2vtt.sendables.Sendable;
 
+import android.util.Log;
+
 public class Message {
 	private static String TAG = Message.class.getSimpleName();
 	
@@ -26,7 +28,14 @@ public class Message {
 	
 	public byte[] GetArrayToSend() {
 		byte[] args = send.ToByteArray();
-		byte[] ret = new byte[args.length + 5];
+		int sendLen = args.length + 5;
+		//int neededSize = 1024 - (sendLen % 1024);
+		
+		byte[] ret = new byte[sendLen];
+		
+//		if (ret.length % 1024 != 0) {
+//			Log.e(TAG, "Incorrect buff size.");
+//		}
 		
 		// bytes 0-3 are length of command data
 		byte lenBuf[] = ByteBuffer.allocate(4).putInt(args.length).array();
