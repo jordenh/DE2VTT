@@ -1,6 +1,9 @@
 
 #include "command.h"
 
+extern BMP * tokenArr;
+extern int loadedTokenCnt;
+
 int nopTest(void) {
 
 	printf("FML");
@@ -26,7 +29,16 @@ int executeCmd(msg * currentMsg) {
 
 		break;
 	case SEND_TOKEN:
-		receiveToken(currentMsg->buffer);
+		if(loadedTokenCnt < MAX_TOKENS){
+			receiveToken((char *)currentMsg->buffer, &tokenArr[loadedTokenCnt]);
+			loadedTokenCnt++;
+		} else {
+			printf("Error when Android sending token!\n");
+			return -1;
+		}
+
+		drawBmp(&tokenArr[loadedTokenCnt-1], 0, 0);
+
 		break;
 	case GET_DM:
 

@@ -52,4 +52,9 @@ void freeSplash();
 void drawBmp(BMP *bmp, int x, int y);
 void eraseBmp(BMP *bmp, int x, int y);
 
+void receiveToken (char *buffer, BMP *bmp);
+unsigned char readByteChar(char * buffer);
+short int readWordChar(char * buffer);
+int readDWordChar(char * buffer);
+
 #endif

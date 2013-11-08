@@ -1,11 +1,15 @@
 #include "bmp.h"
 
-BMP tokenArr[100];
+#define MAX_TOKENS 100
+BMP tokenArr[MAX_TOKENS];
+int loadedTokenCnt = 0;
 
 void initTokenArr(void) {
-	for(i = 0; i < 100; i++) {
-
+	int i;
+	for(i = 0; i < MAX_TOKENS; i++) {
+		free(tokenArr[i].color);
 	}
+	loadedTokenCnt = 0;
 }
 
 void parseBmp (char *fileName, BMP *bmp) {
@@ -64,31 +68,47 @@ void parseBmp (char *fileName, BMP *bmp) {
 	closeFile(fh);
 }
 
-void convertToBMP (char *buffer, BMP *bmp) {
+
+//TBD
+void receiveToken (char *buffer, BMP *bmp) {
 	int i, j, k;
 	char b, g, r;
 	int pixels, rowOffset, offset;
 	short int fh;
 
-	fh = openFile(fileName);
+	bmp->header.type = readWordChar(buffer);
+	buffer += 2;
+	bmp->header.size = readDWordChar(buffer);
+	buffer += 4;
+	bmp->header.reserved1 = readWordChar(buffer);
+	buffer += 2;
+	bmp->header.reserved2 = readWordChar(buffer);
+	buffer += 2;
+	bmp->header.offset = readDWordChar(buffer);
+	buffer += 4;
 
-	bmp->header.type = readWord(fh);
-	bmp->header.size = readDWord(fh);
-	bmp->header.reserved1 = readWord(fh);
-	bmp->header.reserved2 = readWord(fh);
-	bmp->header.offset = readDWord(fh);
-
-	bmp->infoheader.size = readDWord(fh);
-	bmp->infoheader.width = readDWord(fh);
-	bmp->infoheader.height = readDWord(fh);
-	bmp->infoheader.planes = readWord(fh);
-	bmp->infoheader.bits = readWord(fh);
-	bmp->infoheader.compression = readDWord(fh);
-	bmp->infoheader.imagesize = readDWord(fh);
-	bmp->infoheader.xresolution = readDWord(fh);
-	bmp->infoheader.yresolution = readDWord(fh);
-	bmp->infoheader.ncolors = readDWord(fh);
-	bmp->infoheader.importantcolors = readDWord(fh);
+	bmp->infoheader.size = readDWordChar(buffer);
+	buffer += 4;
+	bmp->infoheader.width = readDWordChar(buffer);
+	buffer += 4;
+	bmp->infoheader.height = readDWordChar(buffer);
+	buffer += 4;
+	bmp->infoheader.planes = readWordChar(buffer);
+	buffer += 2;
+	bmp->infoheader.bits = readWordChar(buffer);
+	buffer += 2;
+	bmp->infoheader.compression = readDWordChar(buffer);
+	buffer += 4;
+	bmp->infoheader.imagesize = readDWordChar(buffer);
+	buffer += 4;
+	bmp->infoheader.xresolution = readDWordChar(buffer);
+	buffer += 4;
+	bmp->infoheader.yresolution = readDWordChar(buffer);
+	buffer += 4;
+	bmp->infoheader.ncolors = readDWordChar(buffer);
+	buffer += 4;
+	bmp->infoheader.importantcolors = readDWordChar(buffer);
+	buffer += 4;
 
 	pixels = bmp->infoheader.width * bmp->infoheader.height;
 	bmp->color = malloc(BYTES_PER_PIXEL * pixels);
@@ -98,9 +118,9 @@ void convertToBMP (char *buffer, BMP *bmp) {
 		for(j = 0; j < bmp->infoheader.width; j++ ){
 			offset = pixels - rowOffset - j - 1;
 
-			b = (readByte(fh) & 0xF1) >> 3;
-			g = (readByte(fh) & 0xFC) >> 2;
-			r = (readByte(fh) & 0xF1) >> 3;
+			b = (readByteChar(buffer++) & 0xF1) >> 3;
+			g = (readByteChar(buffer++) & 0xFC) >> 2;
+			r = (readByteChar(buffer++) & 0xF1) >> 3;
 
 			//Filter out the pink pixels
 			if(b == 0x1E && g == 0 && r == 0x1E) {
@@ -112,12 +132,36 @@ void convertToBMP (char *buffer, BMP *bmp) {
 
 		if((BYTES_PER_PIXEL*bmp->infoheader.width) % 4 != 0) {
 			for (k = 0; k <  (4 - ((BYTES_PER_PIXEL*bmp->infoheader.width) % 4)); k++) {
-				readByte(fh);
+				readByteChar(buffer++);
 			}
 		}
 	}
 
 	closeFile(fh);
+}
+
+unsigned char readByteChar(char * buffer) {
+	return *buffer;
+}
+
+short int readWordChar(char * buffer) {
+	short int byte1, byte2;
+
+	byte1 = (short int)(*buffer);
+	byte2 = (short int)(*(buffer+1));
+
+	return ((unsigned short int)byte1 << 8) | ((unsigned short int)byte2 & 0x00FF);
+}
+
+int readDWordChar(char * buffer) {
+	short int byte1, byte2, byte3, byte4;
+
+	byte1 = (short int)(*buffer);
+	byte2 = (short int)(*(buffer+1));
+	byte3 = (short int)(*(buffer+2));
+	byte4 = (short int)(*(buffer+3));
+
+	return ((unsigned short int)byte1 << 24) | ((unsigned short int)byte2 << 16) | ((unsigned short int)byte3 << 8) | (unsigned short int)byte4;
 }
 
 
