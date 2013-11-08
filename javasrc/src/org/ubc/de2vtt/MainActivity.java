@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -32,6 +33,10 @@ public class MainActivity extends Activity {
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //int fragment = getIntent().getExtras().getInt("fragment_sel");
+        //Toast.makeText(MainActivity.this, "" + fragment, Toast.LENGTH_SHORT).show();
+    	
         super.onCreate(savedInstanceState);
         mTitle = "WING";
         
@@ -61,6 +66,8 @@ public class MainActivity extends Activity {
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+        
+       // switchFragment(fragment);
         
         // Attempt to connect
         Messenger.GetSharedInstance();
@@ -127,11 +134,11 @@ public class MainActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			selectItem(position);
+			switchFragment(position);
 		}
     }
     
-    private void selectItem(int position) {
+    public void switchFragment(int position) {
     	Fragment fragment = new PlaceholderFragment();
     	Bundle args = new Bundle();
     	fragment.setArguments(args);
