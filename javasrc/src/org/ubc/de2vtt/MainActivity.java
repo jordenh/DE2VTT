@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
         mContext = getApplicationContext();
         
         mDrawerItems = getResources().getStringArray(R.array.app_drawer_array);
-        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.linear_layout);
         mDrawerList = (ListView)findViewById(R.id.left_drawer);
         
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,

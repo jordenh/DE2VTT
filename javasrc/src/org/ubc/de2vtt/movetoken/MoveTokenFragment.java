@@ -62,7 +62,7 @@ public class MoveTokenFragment extends Fragment {
 		    	String[] drawerItems;
 		    	
 		    	drawerItems = getResources().getStringArray(R.array.app_drawer_array);
-		        drawerLayout = (DrawerLayout)mActivity.findViewById(R.id.drawer_layout);
+		        drawerLayout = (DrawerLayout)mActivity.findViewById(R.id.linear_layout);
 		        drawerList = (ListView)mActivity.findViewById(R.id.left_drawer);
 		    	
 		    	drawerList.setItemChecked(0, true);

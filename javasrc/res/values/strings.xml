@@ -15,6 +15,10 @@
 
     <string name="drawer_close">close drawer</string>
     <string name="drawer_open">open drawer</string>
+    
+    <string name="button_save">Save</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_edit">Edit</string>
 
     <!-- Connection Fragment -->
     <string name="connect">Connect</string>
@@ -34,5 +38,6 @@
     
     <!-- Token Activity -->
     <string name="title_activity_token">Token Settings</string>
+    <string name="view_tabletop">View on Tabletop</string>
 
 </resources>
