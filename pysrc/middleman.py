@@ -7,10 +7,11 @@ import socket
 import signal
 import queue
 import threading
+import time
 
 HOST = ''
 PORT = 50002
-BUFF = 1024
+BUFF = 65536
 
 def open_serial():
     if 'linux' in sys.platform:
@@ -45,7 +46,6 @@ def serial_loopback():
         print("length: ", ord(length))
         data = ser.read(ord(length))
         print(data.decode())
-        ser.write(data)
 
 def tcp_loopback():
     print("Host ip addr:")
@@ -60,10 +60,13 @@ def tcp_loopback():
     conn, addr = sock.accept()
 
     while True:
+        #time.sleep(0.1)
         data = conn.recv(BUFF)
         if not data: break
-        print("received data: ", data)
-        conn.send(data)
+        #print("received data: ", data)
+        print("received data length: ", len(data))
+        sent = conn.send(data)
+        print("sent length: ", sent)
 
 def tcp_serial():
     conn_id = 0

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.TimerTask;
+import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -148,6 +149,7 @@ public class Messenger {
 					Log.v(TAG, "Sending " + buf.length + " bytes.");
 					try {
 						out.write(buf, 0, buf.length);
+						out.flush();
 						Log.v(TAG, "Send complete.");
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -227,7 +229,8 @@ public class Messenger {
 		
 		private Received getMessage(Received rcv) throws IOException {
 			InputStream in = mSocket.getInputStream();
-
+			Vector<byte []> data = new Vector<byte[]>();
+			
 			// See if any bytes are available from the Middleman
 			int bytes_avail = in.available();
 			if (bytes_avail > 0) {
@@ -235,7 +238,37 @@ public class Messenger {
 				byte buf[] = new byte[bytes_avail];
 				in.read(buf);
 
-				rcv = new Received(buf);
+				data.add(buf);
+//				try {
+//					Thread.sleep(500);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+				//in.close();
+				in = mSocket.getInputStream();
+				bytes_avail = in.available();
+			}
+			
+			Log.v(TAG, "Received " + data.size() + " chunks.");
+			
+			int totalLen = 0;
+			for (int i = 0; i < data.size(); i++) {
+				totalLen += data.get(i).length;
+			}
+			
+			byte [] args = new byte[totalLen];
+			int cursor = 0;
+			for (int i = 0; i < data.size(); i++) {
+				byte [] partial = data.get(i);
+				System.arraycopy(partial, 0, args, cursor, partial.length);
+				cursor += partial.length;
+			}
+			
+			Log.v(TAG, "Total size is " + args.length);
+			
+			if (args.length > 4) {
+				rcv = new Received(args);
 			}
 			return rcv;
 		}

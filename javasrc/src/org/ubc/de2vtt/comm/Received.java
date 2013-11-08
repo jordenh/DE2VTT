@@ -2,14 +2,10 @@ package org.ubc.de2vtt.comm;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.security.InvalidParameterException;
-
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import org.ubc.de2vtt.exceptions.NotImplementedException;
-import org.ubc.de2vtt.exceptions.ReceivedLengthMismatchException;
 import org.ubc.de2vtt.sendables.Sendable;
 
 public class Received implements Sendable {
@@ -19,23 +15,27 @@ public class Received implements Sendable {
 	private Command cmd;
 	
 	public Received(byte[] recvBuf) {
-		Command cmd = Command.Convert(recvBuf[4]);
-		
-		byte [] intBuffer = new byte[4];
-		System.arraycopy(recvBuf, 0, intBuffer, 0, intBuffer.length);
-		ByteBuffer bb = ByteBuffer.wrap(intBuffer);
-		int length = bb.getInt();
-		
-		byte [] args = new byte[recvBuf.length - 5];
-		System.arraycopy(recvBuf, 5, args, 0, args.length);
-		
-		if (length != args.length) {
-			//throw new ReceivedLengthMismatchException();
-			Log.e(TAG, "Received length mismatch wanted: " + length + " got: " + args.length);
+		if (recvBuf.length > 4) {
+			Command cmd = Command.Convert(recvBuf[4]);
+			
+			byte [] intBuffer = new byte[4];
+			System.arraycopy(recvBuf, 0, intBuffer, 0, intBuffer.length);
+			ByteBuffer bb = ByteBuffer.wrap(intBuffer);
+			int length = bb.getInt();
+			
+			byte [] args = new byte[recvBuf.length - 5];
+			System.arraycopy(recvBuf, 5, args, 0, args.length);
+			
+			if (length != args.length) {
+				//throw new ReceivedLengthMismatchException();
+				Log.e(TAG, "Received length mismatch wanted: " + length + " got: " + args.length);
+			}
+			
+			this.cmd = cmd;
+			this.data = args;
+		} else {
+			Log.e(TAG, "Reveived buffer too small.");
 		}
-		
-		this.cmd = cmd;
-		this.data = args;
 	}
 	
 	public Received(Command c, byte[] b) {
