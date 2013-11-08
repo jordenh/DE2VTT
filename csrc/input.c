@@ -1,6 +1,6 @@
 #include "input.h"
 
-msg * interMsg;
+msg interMsg;
 
 extern FILE* uart;
 
@@ -33,10 +33,10 @@ void handleKeyInput(void){
 
 	} else if (key0 && (edgeDetect0 == 1)) {
 		edgeDetect0 = 0;
-		if(interMsg->buffer == NULL) {
-			free(interMsg->buffer);
+		if(interMsg.buffer == NULL) {
+			free(interMsg.buffer);
 		}
-		interMsg = getMessage();
+		interMsg = *getMessage();
 	}
 
 	if (!key1 && (edgeDetect1 == 0)) {
@@ -51,8 +51,8 @@ void handleKeyInput(void){
 	//	interMsg.buffer = "hello";
 
 
-		if(interMsg->buffer != NULL) {
-			sendMessage(interMsg);
+		if(interMsg.buffer != NULL) {
+			sendMessage(&interMsg);
 		}
 	}
 

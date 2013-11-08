@@ -50,15 +50,17 @@ unsigned int storeNewID(int ID) {
 msg * getMessage(void){
 	int i;
 	unsigned char msgLen[4];
-	msg * inMsg;
+	msg * inMsg = malloc(sizeof(msg));
 	inMsg->len = 0;
 
 	//while (fgetc(uart) == 0) {}; // TBD - have this step time out. -- Probably need to
 	//remove this line, since steven's middleman uart likely isnt passing 0's constatnly
 
 	//obtain android ID
-	inMsg->androidID = (int) fgetc(uart);
-	printf("I got msg from ID %d", inMsg->androidID);
+	do {
+		inMsg->androidID = (int) fgetc(uart);
+	} while(inMsg->androidID == EOF || inMsg->androidID == '\n');
+	printf("I got msg from ID %d\n", inMsg->androidID);
 
 	if(isIDSaved(inMsg) == 0) {
 		if (storeNewID(inMsg->androidID)  == 0)
@@ -68,7 +70,8 @@ msg * getMessage(void){
 	//obtain length
 	for(i = ((sizeof(msgLen) / sizeof(msgLen[0])) - 1); i >= 0; i--) {
 		msgLen[i] = fgetc(uart);
-		inMsg->len += (0xFF & msgLen[i]) << i*8;//pow(256,((sizeof(msgLen) / sizeof(msgLen[0])) - 1 - i)) * (int) msgLen[i];
+		printf("received: msgLen[i] %d\n", msgLen[i]);
+		inMsg->len += (0xFF & msgLen[i]) << i*8;
 	}
 
 	printf("About to receive %d characters:\n", inMsg->len);

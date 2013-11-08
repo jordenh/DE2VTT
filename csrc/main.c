@@ -7,6 +7,7 @@
 #include "bmp.h"
 #include "input.h"
 #include "message.h"
+#include "command.h"
 #include "io.h"
 #include "system.h"
 #include "altera_nios2_qsys_irq.h"
@@ -33,7 +34,7 @@ int init(void) {
 }
 
 int main() {
-	msg * msg_m;
+	msg * msg_m = malloc(sizeof(msg));
 	int statusInt;
 
 	if (init() == -1)
@@ -47,9 +48,13 @@ int main() {
 		//execute command
 		if(msg_m->buffer != NULL) {
 			free(msg_m->buffer);
+			msg_m->buffer = NULL;
 		}
+		printf("Obtaining message\n");
 		msg_m = getMessage();
+		printf("Executing message command\n");
 		statusInt = executeCmd(msg_m);
+		printf("Completed message command\n");
 
 		if(statusInt == -1) {
 			printf("error occured in executing Command.\n");

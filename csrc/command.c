@@ -9,33 +9,37 @@ int nopTest(void) {
 }
 
 int executeCmd(msg * currentMsg) {
+	if(currentMsg == NULL) {
+		return -1;
+	}
+
 	unsigned int nextCmd = currentMsg->cmd;//cmdInt;
 
 	switch ((command)nextCmd) {
 	case CONNECT:
-			break;
 
+		break;
 	case DISCONNECT:
-			break;
 
+		break;
 	case SEND_MAP:
 
-			break;
+		break;
 	case SEND_TOKEN:
-
-			break;
+		receiveToken(currentMsg->buffer);
+		break;
 	case GET_DM:
 
-			break;
+		break;
 	case RELEASE_DM:
 
-			break;
+		break;
 	case MOVE_TOKEN:
 
-			break;
+		break;
 	case HANDSHAKE:
-
-			break;
+		sendMessage(currentMsg);
+		break;
 	}
 
 	return 0;
