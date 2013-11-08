@@ -12,7 +12,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.ubc.de2vtt.SharedPreferencesManager;
-import org.ubc.de2vtt.sendables.SendableString;
+import org.ubc.de2vtt.comm.sendables.SendableString;
+import org.ubc.de2vtt.fragments.ConnectionFragment;
 
 import android.os.AsyncTask;
 import android.util.Log;

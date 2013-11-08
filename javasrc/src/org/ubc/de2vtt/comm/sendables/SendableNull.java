@@ -1,4 +1,4 @@
-package org.ubc.de2vtt.sendables;
+package org.ubc.de2vtt.comm.sendables;
 
 public class SendableNull implements Sendable {
 	// This is a sendable object for commands that do not require arguments

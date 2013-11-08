@@ -2,11 +2,12 @@ package org.ubc.de2vtt.comm;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import org.ubc.de2vtt.comm.sendables.Sendable;
 import org.ubc.de2vtt.exceptions.NotImplementedException;
-import org.ubc.de2vtt.sendables.Sendable;
 
 public class Received implements Sendable {
 	private static final String TAG = Received.class.getSimpleName();
@@ -67,6 +68,7 @@ public class Received implements Sendable {
 	
 	public Bitmap DataToBitmap() {
 		throw new NotImplementedException();
+		// if this needs to be done it should be done on a background thread
 		
 //		if (cmd == Command.SEND_MAP || cmd == Command.SEND_TOKEN) {
 //			// WARNING: this expects a compressed bmp, which is not what we will get

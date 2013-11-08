@@ -1,4 +1,4 @@
-package org.ubc.de2vtt;
+package org.ubc.de2vtt.fragments;
 
 import android.app.Fragment;
 
