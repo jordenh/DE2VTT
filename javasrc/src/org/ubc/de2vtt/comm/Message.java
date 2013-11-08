@@ -2,8 +2,9 @@ package org.ubc.de2vtt.comm;
 
 import java.nio.ByteBuffer;
 
-import org.ubc.de2vtt.MyApplication;
 import org.ubc.de2vtt.sendables.Sendable;
+
+import android.util.Log;
 
 public class Message {
 	private static String TAG = Message.class.getSimpleName();
@@ -11,6 +12,7 @@ public class Message {
 	private Command cmd; 
 	private Sendable send;
 	private Direction dir;
+	private int delay = 0;
 	
 	public Message(Command cmd, Sendable send) {
 		this.cmd = cmd;
@@ -26,7 +28,14 @@ public class Message {
 	
 	public byte[] GetArrayToSend() {
 		byte[] args = send.ToByteArray();
-		byte[] ret = new byte[args.length + 5];
+		int sendLen = args.length + 5;
+		//int neededSize = 1024 - (sendLen % 1024);
+		
+		byte[] ret = new byte[sendLen];
+		
+//		if (ret.length % 1024 != 0) {
+//			Log.e(TAG, "Incorrect buff size.");
+//		}
 		
 		// bytes 0-3 are length of command data
 		byte lenBuf[] = ByteBuffer.allocate(4).putInt(args.length).array();
@@ -43,6 +52,14 @@ public class Message {
 	
 	public Direction GetDirection() {
 		return dir;
+	}
+	
+	public void setDelay(int d) {
+		delay = d;
+	}
+	
+	public int getDelay() {
+		return delay;
 	}
 	
 	public enum Direction {
