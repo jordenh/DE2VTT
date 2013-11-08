@@ -6,11 +6,13 @@
 #include "vga.h"
 #include "bmp.h"
 #include "input.h"
+#include "message.h"
+#include "command.h"
 #include "io.h"
 #include "system.h"
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
-#include "altera_up_avalon_rs232.h"
+
 
 
 int init(void) {
@@ -24,6 +26,7 @@ int init(void) {
 	initVga();
 	//parseBmps();
 	setupAudio();
+	setupMessage();
 
 	initHardwareTimer();
 
@@ -31,55 +34,8 @@ int init(void) {
 }
 
 int main() {
-	//********* new ******************************************
-	int i;
-	unsigned char data;
-	unsigned char parity;
-	unsigned char message[] = "EECE381 is so much fun";
-
-	printf("UART Initialization\n");
-	alt_up_rs232_dev* uart = alt_up_rs232_open_dev(RS232_0_NAME);
-
-	printf("Clearing read buffer to start\n");
-	while (alt_up_rs232_get_used_space_in_read_FIFO(uart)) {
-		alt_up_rs232_read_data(uart, &data, &parity);
-	}
-
-	printf("Sending the message to the Middleman\n");
-
-	// Start with the number of bytes in our message
-	alt_up_rs232_write_data(uart, (unsigned char) strlen(message));
-
-	// Now send the actual message to the Middleman
-
-	for (i = 0; i < strlen(message); i++) {
-		alt_up_rs232_write_data(uart, message[i]);
-	}
-
-	// Now receive the message from the Middleman
-
-	printf("Waiting for data to come back from the Middleman\n");
-	while (alt_up_rs232_get_used_space_in_read_FIFO(uart) == 0)
-		;
-
-	// First byte is the number of characters in our message
-
-	alt_up_rs232_read_data(uart, &data, &parity);
-	int num_to_receive = (int) data;
-
-	printf("About to receive %d characters:\n", num_to_receive);
-
-	for (i = 0; i < num_to_receive; i++) {
-		while (alt_up_rs232_get_used_space_in_read_FIFO(uart) == 0)
-			;
-		alt_up_rs232_read_data(uart, &data, &parity);
-
-		printf("%c", data);
-	}
-	printf("\n");
-	printf("Message Echo Complete\n");
-
-	//***********************************
+	msg * msg_m = malloc(sizeof(msg));
+	int statusInt;
 
 	if (init() == -1)
 		return -1;
@@ -88,14 +44,31 @@ int main() {
 
 	// main game loop;
 	while (1) {
-		if (hasHardwareTimerExpired() == 1) {
+		//receive msg
+		//execute command
+		if(msg_m->buffer != NULL) {
+			free(msg_m->buffer);
+			msg_m->buffer = NULL;
+		}
+		printf("Obtaining message\n");
+		msg_m = getMessage();
+		printf("Executing message command\n");
+		statusInt = executeCmd(msg_m);
+		printf("Completed message command\n");
+
+		if(statusInt == -1) {
+			printf("error occured in executing Command.\n");
+		}
+
+
+		/*if (hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
 
 			handleKeyInput();
 			handleSwitchInput();
-
-			playEpicMusic();
-		}
+			//playEpicMusic();
+			//Check if message to receive?
+		}*/
 	}
 
 	freeBmps();
