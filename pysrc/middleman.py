@@ -40,11 +40,8 @@ def serial_loopback():
     ser = open_serial()
 
     while True:
-        length = ser.read()
-        ser.write(length)
-        print("length: ", ord(length))
-        data = ser.read(ord(length))
-        print(data.decode())
+        data = ser.read(1)
+        print("Received data: ", data)
         ser.write(data)
 
 def tcp_loopback():
@@ -58,6 +55,7 @@ def tcp_loopback():
     sock.listen(5)
 
     conn, addr = sock.accept()
+    print("Connection Address", addr, "\n")
 
     while True:
         data = conn.recv(BUFF)
@@ -66,7 +64,7 @@ def tcp_loopback():
         conn.send(data)
 
 def tcp_serial():
-    conn_id = 0
+    conn_id = 1
     tcp_send_queues = []
     uart_send_queue = queue.Queue()
 
@@ -103,12 +101,13 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
         (sread, swrite, sexec) = select.select([conn], [], [], 0)
 
         if sread:
-            data = conn.recv(BUFF) #.decode()
+            data = conn.recv(1024).decode()
             if not data: break
-            print("received data: ", data)
+            #print("received data: ", data.encode())
 
             #Append connection id to data
             data = (chr(conn_id) + data).encode()
+            print("data: ", data)
 
             uart_send_queue.put(data)
 
@@ -119,18 +118,25 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
 def serial_worker(ser, tcp_send_queues, uart_send_queue):
     while True:
         if ser.inWaiting() > 0:
+
             conn_id = ord(ser.read())
-            print("conn: ", conn_id)
+            print(conn_id)
 
-            length = ser.read()
-            print("length: ", ord(length))
+            len = 0
+            x = b''
+            for i in reversed(range(0, 4)):
+                tmp=ser.read(1)
+                x+= tmp
+                len = (len + (ord(tmp) * (1 << i * 8)))
 
-            data = ser.read(ord(length))
-            print(data.decode())
+            print("length: ", str(len))
+            # data includes the command in this code
+            data = ser.read(len + 1)
+            print(data)
 
             #Push data to correct tcp queue
-            tcp_send_queues[conn_id].put(length)
-            tcp_send_queues[conn_id].put(data)
+            tcp_send_queues[conn_id - 1].put(x)
+            tcp_send_queues[conn_id - 1].put(data)
 
         if not uart_send_queue.empty():
             data = uart_send_queue.get()
