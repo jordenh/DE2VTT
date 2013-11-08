@@ -1,26 +1,22 @@
 package org.ubc.de2vtt.movetoken;
 
+import org.ubc.de2vtt.PlaceholderFragment;
 import org.ubc.de2vtt.R;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
-import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class MoveTokenFragment extends Fragment {
@@ -43,15 +39,54 @@ public class MoveTokenFragment extends Fragment {
 	}
 
 	private void setupOnClickListeners() {
-		OnItemClickListener listener = new OnItemClickListener() {
-
+		
+		// Listener to listen for short clicks on the buttons within the grid
+		// this should take the user to the tabletop view of their token
+		OnItemClickListener shortListener = new OnItemClickListener() {
+			
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
 				Toast.makeText(MoveTokenFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
 				
+				Fragment fragment = new PlaceholderFragment();
+		    	Bundle args = new Bundle();
+		    	fragment.setArguments(args);
+		   
+		    	FragmentManager fragmentManager = getFragmentManager();
+		    	fragmentManager.beginTransaction()
+		    		.replace(R.id.content_frame, fragment)
+		    		.commit();
+		    	
+		    	DrawerLayout drawerLayout;
+		    	ListView drawerList;
+		    	String[] drawerItems;
+		    	
+		    	drawerItems = getResources().getStringArray(R.array.app_drawer_array);
+		        drawerLayout = (DrawerLayout)mActivity.findViewById(R.id.drawer_layout);
+		        drawerList = (ListView)mActivity.findViewById(R.id.left_drawer);
+		    	
+		    	drawerList.setItemChecked(0, true);
+		    	mActivity.setTitle(drawerItems[0]);
+		    	drawerLayout.closeDrawer(drawerList);
 			}} ;
 			
-		mGridView.setOnItemClickListener(listener );
+		// Listener to listen for long clicks on the buttons within the grid
+		// this should take the user to the token settings activity
+		OnItemLongClickListener longListener = new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
+				
+				Toast.makeText(MoveTokenFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+				
+				Intent myIntent = new Intent(mActivity.getApplicationContext(), TokenActivity.class);
+				startActivity(myIntent);
+				
+				return false;
+			}};
+			
+		mGridView.setOnItemClickListener(shortListener);
+		mGridView.setOnItemLongClickListener(longListener);
 	}
 }
 
