@@ -2,7 +2,7 @@ package org.ubc.de2vtt.comm;
 
 import java.nio.ByteBuffer;
 
-import org.ubc.de2vtt.sendables.Sendable;
+import org.ubc.de2vtt.comm.sendables.Sendable;
 
 import android.util.Log;
 
