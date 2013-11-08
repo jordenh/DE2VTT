@@ -2,15 +2,26 @@
 #ifndef COMMAND_H_
 #define COMMAND_H_
 
-/*enum Command {
-	CONNECT((byte)0),
-	DISCONNECT((byte)1),
-	SEND_MAP((byte)2),
-	SEND_TOKEN((byte)3),
-	GET_DM((byte)4),
-	RELEASE_DM((byte)5),
-	MOVE_TOKEN((byte)6),
-	HANDSHAKE((byte)7); */
+#include <stdlib.h>
+#include <stdio.h>
+#include "message.h"
+
+typedef enum command{
+	CONNECT,
+	DISCONNECT,
+	SEND_MAP,
+	SEND_TOKEN,
+	GET_DM,
+	RELEASE_DM,
+	MOVE_TOKEN,
+	HANDSHAKE
+} command;
+
+int nopTest(void);
+
+int executeCmd(unsigned int cmdInt); // Question for Jeff - why cant i put message here????/
+
+int nopTest2(void);
 
 
 #endif /* COMMAND_H_ */

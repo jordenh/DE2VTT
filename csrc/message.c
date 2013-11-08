@@ -14,12 +14,6 @@ void setupMessage(void) {
 		printf("ERROR - uart not opened properly");
 	}
 
-	fputc((unsigned char) 0, uart);
-	fputc((unsigned char) 0, uart);
-	fputc((unsigned char) 0, uart);
-	fputc((unsigned char) 0, uart);
-	fputc((unsigned char) 7, uart);
-
 	//clear buffer:
 	char c;
 	//while((c = fgetc(uart)) != '\n' && c != EOF);
@@ -79,7 +73,7 @@ message getMessage(void){
 
 	printf("About to receive %d characters:\n", inMsg.len);
 
-	inMsg.command = (int) fgetc(uart);
+	inMsg.cmd = (unsigned int) fgetc(uart);
 
 	int tmp;
 	inMsg.buffer = malloc(inMsg.len * sizeof(char));
@@ -120,10 +114,12 @@ void sendMessage(message sendMsg){
 	}
 
 	// Send command - STUB
-	sendMsg.command = 0x7; // STUB FOR HANDSHAKE!
-	fputc(sendMsg.command, uart);
+	sendMsg.cmd = 0x7; // STUB FOR HANDSHAKE!
+	fputc(sendMsg.cmd, uart);
 
 	// Now send the actual message to the Middleman
 	fwrite(sendMsg.buffer, sizeof(char), sendMsg.len, uart);
+
+	fflush(uart);
 }
 

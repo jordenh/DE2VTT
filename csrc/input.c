@@ -60,7 +60,12 @@ void handleKeyInput(void){
 		edgeDetect2 = 1;
 	} else if (key2 && (edgeDetect2 == 1)) {
 		edgeDetect2 = 0;
-		free(interMsg.buffer);
+		//free(interMsg.buffer);
+		if(fgetc(uart) == EOF) {
+			printf("reading EOF with key2.\n");
+		} else {
+			printf("no EOF.\n");
+		}
 	}
 
 	if (!key3 && (edgeDetect3 == 0)) {

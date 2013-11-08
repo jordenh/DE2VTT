@@ -4,6 +4,7 @@
 
 #include "altera_up_avalon_rs232.h"
 #include "system.h"
+#include "command.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -12,7 +13,7 @@
 typedef struct message {
 	unsigned int androidID;
 	unsigned int len;
-	unsigned int command;
+	unsigned int cmd;
 	unsigned char * buffer; // max 126 bytes
 
 } message;

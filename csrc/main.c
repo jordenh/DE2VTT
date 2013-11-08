@@ -179,6 +179,10 @@ int main() {
 
 			//playEpicMusic();
 
+			//Check if message to receive?
+				//receive msg
+				//execute command
+
 		}
 	}
 
