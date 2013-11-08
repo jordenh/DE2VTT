@@ -1,4 +1,4 @@
-package org.ubc.de2vtt.sendimage;
+package org.ubc.de2vtt.fragments;
 
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.comm.Command;
@@ -6,9 +6,9 @@ import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.comm.Receiver;
-import org.ubc.de2vtt.comm.SingleReceiver;
-import org.ubc.de2vtt.sendables.SendableBitmap;
+import org.ubc.de2vtt.comm.receivers.Receiver;
+import org.ubc.de2vtt.comm.receivers.SingleReceiver;
+import org.ubc.de2vtt.comm.sendables.SendableBitmap;
 
 import android.app.Activity;
 import android.app.Fragment;

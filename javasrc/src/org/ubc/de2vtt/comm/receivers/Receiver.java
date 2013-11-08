@@ -1,6 +1,8 @@
-package org.ubc.de2vtt.comm;
+package org.ubc.de2vtt.comm.receivers;
 
 import java.util.Timer;
+
+import org.ubc.de2vtt.comm.ReceiveTask;
 
 public abstract class Receiver {
 	protected Timer timer;

@@ -1,4 +1,4 @@
-package org.ubc.de2vtt.sendables;
+package org.ubc.de2vtt.comm.sendables;
 
 public class SendableString implements Sendable {
 	private String str;

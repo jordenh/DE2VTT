@@ -1,4 +1,6 @@
-package org.ubc.de2vtt.comm;
+package org.ubc.de2vtt.comm.receivers;
+
+import org.ubc.de2vtt.comm.ReceiveTask;
 
 public class SingleReceiver extends Receiver {
 	

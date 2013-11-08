@@ -1,9 +1,10 @@
 package org.ubc.de2vtt;
 
-import org.ubc.de2vtt.comm.ConnectionFragment;
 import org.ubc.de2vtt.comm.Messenger;
-import org.ubc.de2vtt.sendimage.SendImageFragment;
 import org.ubc.de2vtt.movetoken.MoveTokenFragment;
+import org.ubc.de2vtt.fragments.ConnectionFragment;
+import org.ubc.de2vtt.fragments.PlaceholderFragment;
+import org.ubc.de2vtt.fragments.SendImageFragment;
 
 import android.os.Bundle;
 import android.os.StrictMode;
