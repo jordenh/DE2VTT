@@ -1,5 +1,8 @@
 #include "input.h"
 
+msg interMsg;
+
+extern FILE* uart;
 
 void handleKeyInput(void){
 	static char keyInput;
@@ -26,26 +29,51 @@ void handleKeyInput(void){
 	//functionality for keys being pressed.
 	if (!key0 && (edgeDetect0 == 0)) {
 		edgeDetect0 = 1;
+
+
 	} else if (key0 && (edgeDetect0 == 1)) {
 		edgeDetect0 = 0;
+		if(interMsg.buffer == NULL) {
+			free(interMsg.buffer);
+		}
+		interMsg = *getMessage();
 	}
 
 	if (!key1 && (edgeDetect1 == 0)) {
 		edgeDetect1 = 1;
+
 	} else if (key1 && (edgeDetect1 == 1)) {
 		edgeDetect1 = 0;
+
+		//Temporary Hard coded stuff:
+	//	interMsg.androidID = 2;
+	//	interMsg.len = 5;
+	//	interMsg.buffer = "hello";
+
+
+		if(interMsg.buffer != NULL) {
+			sendMessage(&interMsg);
+		}
 	}
 
 	if (!key2 && (edgeDetect2 == 0)) {
 		edgeDetect2 = 1;
 	} else if (key2 && (edgeDetect2 == 1)) {
 		edgeDetect2 = 0;
+		//free(interMsg.buffer);
+		if(fgetc(uart) == EOF) {
+			printf("reading EOF with key2.\n");
+		} else {
+			printf("no EOF.\n");
+		}
 	}
 
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
 	} else if (key3 && (edgeDetect3 == 1)) {
 		edgeDetect3 = 0;
+		printf("printing in key3 to ser\n");
+		fputc((unsigned char) 1, uart);
 	}
 }
 
@@ -69,4 +97,9 @@ void handleSwitchInput(void){
 	}
 
 }
+
+
+
+
+
 

@@ -3,7 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
+#include "message.h"
 #include "io.h"
 #include "system.h"
 #include "altera_nios2_qsys_irq.h"
