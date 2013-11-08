@@ -8,8 +8,8 @@ int nopTest(void) {
 
 }
 
-int executeCmd(unsigned int cmdInt) {
-	unsigned int nextCmd = cmdInt;//currentMsg.cmd;
+int executeCmd(msg * currentMsg) {
+	unsigned int nextCmd = currentMsg->cmd;//cmdInt;
 
 	switch ((command)nextCmd) {
 	case CONNECT:

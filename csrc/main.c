@@ -33,7 +33,7 @@ int init(void) {
 }
 
 int main() {
-	message msg;
+	msg * msg_m;
 	int statusInt;
 
 	if (init() == -1)
@@ -45,11 +45,11 @@ int main() {
 	while (1) {
 		//receive msg
 		//execute command
-		if(msg.buffer != NULL) {
-			free(msg.buffer);
+		if(msg_m->buffer != NULL) {
+			free(msg_m->buffer);
 		}
-		msg = getMessage();
-		statusInt = executeCmd(msg.cmd);
+		msg_m = getMessage();
+		statusInt = executeCmd(msg_m);
 
 		if(statusInt == -1) {
 			printf("error occured in executing Command.\n");

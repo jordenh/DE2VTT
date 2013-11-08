@@ -4,29 +4,30 @@
 
 #include "altera_up_avalon_rs232.h"
 #include "system.h"
-#include "command.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 
-typedef struct message {
+struct message {
 	unsigned int androidID;
 	unsigned int len;
 	unsigned int cmd;
-	unsigned char * buffer; // max 126 bytes
+	unsigned char * buffer; // max 124 bytes
 
-} message;
+};
+
+typedef struct message msg;
 
 void setupMessage(void);
 
-unsigned int isIDSaved(message inMsg);
+unsigned int isIDSaved(msg * inMsg);
 
 unsigned int storeNewID(int ID);
 
-message getMessage(void);
+msg * getMessage(void);
 
-void sendMessage(message sendMsg);
+void sendMessage(msg * sendMsg);
 
 
 #endif /* MESSAGE_H_ */

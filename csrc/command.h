@@ -1,9 +1,6 @@
-
 #ifndef COMMAND_H_
 #define COMMAND_H_
 
-#include <stdlib.h>
-#include <stdio.h>
 #include "message.h"
 
 typedef enum command{
@@ -19,9 +16,6 @@ typedef enum command{
 
 int nopTest(void);
 
-int executeCmd(unsigned int cmdInt); // Question for Jeff - why cant i put message here????/
-
-int nopTest2(void);
-
+int executeCmd(msg *m);
 
 #endif /* COMMAND_H_ */
