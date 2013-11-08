@@ -1,14 +1,12 @@
 package org.ubc.de2vtt.token;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.exceptions.BMPNotSetupException;
+import org.ubc.de2vtt.exceptions.BitmapNotSetupException;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -81,7 +79,7 @@ public class Token {
 	public Bitmap getBitmap() {
 		if (picturePath == null) {
 			Log.e(TAG, "Can't get a bitmap before it is setup.");
-			throw new BMPNotSetupException();
+			throw new BitmapNotSetupException();
 		} else {
 			BitmapDecoder dec = new BitmapDecoder();
 			dec.execute(picturePath);
@@ -89,10 +87,12 @@ public class Token {
 			try {
 				bmp = dec.get(3000, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
+				Log.e(TAG, "Bitmap decode interrupted out.");
 				e.printStackTrace();
 			} catch (ExecutionException e) {
 				e.printStackTrace();
 			} catch (TimeoutException e) {
+				Log.e(TAG, "Bitmap decode timed out.");
 				e.printStackTrace();
 			} 
 			return bmp;

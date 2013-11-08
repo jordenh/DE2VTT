@@ -7,7 +7,9 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import org.ubc.de2vtt.comm.sendables.Sendable;
+import org.ubc.de2vtt.exceptions.IncorrectCommandDatumExpression;
 import org.ubc.de2vtt.exceptions.NotImplementedException;
+import org.ubc.de2vtt.token.Token;
 
 public class Received implements Sendable {
 	private static final String TAG = Received.class.getSimpleName();
@@ -74,20 +76,18 @@ public class Received implements Sendable {
 		return msg;
 	}
 	
+	public Token DataToToken() {
+		if (cmd == Command.MOVE_TOKEN || cmd == Command.SEND_TOKEN) {
+			return new Token(this);
+		} else {
+			RuntimeException e = new IncorrectCommandDatumExpression();
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
 	public Bitmap DataToBitmap() {
 		throw new NotImplementedException();
 		// if this needs to be done it should be done on a background thread
-		
-//		if (cmd == Command.SEND_MAP || cmd == Command.SEND_TOKEN) {
-//			// WARNING: this expects a compressed bmp, which is not what we will get
-//			Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-//			if (bmp == null) {
-//				throw new NullPointerException("Unable to decode bmp with length " + data.length);
-//			}
-//			
-//			return bmp;
-//		} else {
-//			throw new InvalidParameterException("Attempt to convert non-bmp data to bmp.");
-//		}
 	}
 }

@@ -1,6 +1,6 @@
 package org.ubc.de2vtt.exceptions;
 
-public class BMPNotSetupException extends RuntimeException {
+public class BitmapNotSetupException extends RuntimeException {
 
 	/**
 	 * 
