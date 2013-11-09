@@ -107,12 +107,14 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
         (sread, swrite, sexec) = select.select([conn], [], [], 0)
 
         if sread:
-            data = conn.recv(1024).decode()
+            #data = conn.recv(65536).decode()
+            data = conn.recv(65536)
             if not data: break
             #print("received data: ", data.encode())
 
             #Append connection id to data
-            data = (chr(conn_id) + data).encode()
+            #data = (chr(conn_id) + data).encode()
+            data = chr(conn_id).encode() + data
             print("data: ", data)
 
             uart_send_queue.put(data)

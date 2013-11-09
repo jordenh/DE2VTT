@@ -29,6 +29,7 @@ int executeCmd(msg * currentMsg) {
 
 		break;
 	case SEND_TOKEN:
+		printf("Entering send Token\n");
 		if(loadedTokenCnt < MAX_TOKENS){
 			receiveToken((char *)currentMsg->buffer, &tokenArr[loadedTokenCnt]);
 			loadedTokenCnt++;
@@ -51,6 +52,9 @@ int executeCmd(msg * currentMsg) {
 		break;
 	case HANDSHAKE:
 		sendMessage(currentMsg);
+		break;
+	default:
+		printf("Error, invalid command received on DE2!");
 		break;
 	}
 

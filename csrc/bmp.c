@@ -1,6 +1,6 @@
 #include "bmp.h"
 
-#define MAX_TOKENS 100
+
 BMP tokenArr[MAX_TOKENS];
 int loadedTokenCnt = 0;
 

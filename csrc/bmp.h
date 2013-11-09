@@ -7,6 +7,7 @@
 #include "sd_card.h"
 
 #define BYTES_PER_PIXEL 3
+#define MAX_TOKENS 100
 
 typedef struct {
 	unsigned short int type;                 /* Magic identifier            */

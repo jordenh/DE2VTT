@@ -2,6 +2,7 @@
 #define COMMAND_H_
 
 #include "message.h"
+#include "bmp.h"
 
 typedef enum command{
 	CONNECT,
