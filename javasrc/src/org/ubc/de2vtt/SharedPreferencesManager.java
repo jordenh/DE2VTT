@@ -1,8 +1,11 @@
 package org.ubc.de2vtt;
 
+import java.util.Set;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 
 public class SharedPreferencesManager {
 	//private final String TAG = SharedPreferencesManager.class.getSimpleName();
@@ -44,6 +47,11 @@ public class SharedPreferencesManager {
 		return mEditor.commit();
 	}
 	
+	public boolean putStringSet(String key, Set<String> s) {
+		mEditor.putStringSet(key, s);
+		return mEditor.commit();
+	}
+	
 	/**
 	 * @return value in shared prefs matching key, otherwise defaultValue
 	 */
@@ -56,5 +64,9 @@ public class SharedPreferencesManager {
 	 */
 	public String getString(String key, String defaultVal) {
 		return mSharedPrefs.getString(key, defaultVal);
+	}
+	
+	public Set<String> getStringSet(String key) {
+		return mSharedPrefs.getStringSet(key, null);
 	}
 }

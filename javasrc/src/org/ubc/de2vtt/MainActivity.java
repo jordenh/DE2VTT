@@ -2,6 +2,7 @@ package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.fragments.ConnectionFragment;
+import org.ubc.de2vtt.fragments.MoveTokenFragment;
 import org.ubc.de2vtt.fragments.PlaceholderFragment;
 import org.ubc.de2vtt.fragments.SendImageFragment;
 
@@ -47,7 +48,7 @@ public class MainActivity extends Activity {
         mContext = getApplicationContext();
         
         mDrawerItems = getResources().getStringArray(R.array.app_drawer_array);
-        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.linear_layout);
         mDrawerList = (ListView)findViewById(R.id.left_drawer);
         
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
@@ -137,15 +138,15 @@ public class MainActivity extends Activity {
     	fragment.setArguments(args);
     	
     	switch (position) {
-    	case 0:
-    		//fragment = new TableTopFragment();
-    		break;
-    	case 2:
-    		fragment = new SendImageFragment();
-    		break;
-    	case 3:
-    		fragment = new ConnectionFragment();
-    		break;
+    		case 1:
+    			fragment = new MoveTokenFragment();
+    			break;
+	    	case 3:
+	    		fragment = new SendImageFragment();
+	    		break;
+	    	case 4:
+	    		fragment = new ConnectionFragment();
+	    		break;
     	}
    
     	FragmentManager fragmentManager = getFragmentManager();
