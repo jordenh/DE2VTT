@@ -4,6 +4,7 @@
 
 #include "altera_up_avalon_rs232.h"
 #include "system.h"
+#include "vga.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

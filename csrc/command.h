@@ -12,7 +12,8 @@ typedef enum command{
 	GET_DM,
 	RELEASE_DM,
 	MOVE_TOKEN,
-	HANDSHAKE
+	HANDSHAKE,
+	PASS_MSG
 } command;
 
 int nopTest(void);

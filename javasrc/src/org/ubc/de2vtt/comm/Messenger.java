@@ -99,9 +99,9 @@ public class Messenger {
 		return mSocket != null && mSocket.isConnected() && !mSocket.isClosed();
 	}
 	
-	public void sendStringMessage(String str) {		
+	public void sendStringMessage(String str, Command cmd) {		
 		SendableString sendStr = new SendableString(str);
-		Message msg = new Message(Command.HANDSHAKE, sendStr);
+		Message msg = new Message(cmd, sendStr);
 
 		send(msg);
 	}

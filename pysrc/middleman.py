@@ -65,6 +65,7 @@ def tcp_loopback():
         data = conn.recv(BUFF)
         if not data: break
         #print("received data: ", data)
+        print("data: ", data)
         print("received data length: ", len(data))
         sent = conn.send(data)
         print("sent length: ", sent)
@@ -107,7 +108,7 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
         (sread, swrite, sexec) = select.select([conn], [], [], 0)
 
         if sread:
-            #data = conn.recv(65536).decode()
+            #data = conn.recv(65536).1()
             data = conn.recv(65536)
             if not data: break
             #print("received data: ", data.encode())

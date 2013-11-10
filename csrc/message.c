@@ -125,3 +125,33 @@ void sendMessage(msg * sendMsg){
 	fflush(uart);
 }
 
+void passMsg(msg * passMsg) {
+	if(passMsg->buffer == NULL || uart == NULL){
+		printf("Error in sendMessage, buffer or uart is null!");
+		return;
+	}
+
+	char * msgString= (char *)passMsg->buffer;
+	unsigned int yPos = 1;
+	unsigned int xPos;
+
+	switch( *(msgString++)) {
+	case 0:
+		printf("about to write to screen!\n");
+		alt_up_char_buffer_clear(char_buffer);
+		xPos = (SCREEN_CHAR_WIDTH / 2) - (int)(strlen(msgString) / 2);
+		alt_up_char_buffer_string(char_buffer, msgString , xPos, yPos);
+		break;
+	/*case connUserIDs[0]:
+		break;
+	case connUserIDs[1]:
+		break;
+	case connUserIDs[2]:
+		break;
+	case connUserIDs[3]:
+		break;
+	case connUserIDs[4]:
+		break; */
+	}
+
+}

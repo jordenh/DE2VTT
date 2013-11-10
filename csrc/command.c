@@ -53,6 +53,11 @@ int executeCmd(msg * currentMsg) {
 	case HANDSHAKE:
 		sendMessage(currentMsg);
 		break;
+
+	case PASS_MSG:
+		printf("In Pass_msg command statement\n");
+		passMsg(currentMsg);
+		break;
 	default:
 		printf("Error, invalid command received on DE2!");
 		break;
