@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.ubc.de2vtt.movetoken.TokenActivity"
+            android:name="org.ubc.de2vtt.token.TokenActivity"
             android:label="@string/title_activity_token" >
         </activity>
     </application>

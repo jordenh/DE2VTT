@@ -1,4 +1,4 @@
-package org.ubc.de2vtt.movetoken;
+package org.ubc.de2vtt.token;
 
 import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.R;

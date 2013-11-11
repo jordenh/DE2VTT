@@ -1,6 +1,11 @@
-package org.ubc.de2vtt.movetoken;
+package org.ubc.de2vtt.fragments;
 
+<<<<<<< HEAD:javasrc/src/org/ubc/de2vtt/movetoken/MoveTokenFragment.java
 import org.ubc.de2vtt.MainActivity;
+=======
+import org.ubc.de2vtt.token.ImageAdapter;
+import org.ubc.de2vtt.token.TokenActivity;
+>>>>>>> f0159d35f792a7cc73cc4caaa1b20d1a522b0c90:javasrc/src/org/ubc/de2vtt/fragments/MoveTokenFragment.java
 import org.ubc.de2vtt.R;
 
 import android.app.Activity;
