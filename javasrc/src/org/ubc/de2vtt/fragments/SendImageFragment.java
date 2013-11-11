@@ -109,7 +109,7 @@ public class SendImageFragment extends Fragment {
     }
 	
 	public void sendToken() {
-		sendImage(Command.SEND_TOKEN, 30, 30);
+		sendImage(Command.SEND_TOKEN, 10, 10);
 	}
 	
 	public void sendMap() {

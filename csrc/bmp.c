@@ -7,7 +7,7 @@ int loadedTokenCnt = 0;
 void initTokenArr(void) {
 	int i;
 	for(i = 0; i < MAX_TOKENS; i++) {
-		free(tokenArr[i].color);
+		if(tokenArr[i].color) free(tokenArr[i].color);
 	}
 	loadedTokenCnt = 0;
 }
@@ -140,50 +140,59 @@ void receiveToken (char *buffer, BMP *bmp) {
 	closeFile(fh);
 }
 
-void receiveTokenPixArr (char *buffer, BMP *bmp) {
+void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 	unsigned char sizeArr[4];
-	int i, j, k;
+	int i, j;
 	char b, g, r;
 	int pixels, rowOffset, offset;
+	unsigned int cursor = 0;
 
+	bmp->infoheader.width = 0;
+	bmp->infoheader.height = 0;
 	//obtain width
 	for(i = ((sizeof(sizeArr) / sizeof(sizeArr[0])) - 1); i >= 0; i--) {
-		sizeArr[i] = readByteChar(buffer++);
-		printf("received: msgLen[i] %d\n", sizeArr[i]);
+		sizeArr[i] = buffer[cursor++];
+		printf("received: sizeArr[i] %d\n", sizeArr[i]);
 		bmp->infoheader.width += (0xFF & sizeArr[i]) << i*8;
 	}
 	//obtain height
 	for(i = ((sizeof(sizeArr) / sizeof(sizeArr[0])) - 1); i >= 0; i--) {
-		sizeArr[i] = readByteChar(buffer++);
-		printf("received: msgLen[i] %d\n", sizeArr[i]);
+		sizeArr[i] = buffer[cursor++];
+		printf("received: sizeArr[i] %d\n", sizeArr[i]);
 		bmp->infoheader.height += (0xFF & sizeArr[i]) << i*8;
 	}
 
 	pixels = bmp->infoheader.width * bmp->infoheader.height;
+	printf("pixels set to: %d\n", pixels);
 	bmp->color = malloc(BYTES_PER_PIXEL * pixels);
 
-	for(i = 0; i < bmp->infoheader.height; i++) {
-		rowOffset = i * bmp->infoheader.width;
-		for(j = 0; j < bmp->infoheader.width; j++ ){
-			offset = pixels - rowOffset - j - 1;
+	if(bmp->color) {
+		for(i = 0; i < bmp->infoheader.height; i++) {
+			rowOffset = i * bmp->infoheader.width;
+			for(j = 0; j < bmp->infoheader.width; j++ ){
+				offset = rowOffset + j;
 
-			b = (readByteChar(buffer++) & 0xF1) >> 3;
-			g = (readByteChar(buffer++) & 0xFC) >> 2;
-			r = (readByteChar(buffer++) & 0xF1) >> 3;
+				r = (buffer[cursor++] >> 3) & 0xF1;
+				g = (buffer[cursor++] >> 2) & 0xFC;
+				b = (buffer[cursor++] >> 3) & 0xF1;
 
-			//Filter out the pink pixels
-			if(b == 0x1E && g == 0 && r == 0x1E) {
-				bmp->color[offset] = 0x0;
-			} else {
-				bmp->color[offset] = (r << 11) | (g << 5) | b;
+				//Filter out the pink pixels
+				if(b == 0x1E && g == 0 && r == 0x1E) {
+					bmp->color[offset] = 0x0;
+				} else {
+					bmp->color[offset] = (r << 11) | (g << 5) | b; //b5,g6,r5
+					//printf("%d,%d,%x,%x,%x,%i|",i, j, r,g ,b, bmp->color[offset]);
+				}
 			}
+
+			/*if((BYTES_PER_PIXEL*bmp->infoheader.width) % 4 != 0) {
+				for (k = 0; k <  (4 - ((BYTES_PER_PIXEL * bmp->infoheader.width) % 4)); k++) {
+					readByteChar(buffer++);
+				}
+			}*/
 		}
-
-		/*if((BYTES_PER_PIXEL*bmp->infoheader.width) % 4 != 0) {
-			for (k = 0; k <  (4 - ((BYTES_PER_PIXEL * bmp->infoheader.width) % 4)); k++) {
-				readByteChar(buffer++);
-			}
-		}*/
+	} else {
+		printf("Error, didnt allocate memory for token color\n");
 	}
 
 }
@@ -262,10 +271,11 @@ void drawBmp (BMP *bmp, int x, int y) {
 			offset = i * bmp->infoheader.width;
 
 			for(j = 0; j < bmp->infoheader.width; j++){
-				if(bmp->color[offset + j] == 0 || x + j >= SCREEN_WIDTH || x + j <= 0)
+				if(x + j >= SCREEN_WIDTH || x + j <= 0)
 					continue;
 
-				drawPixelFast(x + j, y + i, bmp->color[offset +j]);
+				drawLine(x + j, y + i, x + j, y + i, bmp->color[offset +j]);
+				//drawPixelFast(x + j, y + i, bmp->color[offset +j]);
 			}
 		}
 	}

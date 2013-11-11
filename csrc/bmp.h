@@ -7,6 +7,7 @@
 #include "sd_card.h"
 
 #define BYTES_PER_PIXEL 3
+#define DE2_BYTES_PER_PIXEL 2
 #define MAX_TOKENS 100
 
 typedef struct {
@@ -54,6 +55,7 @@ void drawBmp(BMP *bmp, int x, int y);
 void eraseBmp(BMP *bmp, int x, int y);
 
 void receiveToken (char *buffer, BMP *bmp);
+void receiveTokenPixArr (unsigned char *buffer, BMP *bmp);
 unsigned char readByteChar(char * buffer);
 short int readWordChar(char * buffer);
 int readDWordChar(char * buffer);
