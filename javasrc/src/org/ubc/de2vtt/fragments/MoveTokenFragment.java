@@ -60,6 +60,10 @@ public class MoveTokenFragment extends Fragment {
 				Toast.makeText(MoveTokenFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
 				
 				Intent myIntent = new Intent(mActivity.getApplicationContext(), TokenActivity.class);
+
+				int tokID = (int)mGridView.getAdapter().getItemId(position);
+				myIntent.putExtra("token_id", tokID);
+				
 				startActivity(myIntent);
 				
 				return false;

@@ -1,7 +1,5 @@
 package org.ubc.de2vtt.token;
 
-import org.ubc.de2vtt.R;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +24,11 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public Object getItem(int position) {
-        return null;
+        return tokMan.get(mThumbIds[position].intValue());
     }
 
     public long getItemId(int position) {
-        return 0;
+        return mThumbIds[position].intValue();
     }
 
     // create a new ImageView for each item referenced by the Adapter

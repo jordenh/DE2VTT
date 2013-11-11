@@ -49,8 +49,8 @@ public class Token {
 	
 	public Token(String tokName, Bitmap bitmap)
 	{
-		name = tokName;
 		id = count++;
+		name = "Token_" + id;
 		x = 0;
 		y = 0;
 		bmp = bitmap;
