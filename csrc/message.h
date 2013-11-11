@@ -10,6 +10,9 @@
 #include <string.h>
 #include <math.h>
 
+#define NUM_USERS 5
+#define MAX_ALIAS_SIZE 40
+
 struct message {
 	unsigned int androidID;
 	unsigned int len;

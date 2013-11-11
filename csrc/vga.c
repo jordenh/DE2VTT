@@ -69,3 +69,20 @@ int convert24BitRgbTo16(unsigned int rgb24bit) {
 	unsigned int B5bit = B8bit >> 3 & 0x1F;
 	return (R5bit << 11 | G6bit << 5 | B5bit);
 }
+
+void drawUserIDs(void) {
+	//extern int connUserIDs[];
+	//extern char * connUserAlias[];
+
+	int i, xPos;
+	char cArr[2] = {'-', '\0'};
+
+	for(i = 0; i < 5; i++) {
+		//TBD - make a "constants" h file
+		xPos = (SCREEN_CHAR_WIDTH - 3 - strlen(connUserAlias[i]));
+		alt_up_char_buffer_string(char_buffer, connUserAlias[i] , xPos, i);
+		xPos = (SCREEN_CHAR_WIDTH - 1);
+		cArr[0] = (connUserIDs[i] % 10) - '0'; // unique IDs for 0-9
+		alt_up_char_buffer_string(char_buffer, cArr , xPos, i);
+	}
+}
