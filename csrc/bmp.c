@@ -142,8 +142,9 @@ void receiveToken (char *buffer, BMP *bmp) {
 
 void receiveTokenPixArr (char *buffer, BMP *bmp) {
 	unsigned char sizeArr[4];
-	unsigned int pixels;
-	int i, j, rowOffset;
+	int i, j, k;
+	char b, g, r;
+	int pixels, rowOffset, offset;
 
 	//obtain width
 	for(i = ((sizeof(sizeArr) / sizeof(sizeArr[0])) - 1); i >= 0; i--) {
