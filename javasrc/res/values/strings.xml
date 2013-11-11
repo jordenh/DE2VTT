@@ -39,5 +39,8 @@
     <!-- Token Activity -->
     <string name="title_activity_token">Token Settings</string>
     <string name="view_tabletop">View on Tabletop</string>
+    <string name="id">Id</string>
+    <string name="name">Name</string>
+    <string name="xy">X, Y</string>
 
 </resources>
