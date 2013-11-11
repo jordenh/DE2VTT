@@ -6,6 +6,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.exceptions.BitmapNotSetupException;
 
 import android.content.ContentResolver;
@@ -32,6 +33,7 @@ public class Token {
 	private int id;
 	private String name;
 	private String picturePath;
+	private Bitmap bmp;
 	
 	public Token(Received rcv) {
 		name = " ";
@@ -40,6 +42,12 @@ public class Token {
 		id = (int) data[ID_INDEX];
 		x = (int) data[X_INDEX];
 		y = (int) data[Y_INDEX];
+		bmp = null;
+		picturePath = null;
+	}
+	
+	public SendableMove getSendable() {
+		return new SendableMove(id, x, y);
 	}
 	
 	public String encode() {
@@ -76,13 +84,16 @@ public class Token {
 	}
 	
 	public Bitmap getBitmap() {
+		if (bmp != null) {
+			return bmp;
+		}
+		
 		if (picturePath == null) {
 			Log.e(TAG, "Can't get a bitmap before it is setup.");
 			throw new BitmapNotSetupException();
 		} else {
 			BitmapDecoder dec = new BitmapDecoder();
 			dec.execute(picturePath);
-			Bitmap bmp = null;
 			try {
 				bmp = dec.get(3000, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
@@ -120,6 +131,7 @@ public class Token {
 	public void move(int x, int y) {
 		this.x = x;
 		this.y = y;
+		// send?
 	}
 	
 	public void setName(String name) {
