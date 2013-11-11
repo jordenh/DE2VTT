@@ -109,7 +109,22 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
 
         if sread:
             #data = conn.recv(65536).1()
-            data = conn.recv(65536)
+            
+            msgLen = 0
+            x = b''
+            data = b''
+            for i in reversed(range(0, 4)):
+                tmp=conn.recv(1)
+                x+= tmp
+                msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
+                data += tmp
+                
+            # 5 is for command length, and 4 bytes of message length info
+            while len(data) < (msgLen + 5): 
+                data += conn.recv(msgLen)
+                print("received ", len(data), " data so far!")
+            
+            #data = conn.recv(BUFF)
             if not data: break
             #print("received data: ", data.encode())
 
@@ -131,16 +146,16 @@ def serial_worker(ser, tcp_send_queues, uart_send_queue):
             conn_id = ord(ser.read())
             print(conn_id)
 
-            len = 0
+            msgLen = 0
             x = b''
             for i in reversed(range(0, 4)):
                 tmp=ser.read(1)
                 x+= tmp
-                len = (len + (ord(tmp) * (1 << i * 8)))
+                msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
 
-            print("length: ", str(len))
-            # data includes the command in this code
-            data = ser.read(len + 1)
+            print("length: ", str(msgLen))
+            # data includes the command in this code (+1)
+            data = ser.read(msgLen + 1)
             print(data)
 
             #Push data to correct tcp queue

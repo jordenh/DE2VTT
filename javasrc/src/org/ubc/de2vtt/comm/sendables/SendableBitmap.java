@@ -17,9 +17,10 @@ public class SendableBitmap implements Sendable {
 	@Override
 	public byte[] ToByteArray() {
 		int size = bmp.getRowBytes() * bmp.getHeight();
-		ByteBuffer b = ByteBuffer.allocate(size);
+		//ByteBuffer b = ByteBuffer.allocate(size);
 
-		bmp.copyPixelsToBuffer(b);
+		//bmp.copyPixelsToBuffer(b);
+		
 		
 		return b.array();
 	}

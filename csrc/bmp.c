@@ -140,6 +140,53 @@ void receiveToken (char *buffer, BMP *bmp) {
 	closeFile(fh);
 }
 
+void receiveTokenPixArr (char *buffer, BMP *bmp) {
+	unsigned char sizeArr[4];
+	unsigned int pixels;
+	int i, j, rowOffset;
+
+	//obtain width
+	for(i = ((sizeof(sizeArr) / sizeof(sizeArr[0])) - 1); i >= 0; i--) {
+		sizeArr[i] = readByteChar(buffer++);
+		printf("received: msgLen[i] %d\n", sizeArr[i]);
+		bmp->infoheader.width += (0xFF & sizeArr[i]) << i*8;
+	}
+	//obtain height
+	for(i = ((sizeof(sizeArr) / sizeof(sizeArr[0])) - 1); i >= 0; i--) {
+		sizeArr[i] = readByteChar(buffer++);
+		printf("received: msgLen[i] %d\n", sizeArr[i]);
+		bmp->infoheader.height += (0xFF & sizeArr[i]) << i*8;
+	}
+
+	pixels = bmp->infoheader.width * bmp->infoheader.height;
+	bmp->color = malloc(BYTES_PER_PIXEL * pixels);
+
+	for(i = 0; i < bmp->infoheader.height; i++) {
+		rowOffset = i * bmp->infoheader.width;
+		for(j = 0; j < bmp->infoheader.width; j++ ){
+			offset = pixels - rowOffset - j - 1;
+
+			b = (readByteChar(buffer++) & 0xF1) >> 3;
+			g = (readByteChar(buffer++) & 0xFC) >> 2;
+			r = (readByteChar(buffer++) & 0xF1) >> 3;
+
+			//Filter out the pink pixels
+			if(b == 0x1E && g == 0 && r == 0x1E) {
+				bmp->color[offset] = 0x0;
+			} else {
+				bmp->color[offset] = (r << 11) | (g << 5) | b;
+			}
+		}
+
+		/*if((BYTES_PER_PIXEL*bmp->infoheader.width) % 4 != 0) {
+			for (k = 0; k <  (4 - ((BYTES_PER_PIXEL * bmp->infoheader.width) % 4)); k++) {
+				readByteChar(buffer++);
+			}
+		}*/
+	}
+
+}
+
 unsigned char readByteChar(char * buffer) {
 	return *buffer;
 }

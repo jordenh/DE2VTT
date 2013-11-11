@@ -1,11 +1,20 @@
 
 #include "message.h"
 
-int connUserIDs[5] = {0,0,0,0,0};
+int connUserIDs[NUM_USERS] = {0,0,0,0,0};
+char * connUserAlias[NUM_USERS];
 
 FILE* uart;
 
 void setupMessage(void) {
+
+	int i;
+	for(i = 0; i < NUM_USERS; i++) {
+		if(connUserAlias[i] != NULL) {
+			connUserAlias[i] = malloc(sizeof(char) * MAX_ALIAS_SIZE);
+		}
+		*connUserAlias[i] = '\0';
+	}
 
 	//printf("UART Initialization\n");
 	uart = fopen("/dev/uart_0", "r+"); //should set to RS232_0_NAME
@@ -24,7 +33,7 @@ void setupMessage(void) {
 // checks if the ID is saved in the connUserIDs array, and returns true if it exists, false otherwise.
 unsigned int isIDSaved(msg * inMsg) {
 	int i;
-	for(i = 0; i < sizeof(connUserIDs) / sizeof(connUserIDs[0]) ; i++){
+	for(i = 0; i < NUM_USERS ; i++){
 			if(inMsg->androidID == connUserIDs[i]){
 				printf("android %d sending to DE2 already in system\n", connUserIDs[i]);
 				return 1;
@@ -37,7 +46,7 @@ unsigned int isIDSaved(msg * inMsg) {
 unsigned int storeNewID(int ID) {
 	int i;
 
-	for(i = 0; i < sizeof(connUserIDs) / sizeof(connUserIDs[0]) ; i++){
+	for(i = 0; i < NUM_USERS ; i++){
 		if(connUserIDs[i] == 0) {
 			printf("DE2 communicating with new android - ID %d\n", ID);
 			connUserIDs[i] = ID;

@@ -50,6 +50,8 @@ int main() {
 			free(msg_m->buffer);
 			msg_m->buffer = NULL;
 		}
+
+		//drawUserIDs(); // -- continue this! TBD - currently broken...
 		printf("Obtaining message\n");
 		msg_m = getMessage();
 		printf("Executing message command\n");
