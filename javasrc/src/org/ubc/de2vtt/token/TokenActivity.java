@@ -26,6 +26,8 @@ public class TokenActivity extends Activity {
 	private EditText mTokenName;
 	private TextView mTokenXY;
 	
+	boolean editing = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,12 +51,6 @@ public class TokenActivity extends Activity {
         	mTokenXY = (TextView)findViewById(R.id.tokenXY);
         	mTokenXY.setText("(" + mToken.getX() + ", " + mToken.getY() + ")");
         } 
-       
-		Button saveButton = (Button)findViewById(R.id.btnSave);
-		Button cancelButton = (Button)findViewById(R.id.btnCancel);
-	
-		saveButton.setEnabled(false);
-		cancelButton.setEnabled(false);
 		
 		setupOnClickListeners();
 	}
@@ -67,37 +63,28 @@ public class TokenActivity extends Activity {
 	}
 	
 	private void setupOnClickListeners() {
-		Button editBtn = (Button)findViewById(R.id.btnEdit);
-		Button saveBtn = (Button)findViewById(R.id.btnSave);
+		Button editSaveBtn = (Button)findViewById(R.id.btnEditSave);
 		Button cancelBtn = (Button)findViewById(R.id.btnCancel);
 		Button tableTopBtn = (Button)findViewById(R.id.btnViewTableTop);
 		
 		// Listener to listen for short clicks on the buttons within the grid
 		// this should take the user to the tabletop view of their token
-		OnClickListener editBtnListener = new OnClickListener() {
+		OnClickListener editSaveBtnListener = new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				Button editButton = (Button)findViewById(R.id.btnEdit);
-				Button saveButton = (Button)findViewById(R.id.btnSave);
-				Button cancelButton = (Button)findViewById(R.id.btnCancel);
-			
-				editButton.setEnabled(false);
-				saveButton.setEnabled(true);
-				cancelButton.setEnabled(true);
+				Button editSaveButton = (Button)findViewById(R.id.btnEditSave);
 				
-				mTokenName.setEnabled(true);
-			}};
-					
-		OnClickListener saveBtnListener = new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				mToken.setName(mTokenName.getText().toString());
-				
-				Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-				myIntent.putExtra("fragment_sel", 1);
-				startActivity(myIntent);
+				if (editing){
+					mTokenName.setEnabled(false);
+					mToken.setName(mTokenName.getText().toString());
+					editSaveButton.setText(R.string.button_edit);
+					editing = false;
+				} else {
+					mTokenName.setEnabled(true);
+					editSaveButton.setText(R.string.button_save);
+					editing = true;
+				}
 			}};
 			
 		// Listener to listen for long clicks on the buttons within the grid
@@ -120,8 +107,7 @@ public class TokenActivity extends Activity {
 				startActivity(myIntent);
 			}};
 		
-		editBtn.setOnClickListener(editBtnListener);
-		saveBtn.setOnClickListener(saveBtnListener);
+		editSaveBtn.setOnClickListener(editSaveBtnListener);
 		cancelBtn.setOnClickListener(cancelBtnListener);
 		tableTopBtn.setOnClickListener(tableTopBtnListener);
 	}

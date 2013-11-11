@@ -90,16 +90,10 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnEdit"
+        android:id="@+id/btnEditSave"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_edit" />
-
-    <Button
-        android:id="@+id/btnSave"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_save" />
 
     <Button
         android:id="@+id/btnCancel"
