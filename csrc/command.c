@@ -31,7 +31,7 @@ int executeCmd(msg * currentMsg) {
 	case SEND_TOKEN:
 		printf("Entering send Token\n");
 		if(loadedTokenCnt < MAX_TOKENS){
-			receiveToken((char *)currentMsg->buffer, &tokenArr[loadedTokenCnt]);
+			receiveTokenPixArr((char *)currentMsg->buffer, &tokenArr[loadedTokenCnt]);
 			loadedTokenCnt++;
 		} else {
 			printf("Error when Android sending token!\n");
