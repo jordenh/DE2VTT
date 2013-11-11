@@ -24,14 +24,17 @@ public class SendableBitmap implements Sendable {
 		
 		int size = bmp.getRowBytes() * bmp.getHeight();
 		ByteBuffer b = ByteBuffer.allocate(size);
+
 		bmp.copyPixelsToBuffer(b);
 		byte pixelBuf[] = b.array();
 		
 		byte ret[] = new byte[widthBuf.length + heightBuf.length + pixelBuf.length];
-		int cursor = 0;
-		putInt(widthBuf, ret, cursor);
-		putInt(heightBuf, ret, cursor);
-		System.arraycopy(pixelBuf, 0, ret, cursor, pixelBuf.length);
+		//Integer cursor = new Integer(0);
+		//putInt(widthBuf, ret, cursor);
+		//putInt(heightBuf, ret, cursor);
+		System.arraycopy(widthBuf, 0, ret, 0, widthBuf.length);
+		System.arraycopy(heightBuf, 0, ret, 4, heightBuf.length);
+		System.arraycopy(pixelBuf, 0, ret, 8, pixelBuf.length);
 		
 		return ret;
 	}

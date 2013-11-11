@@ -29,7 +29,7 @@ unsigned int isIDSaved(msg * inMsg);
 
 unsigned int storeNewID(int ID);
 
-msg * getMessage(void);
+void getMessage(msg * inMsg);
 
 void sendMessage(msg * sendMsg);
 

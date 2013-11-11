@@ -26,8 +26,6 @@ void setupMessage(void) {
 	//clear buffer:
 	char c;
 	//while((c = fgetc(uart)) != '\n' && c != EOF);
-
-	printf("I'm escaping! yay\n");
 }
 
 // checks if the ID is saved in the connUserIDs array, and returns true if it exists, false otherwise.
@@ -56,10 +54,9 @@ unsigned int storeNewID(int ID) {
 	return 0;
 }
 
-msg * getMessage(void){
+void getMessage(msg * inMsg){
 	int i;
 	unsigned char msgLen[4];
-	msg * inMsg = malloc(sizeof(msg));
 	inMsg->len = 0;
 
 	//while (fgetc(uart) == 0) {}; // TBD - have this step time out. -- Probably need to
@@ -99,7 +96,7 @@ msg * getMessage(void){
 
 	printf("\n");
 
-	return inMsg;
+	return;
 }
 
 //requires: pre-allocated char buffer

@@ -118,11 +118,11 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
                 x+= tmp
                 msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
                 data += tmp
-                
+            
             # 5 is for command length, and 4 bytes of message length info
             while len(data) < (msgLen + 5): 
                 data += conn.recv(msgLen)
-                print("received ", len(data), " data so far!")
+                print("received ", len(data), " data of ", msgLen, " so far!")
             
             #data = conn.recv(BUFF)
             if not data: break
@@ -134,7 +134,7 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
             print("data: ", data)
 
             uart_send_queue.put(data)
-
+            
         if not tcp_send_queue.empty():
             data = tcp_send_queue.get()
             conn.send(data)

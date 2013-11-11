@@ -31,14 +31,15 @@ int executeCmd(msg * currentMsg) {
 	case SEND_TOKEN:
 		printf("Entering send Token\n");
 		if(loadedTokenCnt < MAX_TOKENS){
-			receiveToken((char *)currentMsg->buffer, &tokenArr[loadedTokenCnt]);
+			receiveTokenPixArr(currentMsg->buffer, &tokenArr[loadedTokenCnt]);
 			loadedTokenCnt++;
 		} else {
 			printf("Error when Android sending token!\n");
 			return -1;
 		}
 
-		drawBmp(&tokenArr[loadedTokenCnt-1], 0, 0);
+		printf("About to draw the token!\n");
+		drawBmp(&tokenArr[loadedTokenCnt-1], 10, 10);
 
 		break;
 	case GET_DM:
