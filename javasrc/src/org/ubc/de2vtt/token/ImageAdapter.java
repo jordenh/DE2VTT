@@ -11,9 +11,14 @@ import android.widget.ImageView;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
+    private TokenManager tokMan = TokenManager.getSharedInstance();
 
     public ImageAdapter(Context c) {
         mContext = c;
+        mThumbIds = new Integer[tokMan.size()];
+        for (int i = 0; i < tokMan.size(); i++) {
+        	mThumbIds[i] = new Integer(tokMan.getKey(i));
+		}
     }
 
     public int getCount() {
@@ -39,28 +44,12 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-
-        imageView.setImageResource(mThumbIds[position]);
+        
+        Token tok = tokMan.get(mThumbIds[position].intValue());
+        imageView.setImageBitmap(tok.getBitmap());
         return imageView;
     }
 
     // references to our images
-    private Integer[] mThumbIds = {
-            R.drawable.earth, R.drawable.mars,
-            R.drawable.jupiter, R.drawable.mercury,
-            R.drawable.neptune, R.drawable.saturn,
-            R.drawable.uranus, R.drawable.venus,
-            R.drawable.earth, R.drawable.mars,
-            R.drawable.jupiter, R.drawable.mercury,
-            R.drawable.neptune, R.drawable.saturn,
-            R.drawable.uranus, R.drawable.venus,
-            R.drawable.earth, R.drawable.mars,
-            R.drawable.jupiter, R.drawable.mercury,
-            R.drawable.neptune, R.drawable.saturn,
-            R.drawable.uranus, R.drawable.venus,
-            R.drawable.earth, R.drawable.mars,
-            R.drawable.jupiter, R.drawable.mercury,
-            R.drawable.neptune, R.drawable.saturn,
-            R.drawable.uranus, R.drawable.venus
-    };
+    private Integer[] mThumbIds;
 }

@@ -1,6 +1,7 @@
 package org.ubc.de2vtt.fragments;
 
 import org.ubc.de2vtt.R;
+import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
@@ -9,6 +10,8 @@ import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.receivers.Receiver;
 import org.ubc.de2vtt.comm.receivers.SingleReceiver;
 import org.ubc.de2vtt.comm.sendables.SendableBitmap;
+import org.ubc.de2vtt.token.Token;
+import org.ubc.de2vtt.token.TokenManager;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -16,6 +19,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -72,6 +76,12 @@ public class SendImageFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				sendToken();
+				ImageView imgView = (ImageView) mParentView.findViewById(R.id.imgView);
+				Bitmap bmp = ((BitmapDrawable)imgView.getDrawable()).getBitmap();
+				
+				Token tok = new Token("hi", bmp);
+				TokenManager man = TokenManager.getSharedInstance();
+				man.add(tok);
 			}
 		});
 		

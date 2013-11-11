@@ -27,6 +27,7 @@ public class Token {
 	
 	static private String[] filePathColumn = { MediaStore.Images.Media.DATA };
 	static private String separator = "||";
+	static private int count = 0;
 	
 	private int x;
 	private int y;
@@ -43,6 +44,16 @@ public class Token {
 		x = (int) data[X_INDEX];
 		y = (int) data[Y_INDEX];
 		bmp = null;
+		picturePath = null;
+	}
+	
+	public Token(String tokName, Bitmap bitmap)
+	{
+		name = tokName;
+		id = count++;
+		x = 0;
+		y = 0;
+		bmp = bitmap;
 		picturePath = null;
 	}
 	

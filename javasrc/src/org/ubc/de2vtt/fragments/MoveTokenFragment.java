@@ -29,7 +29,7 @@ public class MoveTokenFragment extends Fragment {
 		mParentView = inflater.inflate(R.layout.fragment_movetoken,  container, false);
 		mActivity = this.getActivity();
 		
-		mGridView = (GridView) mParentView.findViewById(R.id.gridview);
+		mGridView = (GridView)mParentView.findViewById(R.id.gridview);
 	    mGridView.setAdapter(new ImageAdapter(this.mActivity));
 		
 	    setupOnClickListeners();
