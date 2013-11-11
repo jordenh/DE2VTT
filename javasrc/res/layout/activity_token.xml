@@ -26,14 +26,13 @@
             <requestFocus />
         </EditText>
 
-        <Button
-            android:id="@+id/btnEditName"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/button_edit" />
-
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnEdit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_edit" />
 
     <Button
         android:id="@+id/btnSave"

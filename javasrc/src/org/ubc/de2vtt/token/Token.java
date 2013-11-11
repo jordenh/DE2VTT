@@ -33,7 +33,6 @@ public class Token {
 	private String name;
 	private String picturePath;
 	
-	
 	public Token(Received rcv) {
 		name = " ";
 		// Check command
