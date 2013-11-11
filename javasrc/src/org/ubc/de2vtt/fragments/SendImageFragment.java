@@ -26,6 +26,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 public class SendImageFragment extends Fragment {
 	private static final String TAG = SendImageFragment.class.getSimpleName();	
@@ -46,7 +47,7 @@ public class SendImageFragment extends Fragment {
 		if (bitmap != null) {
 			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
 			imageView.setImageBitmap(bitmap);
-
+			imageView.setScaleType(ScaleType.FIT_XY);
 		}
 		
 		updateButtonState();
@@ -119,8 +120,8 @@ public class SendImageFragment extends Fragment {
 	public void sendImage(Command cmd, int x, int y) {
 		if (cmd == Command.SEND_MAP || cmd == Command.SEND_TOKEN) {
 			if (bitmap != null) {
-				Bitmap scaled = Bitmap.createScaledBitmap(bitmap, x, y, false);
-				SendableBitmap bmp = new SendableBitmap(scaled);
+				//Bitmap scaled = Bitmap.createScaledBitmap(bitmap, x, y, false);
+				SendableBitmap bmp = new SendableBitmap(bitmap);
 				Message msg = new Message(cmd, bmp);
 				Messenger messenger = Messenger.GetSharedInstance();
 				
@@ -152,7 +153,9 @@ public class SendImageFragment extends Fragment {
 			imageView.setImageResource(0);
 
 			bitmap = BitmapFactory.decodeFile(picturePath);
-			imageView.setImageBitmap(bitmap);
+			bitmap = Bitmap.createScaledBitmap(bitmap, 20, 20, false);
+			Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+			imageView.setImageBitmap(scaled);
 			
 			//receiver = new Receiver(new TCPReadTimerTask());
 			updateButtonState();
