@@ -5,6 +5,7 @@ import org.ubc.de2vtt.fragments.ConnectionFragment;
 import org.ubc.de2vtt.fragments.MoveTokenFragment;
 import org.ubc.de2vtt.fragments.PlaceholderFragment;
 import org.ubc.de2vtt.fragments.SendImageFragment;
+import org.ubc.de2vtt.fragments.TableTopFragment;
 
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -138,6 +139,9 @@ public class MainActivity extends Activity {
     	fragment.setArguments(args);
     	
     	switch (position) {
+    		case 0:
+    			fragment = new TableTopFragment();
+    			break;
     		case 1:
     			fragment = new MoveTokenFragment();
     			break;
