@@ -225,7 +225,7 @@ public class Messenger {
 					e.printStackTrace();
 				}			
 			} else {
-				Log.v(TAG, "Attempt to receive message from non-open socket.");
+				Log.e(TAG, "Attempt to receive message from non-open socket.");
 			}
 			return rcv;
 		}
@@ -253,7 +253,7 @@ public class Messenger {
 				bytes_avail = in.available();
 			}
 			
-			Log.v(TAG, "Received " + data.size() + " chunks.");
+			//Log.v(TAG, "Received " + data.size() + " chunks.");
 			
 			int totalLen = 0;
 			for (int i = 0; i < data.size(); i++) {
@@ -268,7 +268,7 @@ public class Messenger {
 				cursor += partial.length;
 			}
 			
-			Log.v(TAG, "Total size is " + args.length);
+			//Log.v(TAG, "Total size is " + args.length);
 			
 			if (args.length > 4) {
 				rcv = new Received(args);

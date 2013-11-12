@@ -7,6 +7,7 @@ import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.receivers.Receiver;
+import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
 import org.ubc.de2vtt.comm.receivers.SingleReceiver;
 
 import android.app.Activity;
@@ -45,7 +46,7 @@ public class ConnectionFragment extends Fragment {
 		mActivity = this.getActivity();
 		active = true;
 		
-		receiver = new SingleReceiver(new ConnectionFragmentReceiveTask());
+		receiver = new RepeatingReceiver(new ConnectionFragmentReceiveTask(), 500);
 		updateButtonStatus();
 		
 		return mParentView;

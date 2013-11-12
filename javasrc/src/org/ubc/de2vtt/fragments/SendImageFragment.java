@@ -8,6 +8,7 @@ import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.receivers.Receiver;
+import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
 import org.ubc.de2vtt.comm.receivers.SingleReceiver;
 import org.ubc.de2vtt.comm.sendables.SendableBitmap;
 import org.ubc.de2vtt.token.Token;
@@ -53,6 +54,7 @@ public class SendImageFragment extends Fragment {
 			imageView.setScaleType(ScaleType.FIT_XY);
 		}
 		
+		receiver = new RepeatingReceiver(new SendTokenReceiveTask(), 500);
 		updateButtonState();
 		
 		return mParentView;
@@ -144,6 +146,12 @@ public class SendImageFragment extends Fragment {
 	}
 	
 	@Override
+	public void onPause() {
+		super.onPause();
+		receiver.cancel();
+	}
+	
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && null != data) {
@@ -164,7 +172,7 @@ public class SendImageFragment extends Fragment {
 			bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
 			imageView.setImageBitmap(bitmap);
 			
-			receiver = new SingleReceiver(new SendTokenReceiveTask());
+			//receiver = new SingleReceiver(new SendTokenReceiveTask());
 			updateButtonState();
         }
     }
@@ -175,6 +183,7 @@ public class SendImageFragment extends Fragment {
 			Log.v(TAG, "Receive action called.");
 			TokenManager man = TokenManager.getSharedInstance();
 			Token newTok = new Token(rcv);
+			Log.v(TAG, "New token has id " + newTok.getId());
 			man.add(newTok);
 		}
 	}
