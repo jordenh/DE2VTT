@@ -8,6 +8,7 @@ import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.receivers.Receiver;
+import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
 import org.ubc.de2vtt.comm.receivers.SingleReceiver;
 import org.ubc.de2vtt.comm.sendables.SendableBitmap;
 import org.ubc.de2vtt.token.Token;
@@ -30,16 +31,17 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 public class SendImageFragment extends Fragment {
 	private static final String TAG = SendImageFragment.class.getSimpleName();	
 	
 	protected View mParentView;
-	private Activity mActivity;
 	private Receiver receiver;
 	
 	private static final int REQUEST_CODE = 1;
     private Bitmap bitmap;
+    private Uri selectedImage;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -50,12 +52,11 @@ public class SendImageFragment extends Fragment {
 		if (bitmap != null) {
 			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
 			imageView.setImageBitmap(bitmap);
-
+			imageView.setScaleType(ScaleType.FIT_XY);
 		}
 		
+		receiver = new RepeatingReceiver(new SendTokenReceiveTask(), 500);
 		updateButtonState();
-		
-		mActivity = this.getActivity();
 		
 		return mParentView;
 	}
@@ -115,11 +116,11 @@ public class SendImageFragment extends Fragment {
 		intent.setType("image/*");
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 
-		startActivityForResult(Intent.createChooser(intent,"Select Picture"), REQUEST_CODE);
+		startActivityForResult(Intent.createChooser(intent,"Select Image"), REQUEST_CODE);
     }
 	
 	public void sendToken() {
-		sendImage(Command.SEND_TOKEN, 30, 30);
+		sendImage(Command.SEND_TOKEN, 20, 20);
 	}
 	
 	public void sendMap() {
@@ -130,12 +131,12 @@ public class SendImageFragment extends Fragment {
 		if (cmd == Command.SEND_MAP || cmd == Command.SEND_TOKEN) {
 			if (bitmap != null) {
 				Bitmap scaled = Bitmap.createScaledBitmap(bitmap, x, y, false);
-				SendableBitmap bmp = new SendableBitmap(scaled);
+				SendableBitmap bmp = new SendableBitmap(scaled.copy(Bitmap.Config.RGB_565, false));
 				Message msg = new Message(cmd, bmp);
 				Messenger messenger = Messenger.GetSharedInstance();
 				
 				messenger.send(msg);
-				receiver = new SingleReceiver(new SendImageReceiveTask());
+				receiver = new SingleReceiver(new SendTokenReceiveTask());
 				updateButtonState();
 			} else {
 				Log.v(TAG, "Attempt to send null bitmap.");
@@ -146,10 +147,16 @@ public class SendImageFragment extends Fragment {
 	}
 	
 	@Override
+	public void onPause() {
+		super.onPause();
+		receiver.cancel();
+	}
+	
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && null != data) {
-			Uri selectedImage = data.getData();
+			selectedImage = data.getData();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
 			Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
 			cursor.moveToFirst();
@@ -160,33 +167,27 @@ public class SendImageFragment extends Fragment {
 			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
 
 			imageView.setImageResource(0);
-
-			bitmap = BitmapFactory.decodeFile(picturePath);
-			imageView.setImageBitmap(bitmap);
 			
-			//receiver = new Receiver(new TCPReadTimerTask());
+			
+			bitmap = BitmapFactory.decodeFile(picturePath);
+			Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+			imageView.setImageBitmap(scaled);
+			
+			//receiver = new SingleReceiver(new SendTokenReceiveTask());
 			updateButtonState();
         }
     }
 	
-	private class SendImageReceiveTask extends ReceiveTask {
+	private class SendTokenReceiveTask extends ReceiveTask {
 		@Override
 		protected void performAction(Received rcv) {
 			Log.v(TAG, "Receive action called.");
-//			bitmap = rcv.DataToBitmap();
-//			
-//			mActivity.runOnUiThread(new Runnable() {
-//				@Override
-//				public void run() {
-//					ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
-//					imageView.setImageBitmap(bitmap);
-//				}		
-//			});
-			
-			//receiver.cancel();
+			TokenManager man = TokenManager.getSharedInstance();
+			Token newTok = new Token(rcv);
+			//newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
+			//newTok.setupBitmap(selectedImage);
+			Log.v(TAG, "New token has id " + newTok.getId());
+			man.add(newTok);
 		}
 	}
 }
-
-
-

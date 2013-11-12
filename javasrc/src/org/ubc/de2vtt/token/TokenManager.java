@@ -60,6 +60,7 @@ public class TokenManager {
 		new TokenLoad().execute();
 	}
 	
+	// TODO: token ids need to be assigned by the DE2 each session
 	private class TokenLoad extends AsyncTask<Void, Integer, Void> {
 
 		@Override

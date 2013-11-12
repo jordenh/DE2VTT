@@ -36,7 +36,7 @@ void handleKeyInput(void){
 		if(interMsg.buffer == NULL) {
 			free(interMsg.buffer);
 		}
-		interMsg = *getMessage();
+		//interMsg = *getMessage();
 	}
 
 	if (!key1 && (edgeDetect1 == 0)) {

@@ -10,6 +10,7 @@
         <item>Tokens</item>
         <item>Game Config</item>
         <item>Send Image</item>
+        <item>Pass Message</item>
         <item>Connection</item>
     </string-array>
 
@@ -39,6 +40,12 @@
     <!-- Token Activity -->
     <string name="title_activity_token">Token Settings</string>
     <string name="view_tabletop">View on Tabletop</string>
+
+    <!-- Pass Message Fragment -->
+    <string name="choose_rcvr">Choose Recipient</string>
+    <string name="out_msg">Outgoing Messages</string>
+    <string name="in_msg">Incoming Messages</string>
+    <string name="sender_ID">Sender\'s ID:</string>
     <string name="id">Id</string>
     <string name="name">Name</string>
     <string name="xy">X, Y</string>
