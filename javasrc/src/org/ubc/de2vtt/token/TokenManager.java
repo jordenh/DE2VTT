@@ -14,7 +14,7 @@ public class TokenManager {
 	static TokenManager sharedInstance;
 	private SparseArray<Token> tokenList;
 	
-	public TokenManager getSharedInstance() {
+	public static TokenManager getSharedInstance() {
 		if (sharedInstance == null) {
 			sharedInstance = new TokenManager();
 		}
@@ -60,6 +60,7 @@ public class TokenManager {
 		new TokenLoad().execute();
 	}
 	
+	// TODO: token ids need to be assigned by the DE2 each session
 	private class TokenLoad extends AsyncTask<Void, Integer, Void> {
 
 		@Override
@@ -83,6 +84,10 @@ public class TokenManager {
 	
 	public int size() {
 		return tokenList.size();
+	}
+	
+	public int getKey(int i) {
+		return tokenList.keyAt(i);
 	}
 	
 	public Token get(int i) {

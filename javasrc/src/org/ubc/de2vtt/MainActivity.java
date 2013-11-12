@@ -107,12 +107,14 @@ public class MainActivity extends Activity {
 
         Intent current = getIntent();
         Bundle b = current.getExtras();
-        if (b != null)
-        {
+        if (b != null) {
         	int fragment = b.getInt("fragment_sel");
             Toast.makeText(MainActivity.this, "" + fragment, Toast.LENGTH_SHORT).show();
             switchFragment(fragment);
+        } else {
+        	switchFragment(0);
         }
+        	
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();

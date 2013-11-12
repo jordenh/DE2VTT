@@ -6,6 +6,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.exceptions.BitmapNotSetupException;
 
 import android.content.ContentResolver;
@@ -22,25 +23,57 @@ public class Token {
 	private static final String TAG = Token.class.getSimpleName();
 	private static final int ID_INDEX = 0;
 	private static final int X_INDEX = 1;
-	private static final int Y_INDEX = 2;
+	private static final int Y_INDEX = 3;
+	private static final String NAME_PREFIX = "Token_";
 	
 	static private String[] filePathColumn = { MediaStore.Images.Media.DATA };
 	static private String separator = "||";
+	static private int count = 0;
 	
 	private int x;
 	private int y;
 	private int id;
 	private String name;
 	private String picturePath;
-	
+	private Bitmap bmp;
 	
 	public Token(Received rcv) {
-		name = " ";
 		// Check command
 		byte[] data = rcv.getData();
 		id = (int) data[ID_INDEX];
-		x = (int) data[X_INDEX];
-		y = (int) data[Y_INDEX];
+		x = getX(data);
+		y = getY(data);
+		bmp = null;
+		picturePath = null;
+		name = " ";
+	}
+	
+	private int getX(byte[] data) {
+		int x = getShort(data, X_INDEX);
+		return x;
+	}
+	
+	private int getY(byte[] data) {
+		int y = getShort(data, Y_INDEX);
+		return y;
+	}
+	
+	private int getShort(byte[] arr, int index) {
+		return (int) (arr[index] << 8 | arr[index + 1]);
+	}
+	
+	public Token(String tokName, Bitmap bitmap)
+	{
+		id = count++;
+		name = NAME_PREFIX + id;
+		x = 0;
+		y = 0;
+		bmp = bitmap;
+		picturePath = null;
+	}
+	
+	public SendableMove getSendable() {
+		return new SendableMove(id, x, y);
 	}
 	
 	public String encode() {
@@ -77,13 +110,16 @@ public class Token {
 	}
 	
 	public Bitmap getBitmap() {
+		if (bmp != null) {
+			return bmp;
+		}
+		
 		if (picturePath == null) {
 			Log.e(TAG, "Can't get a bitmap before it is setup.");
 			throw new BitmapNotSetupException();
 		} else {
 			BitmapDecoder dec = new BitmapDecoder();
 			dec.execute(picturePath);
-			Bitmap bmp = null;
 			try {
 				bmp = dec.get(3000, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
@@ -104,6 +140,7 @@ public class Token {
 		@Override
 		protected Bitmap doInBackground(String... params) {
 			Bitmap bmp = BitmapFactory.decodeFile(params[0]);
+			bmp = Bitmap.createScaledBitmap(bmp, 500, 500, false);
 			return bmp;
 		}
 		
@@ -113,14 +150,15 @@ public class Token {
 		byte[] data = rcv.getData();
 		int rcvId = data[ID_INDEX];
 		if (id == rcvId) {
-			x = (int) data[X_INDEX];
-			y = (int) data[Y_INDEX];
+			x = getX(data);
+			y = getY(data);
 		}
 	}
 	
 	public void move(int x, int y) {
 		this.x = x;
 		this.y = y;
+		// send?
 	}
 	
 	public void setName(String name) {
