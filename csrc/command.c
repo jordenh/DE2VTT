@@ -62,6 +62,7 @@ int executeCmd(msg * currentMsg) {
 
 		break;
 	case MOVE_TOKEN:
+		printf("In move_token\n");
 		moveTokenMsg(currentMsg);
 		break;
 
