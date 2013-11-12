@@ -19,7 +19,6 @@ public class TableTopFragment extends Fragment {
 	protected View mParentView;
 	private Activity mActivity;
 	private GridView mGridView;
-	private int[] mTokLoc;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

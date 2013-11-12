@@ -68,7 +68,7 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
 		res = findFirstMatch(pos);
 		
 		// if the grid has a token in it than a drag has been started 
-		if ((res != -1) && (res < 204)) {
+		if ((res != -1) && (res < width*height)) {
 			mStartPos = pos;
 			mTokIndex = res;
 			mDragStarted = true;
