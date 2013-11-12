@@ -62,6 +62,8 @@ void getMessage(msg * inMsg){
 	//while (fgetc(uart) == 0) {}; // TBD - have this step time out. -- Probably need to
 	//remove this line, since steven's middleman uart likely isnt passing 0's constatnly
 
+	fputc('\0', uart);
+
 	//obtain android ID
 	do {
 		inMsg->androidID = (int) fgetc(uart);
@@ -75,6 +77,7 @@ void getMessage(msg * inMsg){
 
 	//obtain length
 	for(i = ((sizeof(msgLen) / sizeof(msgLen[0])) - 1); i >= 0; i--) {
+		printf("about to fgetc\n");
 		msgLen[i] = fgetc(uart);
 		printf("received: msgLen[i] %d\n", msgLen[i]);
 		inMsg->len += (0xFF & msgLen[i]) << i*8;
@@ -87,12 +90,16 @@ void getMessage(msg * inMsg){
 	int tmp;
 	inMsg->buffer = malloc(inMsg->len * sizeof(char));
 
-	tmp = fread(inMsg->buffer, sizeof(char), inMsg->len, uart);
-	printf("num bytes read from serial stream: %d\n", tmp);
-
-	for(i = 0; i < inMsg->len; i++) {
-		printf("%c", *(inMsg->buffer + i));
+	if(inMsg->buffer) {
+		tmp = fread(inMsg->buffer, sizeof(char), inMsg->len, uart);
+		printf("num bytes read from serial stream: %d\n", tmp);
+	} else {
+		printf("Error, input Msg buffer not able to be allocated\n");
 	}
+
+//	for(i = 0; i < inMsg->len; i++) {
+//		printf("%c", *(inMsg->buffer + i));
+//	}
 
 	printf("\n");
 
@@ -121,8 +128,6 @@ void sendMessage(msg * sendMsg){
 		fputc(msgLen[i], uart);
 	}
 
-	// Send command - STUB
-	sendMsg->cmd = 0x7; // STUB FOR HANDSHAKE!
 	fputc(sendMsg->cmd, uart);
 
 	// Now send the actual message to the Middleman

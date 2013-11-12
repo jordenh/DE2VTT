@@ -104,6 +104,7 @@ def tcp_serial():
         conn_id+= 1
 
 def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
+    oldLen = 0
     while True:
         (sread, swrite, sexec) = select.select([conn], [], [], 0)
 
@@ -121,8 +122,11 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
             
             # 5 is for command length, and 4 bytes of message length info
             while len(data) < (msgLen + 5): 
+                oldLen = len(data)
                 data += conn.recv(msgLen)
                 print("received ", len(data), " data of ", msgLen, " so far!")
+                if oldLen == len(data):
+                    break;
             
             #data = conn.recv(BUFF)
             if not data: break
@@ -140,31 +144,37 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
             conn.send(data)
 
 def serial_worker(ser, tcp_send_queues, uart_send_queue):
+    ready = False
     while True:
         if ser.inWaiting() > 0:
 
             conn_id = ord(ser.read())
             print(conn_id)
+            
+            if conn_id == 0:
+                ready = True
+            else:
+                msgLen = 0
+                x = b''
+                for i in reversed(range(0, 4)):
+                    tmp=ser.read(1)
+                    x+= tmp
+                    msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
 
-            msgLen = 0
-            x = b''
-            for i in reversed(range(0, 4)):
-                tmp=ser.read(1)
-                x+= tmp
-                msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
+                print("length: ", str(msgLen))
+                # data includes the command in this code (+1)
+                data = ser.read(msgLen + 1)
+                print(data)
 
-            print("length: ", str(msgLen))
-            # data includes the command in this code (+1)
-            data = ser.read(msgLen + 1)
-            print(data)
+                #Push data to correct tcp queue
+                tcp_send_queues[conn_id - 1].put(x)
+                tcp_send_queues[conn_id - 1].put(data)
 
-            #Push data to correct tcp queue
-            tcp_send_queues[conn_id - 1].put(x)
-            tcp_send_queues[conn_id - 1].put(data)
-
-        if not uart_send_queue.empty():
+        if (not uart_send_queue.empty()) and ready:
+            print("about to ser_send ")
             data = uart_send_queue.get()
             ser.write(data)
+            ready = False
 
 def main():
     print("""Welcome to Middleman

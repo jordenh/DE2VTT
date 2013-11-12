@@ -8,12 +8,13 @@
 #include "input.h"
 #include "message.h"
 #include "command.h"
+#include "token.h"
 #include "io.h"
 #include "system.h"
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
 
-
+extern BMP map;
 
 int init(void) {
 	if (openSdCard() == -1) {
@@ -27,7 +28,7 @@ int init(void) {
 	//parseBmps();
 	setupAudio();
 	setupMessage();
-	initTokenArr();
+	initTokens();
 
 	initHardwareTimer();
 
@@ -60,6 +61,8 @@ int main() {
 		statusInt = executeCmd(&msg_m);
 		printf("Completed message command\n");
 
+		drawBmp(&map, 0, 0);
+		drawAllTokens();
 
 		if(statusInt == -1) {
 			printf("error occured in executing Command.\n");

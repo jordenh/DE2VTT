@@ -1,7 +1,8 @@
 
 #include "command.h"
 
-extern BMP * tokenArr;
+extern BMP map;
+extern token * tokenArr;
 extern int loadedTokenCnt;
 
 int nopTest(void) {
@@ -17,6 +18,7 @@ int executeCmd(msg * currentMsg) {
 	}
 
 	unsigned int nextCmd = currentMsg->cmd;//cmdInt;
+	msg * rspnsMsg;
 
 	switch ((command)nextCmd) {
 	case CONNECT:
@@ -26,20 +28,31 @@ int executeCmd(msg * currentMsg) {
 
 		break;
 	case SEND_MAP:
+		printf("Entering send SEND_MAP\n");
+		if(loadedTokenCnt < MAX_TOKENS){
+			receiveTokenPixArr(currentMsg->buffer, &map);
+			loadedTokenCnt++;
+		} else {
+			printf("Error when Android sending map!\n");
+			return -1;
+		}
 
 		break;
 	case SEND_TOKEN:
 		printf("Entering send Token\n");
-		if(loadedTokenCnt < MAX_TOKENS){
-			receiveTokenPixArr(currentMsg->buffer, &tokenArr[loadedTokenCnt]);
+		token *newTok = allocateToken();
+		if(newTok){
+			receiveTokenPixArr(currentMsg->buffer, &(newTok->bmp));
 			loadedTokenCnt++;
 		} else {
 			printf("Error when Android sending token!\n");
 			return -1;
 		}
-
-		printf("About to draw the token!\n");
-		drawBmp(&tokenArr[loadedTokenCnt-1], 10, 10);
+		// respond with token ID
+		rspnsMsg = createResponsesMsg(currentMsg, newTok);
+		sendMessage(rspnsMsg);
+		free(rspnsMsg->buffer);
+		free(rspnsMsg);
 
 		break;
 	case GET_DM:

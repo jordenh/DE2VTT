@@ -1,17 +1,5 @@
 #include "bmp.h"
 
-
-BMP tokenArr[MAX_TOKENS];
-int loadedTokenCnt = 0;
-
-void initTokenArr(void) {
-	int i;
-	for(i = 0; i < MAX_TOKENS; i++) {
-		if(tokenArr[i].color) free(tokenArr[i].color);
-	}
-	loadedTokenCnt = 0;
-}
-
 void parseBmp (char *fileName, BMP *bmp) {
 	int i, j, k;
 	char b, g, r;
@@ -172,9 +160,10 @@ void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 			for(j = 0; j < bmp->infoheader.width; j++ ){
 				offset = rowOffset + j;
 
-				r = (buffer[cursor++] >> 3) & 0xF1;
-				g = (buffer[cursor++] >> 2) & 0xFC;
-				b = (buffer[cursor++] >> 3) & 0xF1;
+				r = (buffer[cursor++] >> 3) & 0x1F;
+				g = (buffer[cursor++] >> 2) & 0x3F;
+				b = (buffer[cursor++] >> 3) & 0x1F;
+				cursor++; // get rid of alpha.
 
 				//Filter out the pink pixels
 				if(b == 0x1E && g == 0 && r == 0x1E) {

@@ -3,6 +3,8 @@
 
 #include "message.h"
 #include "bmp.h"
+#include "token.h"
+#include "utilities.h"
 
 typedef enum command{
 	CONNECT,
