@@ -40,7 +40,7 @@ public class Token {
 	public Token(Received rcv) {
 		// Check command
 		byte[] data = rcv.getData();
-		id = (int) data[ID_INDEX];
+		id = (int) data[ID_INDEX] + 1;
 		x = getX(data);
 		y = getY(data);
 		bmp = null;

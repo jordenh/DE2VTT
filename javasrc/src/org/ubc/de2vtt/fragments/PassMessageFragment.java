@@ -12,6 +12,7 @@ import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.receivers.Receiver;
 import org.ubc.de2vtt.comm.receivers.SingleReceiver;
 import org.ubc.de2vtt.comm.sendables.SendableBitmap;
+import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.fragments.ConnectionFragment.ConnectionFragmentReceiveTask;
 
 import android.app.Activity;
@@ -104,8 +105,10 @@ public class PassMessageFragment extends Fragment {
 		//String ID = sp.getSelectedItem().toString();
 		msg += et.getText().toString() + '\0';
 		
-		mMessenger.sendStringMessage(msg, Command.PASS_MSG);
-
+		//mMessenger.sendStringMessage(msg, Command.PASS_MSG);
+		SendableMove mv = new SendableMove(1, 50, 50);
+		Message toSend = new Message(Command.MOVE_TOKEN, mv);
+		mMessenger.send(toSend);
 	}
 	
 	public class ConnectionFragmentReceiveTask extends ReceiveTask {
