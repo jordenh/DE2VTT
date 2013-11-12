@@ -85,6 +85,10 @@ public class TokenManager {
 		return tokenList.size();
 	}
 	
+	public int getKey(int i) {
+		return tokenList.keyAt(i);
+	}
+	
 	public Token get(int i) {
 		return tokenList.get(i);
 	}

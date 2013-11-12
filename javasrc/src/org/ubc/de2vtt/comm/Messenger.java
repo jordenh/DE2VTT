@@ -187,6 +187,8 @@ public class Messenger {
 		return r;
 	}
 
+	// TODO: would be nice to be able to recover from errors
+	// nicer to not have errors though
 	private Received attemptReceiveRecovery(Received r) {
 		SocketReceiver task;
 		task = (SocketReceiver) new SocketReceiver();

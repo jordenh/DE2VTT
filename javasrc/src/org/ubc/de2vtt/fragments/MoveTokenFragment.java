@@ -29,7 +29,7 @@ public class MoveTokenFragment extends Fragment {
 		mParentView = inflater.inflate(R.layout.fragment_movetoken,  container, false);
 		mActivity = this.getActivity();
 		
-		mGridView = (GridView) mParentView.findViewById(R.id.gridview);
+		mGridView = (GridView)mParentView.findViewById(R.id.gridview);
 	    mGridView.setAdapter(new ImageAdapter(this.mActivity));
 		
 	    setupOnClickListeners();
@@ -60,6 +60,10 @@ public class MoveTokenFragment extends Fragment {
 				Toast.makeText(MoveTokenFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
 				
 				Intent myIntent = new Intent(mActivity.getApplicationContext(), TokenActivity.class);
+
+				int tokID = (int)mGridView.getAdapter().getItemId(position);
+				myIntent.putExtra("token_id", tokID);
+				
 				startActivity(myIntent);
 				
 				return false;
