@@ -41,6 +41,7 @@ public class SendImageFragment extends Fragment {
 	
 	private static final int REQUEST_CODE = 1;
     private Bitmap bitmap;
+    private Uri selectedImage;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -130,7 +131,7 @@ public class SendImageFragment extends Fragment {
 		if (cmd == Command.SEND_MAP || cmd == Command.SEND_TOKEN) {
 			if (bitmap != null) {
 				Bitmap scaled = Bitmap.createScaledBitmap(bitmap, x, y, false);
-				SendableBitmap bmp = new SendableBitmap(scaled);
+				SendableBitmap bmp = new SendableBitmap(scaled.copy(Bitmap.Config.RGB_565, false));
 				Message msg = new Message(cmd, bmp);
 				Messenger messenger = Messenger.GetSharedInstance();
 				
@@ -155,7 +156,7 @@ public class SendImageFragment extends Fragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && null != data) {
-			Uri selectedImage = data.getData();
+			selectedImage = data.getData();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
 			Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
 			cursor.moveToFirst();
@@ -170,6 +171,7 @@ public class SendImageFragment extends Fragment {
 			
 			bitmap = BitmapFactory.decodeFile(picturePath);
 			bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+			bitmap = bitmap.copy(Bitmap.Config.RGB_565, false);
 			imageView.setImageBitmap(bitmap);
 			
 			//receiver = new SingleReceiver(new SendTokenReceiveTask());
@@ -183,6 +185,8 @@ public class SendImageFragment extends Fragment {
 			Log.v(TAG, "Receive action called.");
 			TokenManager man = TokenManager.getSharedInstance();
 			Token newTok = new Token(rcv);
+			newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
+			//newTok.setupBitmap(selectedImage);
 			Log.v(TAG, "New token has id " + newTok.getId());
 			man.add(newTok);
 		}

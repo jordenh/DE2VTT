@@ -48,6 +48,10 @@ public class Token {
 		name = " ";
 	}
 	
+	public void setBmp(Bitmap bmp) {
+		this.bmp = bmp;
+	}
+	
 	private int getX(byte[] data) {
 		int x = getShort(data, X_INDEX);
 		return x;
