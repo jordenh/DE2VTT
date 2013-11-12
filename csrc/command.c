@@ -62,8 +62,9 @@ int executeCmd(msg * currentMsg) {
 
 		break;
 	case MOVE_TOKEN:
-
+		moveTokenMsg(currentMsg);
 		break;
+
 	case HANDSHAKE:
 		sendMessage(currentMsg);
 		break;

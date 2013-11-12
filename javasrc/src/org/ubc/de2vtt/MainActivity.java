@@ -170,7 +170,7 @@ public class MainActivity extends Activity {
 				fragment = new SendImageFragment();
 				break;
 			case 4:
-				fragment = new ConnectionFragment();
+				fragment = new PassMessageFragment();
 				break;
 			case 5:
 	    		fragment = new ConnectionFragment();

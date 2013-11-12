@@ -51,6 +51,19 @@ void drawAllTokens(void) {
 	}
 }
 
+void moveTokenMsg(msg * moveMsg){
+	unsigned int tokenID = (unsigned int)(*(moveMsg->buffer));
+	unsigned int x1 = (unsigned int)(*(moveMsg->buffer + 1));
+	unsigned int x0 = (unsigned int)(*(moveMsg->buffer + 2));
+	unsigned int y1 = (unsigned int)(*(moveMsg->buffer + 3));
+	unsigned int y0 = (unsigned int)(*(moveMsg->buffer + 4));
+
+	unsigned int x = x1*255 + x0;
+	unsigned int y = y1*255 + y0;
+
+	moveToken(tokenID, x, y);
+}
+
 void moveToken(unsigned int tokenID, int x, int y) {
 	int i;
 	for (i = 0; i < MAX_TOKENS; i++) {
