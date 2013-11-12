@@ -14,7 +14,7 @@ public class TokenManager {
 	static TokenManager sharedInstance;
 	private SparseArray<Token> tokenList;
 	
-	public TokenManager getSharedInstance() {
+	public static TokenManager getSharedInstance() {
 		if (sharedInstance == null) {
 			sharedInstance = new TokenManager();
 		}
