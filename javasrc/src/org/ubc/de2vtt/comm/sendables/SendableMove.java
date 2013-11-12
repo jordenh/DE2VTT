@@ -18,10 +18,10 @@ public class SendableMove implements Sendable {
 		data[0] = (byte) tokenID;
 		
 		byte xBuf[] = ByteBuffer.allocate(4).putInt(x).array();
-		System.arraycopy(xBuf, 0, data, 1, 2);
+		System.arraycopy(xBuf, 2, data, 1, 2);
 		
 		byte yBuf[] = ByteBuffer.allocate(4).putInt(y).array();
-		System.arraycopy(yBuf, 0, data, 3, 2);
+		System.arraycopy(yBuf, 2, data, 3, 2);
 
 		return data;
 	}

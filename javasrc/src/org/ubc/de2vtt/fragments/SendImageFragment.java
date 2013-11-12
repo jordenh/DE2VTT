@@ -170,9 +170,8 @@ public class SendImageFragment extends Fragment {
 			
 			
 			bitmap = BitmapFactory.decodeFile(picturePath);
-			bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
-			bitmap = bitmap.copy(Bitmap.Config.RGB_565, false);
-			imageView.setImageBitmap(bitmap);
+			Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+			imageView.setImageBitmap(scaled);
 			
 			//receiver = new SingleReceiver(new SendTokenReceiveTask());
 			updateButtonState();
@@ -185,7 +184,7 @@ public class SendImageFragment extends Fragment {
 			Log.v(TAG, "Receive action called.");
 			TokenManager man = TokenManager.getSharedInstance();
 			Token newTok = new Token(rcv);
-			newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
+			//newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
 			//newTok.setupBitmap(selectedImage);
 			Log.v(TAG, "New token has id " + newTok.getId());
 			man.add(newTok);
