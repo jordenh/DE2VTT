@@ -1,6 +1,5 @@
 package org.ubc.de2vtt.tabletop;
 
-
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
@@ -15,8 +14,9 @@ import android.widget.ImageView;
 public class TokenAdapter extends BaseAdapter {
 
 	private static final int width = 12;
+	private static final int blackId = R.drawable.black;
+	
 	private Context mContext;
-	private int blackId = R.drawable.black;
 	private Integer[] mThumbIds = new Integer[204];
 	private boolean[] isBlack = new boolean[204];
 	private TokenManager tokMan = TokenManager.getSharedInstance();
