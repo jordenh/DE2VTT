@@ -21,6 +21,8 @@ void removeToken(unsigned int tokenID);
 
 void drawAllTokens(void);
 
+void moveTokenMsg(msg * moveMsg);
+
 void moveToken(unsigned int tokenID, int x, int y);
 
 msg * createResponsesMsg(msg * initialMsg, token * curTok);

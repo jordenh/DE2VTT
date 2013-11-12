@@ -33,5 +33,7 @@ void getMessage(msg * inMsg);
 
 void sendMessage(msg * sendMsg);
 
+void passMsg(msg * passMsg);
+
 
 #endif /* MESSAGE_H_ */

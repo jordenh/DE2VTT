@@ -131,7 +131,7 @@ void receiveToken (char *buffer, BMP *bmp) {
 void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 	unsigned char sizeArr[4];
 	int i, j;
-	char b, g, r;
+	char byte1, byte2;
 	int pixels, rowOffset, offset;
 	unsigned int cursor = 0;
 
@@ -160,25 +160,11 @@ void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 			for(j = 0; j < bmp->infoheader.width; j++ ){
 				offset = rowOffset + j;
 
-				r = (buffer[cursor++] >> 3) & 0x1F;
-				g = (buffer[cursor++] >> 2) & 0x3F;
-				b = (buffer[cursor++] >> 3) & 0x1F;
-				cursor++; // get rid of alpha.
+				byte1 = buffer[cursor++];
+				byte2 = buffer[cursor++];
 
-				//Filter out the pink pixels
-				if(b == 0x1E && g == 0 && r == 0x1E) {
-					bmp->color[offset] = 0x0;
-				} else {
-					bmp->color[offset] = (r << 11) | (g << 5) | b; //b5,g6,r5
-					//printf("%d,%d,%x,%x,%x,%i|",i, j, r,g ,b, bmp->color[offset]);
-				}
+				bmp->color[offset] = (byte2 << 8) | byte1;
 			}
-
-			/*if((BYTES_PER_PIXEL*bmp->infoheader.width) % 4 != 0) {
-				for (k = 0; k <  (4 - ((BYTES_PER_PIXEL * bmp->infoheader.width) % 4)); k++) {
-					readByteChar(buffer++);
-				}
-			}*/
 		}
 	} else {
 		printf("Error, didnt allocate memory for token color\n");
