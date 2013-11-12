@@ -4,10 +4,14 @@
 
 #include "altera_up_avalon_rs232.h"
 #include "system.h"
+#include "vga.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+
+#define NUM_USERS 5
+#define MAX_ALIAS_SIZE 40
 
 struct message {
 	unsigned int androidID;
@@ -25,7 +29,7 @@ unsigned int isIDSaved(msg * inMsg);
 
 unsigned int storeNewID(int ID);
 
-msg * getMessage(void);
+void getMessage(msg * inMsg);
 
 void sendMessage(msg * sendMsg);
 

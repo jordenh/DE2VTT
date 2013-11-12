@@ -4,6 +4,7 @@ import org.ubc.de2vtt.comm.Messenger;
 
 import org.ubc.de2vtt.fragments.ConnectionFragment;
 import org.ubc.de2vtt.fragments.MoveTokenFragment;
+import org.ubc.de2vtt.fragments.PassMessageFragment;
 import org.ubc.de2vtt.fragments.PlaceholderFragment;
 import org.ubc.de2vtt.fragments.SendImageFragment;
 
@@ -165,8 +166,11 @@ public class MainActivity extends Activity {
 			fragment = new SendImageFragment();
 			break;
 		case 4:
-			fragment = new ConnectionFragment();
-			break;
+    		fragment = new PassMessageFragment();
+    		break;
+    	case 5:
+    		fragment = new ConnectionFragment();
+    		break;
 		}
 
 		FragmentManager fragmentManager = getFragmentManager();

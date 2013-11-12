@@ -2,6 +2,9 @@
 #define COMMAND_H_
 
 #include "message.h"
+#include "bmp.h"
+#include "token.h"
+#include "utilities.h"
 
 typedef enum command{
 	CONNECT,
@@ -11,7 +14,9 @@ typedef enum command{
 	GET_DM,
 	RELEASE_DM,
 	MOVE_TOKEN,
-	HANDSHAKE
+	HANDSHAKE,
+	PASS_MSG,
+	UPDATE_ALIAS
 } command;
 
 int nopTest(void);

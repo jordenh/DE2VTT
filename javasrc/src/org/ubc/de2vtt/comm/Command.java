@@ -10,7 +10,9 @@ public enum Command {
 	GET_DM((byte)4),
 	RELEASE_DM((byte)5),
 	MOVE_TOKEN((byte)6),
-	HANDSHAKE((byte)7);
+	HANDSHAKE((byte)7),
+	PASS_MSG((byte)8),
+	UPDATE_ALIAS((byte)9);
 	
 	public byte code;
 	
@@ -38,6 +40,10 @@ public enum Command {
 			return MOVE_TOKEN;
 		case (byte)7:
 			return HANDSHAKE;
+		case (byte)8:
+			return PASS_MSG;
+		case (byte) 9:
+			return UPDATE_ALIAS;
 		default:
 			Log.v("Command", "Attempt to convert invalid command.");
 			return HANDSHAKE;
