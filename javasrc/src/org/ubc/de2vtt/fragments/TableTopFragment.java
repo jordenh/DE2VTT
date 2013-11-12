@@ -19,6 +19,7 @@ public class TableTopFragment extends Fragment {
 	protected View mParentView;
 	private Activity mActivity;
 	private GridView mGridView;
+	private int[] mTokLoc;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -27,11 +28,10 @@ public class TableTopFragment extends Fragment {
 
 		mGridView = (GridView) mParentView.findViewById(R.id.tabletop);
 	    mGridView.setAdapter(new TokenAdapter(this.mActivity));
-
+	    
 	    setupOnClickListeners();
 	  		
 		return mParentView;
-
 	}
 
 	private void setupOnClickListeners() {
@@ -42,6 +42,6 @@ public class TableTopFragment extends Fragment {
 	    };
 	    
 	    mGridView.setOnItemClickListener(shortListener);
-	    mGridView.setOnTouchListener(new TableTopOnTouchListener(42));
+	    mGridView.setOnTouchListener(new TableTopOnTouchListener());
 	}
 }

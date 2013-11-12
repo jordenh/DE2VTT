@@ -1,5 +1,8 @@
 package org.ubc.de2vtt.tabletop;
 
+import org.ubc.de2vtt.token.Token;
+import org.ubc.de2vtt.token.TokenManager;
+
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
@@ -10,13 +13,29 @@ import android.widget.ImageView;
 
 public class TableTopOnTouchListener implements View.OnTouchListener {
 
-	private static int mTokPos;
+	private static final int width = 12;
+	private int mTokPos[];
+	private int startPos;
+	private int tokIndex;
 	private boolean mDragStarted = false;
+	private TokenManager tokMan = TokenManager.getSharedInstance();
 	
-	public TableTopOnTouchListener(int tokLocation)
+	public TableTopOnTouchListener()
 	{
 		super();
-		mTokPos = tokLocation;
+		mTokPos = new int[tokMan.size()];
+		
+		int id, cell;
+        Token tok;
+        
+        for (int i = 0; i < tokMan.size(); i++) {
+        	id = tokMan.getKey(i);
+        	tok = tokMan.get(id);
+        	
+        	cell = tok.getX() + width*tok.getY();
+        	
+        	mTokPos[i] = cell;
+		}
 	}
 	
     // This is the method that the system calls when it dispatches a drag event to the
@@ -31,17 +50,25 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
               y = (int) event.getY();
               position = gridView.pointToPosition(x, y);
               
-              if (position == mTokPos)
+              int i = 0;
+              while (i < mTokPos.length)
               {
-            	  mDragStarted = true;
-            	  //Log.d("TableTop", "Drag Started on # " + position);
+            	  if (mTokPos[i] == position)
+            	  {
+            		  startPos = position;
+            		  tokIndex = i;
+            		  mDragStarted = true;
+            		  break;
+            	  }
+            	  
+            	  i++;
               }
           } else if (event.getAction() == MotionEvent.ACTION_UP) {
         	  x = (int) event.getX();
               y = (int) event.getY();
               position = gridView.pointToPosition(x, y);
               if (mDragStarted) {
-            	  ImageView srcImage = (ImageView)gridView.getChildAt(mTokPos);
+            	  ImageView srcImage = (ImageView)gridView.getChildAt(startPos);
             	  ImageView destImage = (ImageView)gridView.getChildAt(position);
             	  
             	  Bitmap srcBmp = ((BitmapDrawable)srcImage.getDrawable()).getBitmap();
@@ -50,12 +77,30 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
             	  srcImage.setImageBitmap(destBmp);
             	  destImage.setImageBitmap(srcBmp);
             	  
-            	  ((TokenAdapter)gridView.getAdapter()).swapThumbnails(mTokPos,  position);
+            	  ((TokenAdapter)gridView.getAdapter()).swapThumbnails(startPos,  position);
             	  
-            	  mTokPos = position;
+            	  mTokPos[tokIndex] = position;
             	  
             	  //Toast.makeText(this, "" + position, Toast.LENGTH_SHORT).show();
-            	  Log.d("TableTop", mTokPos + " drag to " + position);
+            	  Log.d("TableTopOnTouchListener", mTokPos[tokIndex] + " drag to " + position);
+            	 
+            	  Token tok = tokMan.get(tokMan.getKey(tokIndex));
+            	  tok.move(position%width, position/width);
+            	  Log.d("TableTopOnTouchListener", "Token now at (" + tok.getX() + ", " + tok.getY() + ")");
+            	  
+            	  int i = 0;
+                  while (i < mTokPos.length)
+                  {
+                	  if (mTokPos[i] == startPos)
+                	  {
+                		  tok = tokMan.get(tokMan.getKey(i));
+                		  srcImage.setImageBitmap(tok.getBitmap());
+                		  break;
+                	  }
+                	  
+                	  i++;
+                  }
+            	  
             	  mDragStarted = false;
               }
           }
