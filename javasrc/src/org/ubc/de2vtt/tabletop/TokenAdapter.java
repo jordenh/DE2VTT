@@ -28,6 +28,20 @@ public class TokenAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return 0;
     }
+    
+    public void swapThumbnails(int pos1, int pos2)
+    {
+    	if ((mThumbIds.length <= pos1) || (pos1 < 0)) {
+    		return;
+    	} else if ((mThumbIds.length <= pos2) || (pos2 < 0)) {
+    		return;
+    	}
+    	
+    	Integer tmp = mThumbIds[pos1];
+    	
+    	mThumbIds[pos1] = mThumbIds[pos2];
+    	mThumbIds[pos2] = tmp;
+    }	
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -45,7 +59,7 @@ public class TokenAdapter extends BaseAdapter {
         return imageView;
     }
     
-    private Integer[] mThumbIds = {
+    private static Integer[] mThumbIds = {
             R.drawable.black, R.drawable.black,
             R.drawable.black, R.drawable.black,
             R.drawable.black, R.drawable.black,
@@ -67,7 +81,7 @@ public class TokenAdapter extends BaseAdapter {
             R.drawable.black, R.drawable.black,
             R.drawable.black, R.drawable.black,
             R.drawable.black, R.drawable.black,
-            R.drawable.black, R.drawable.black,
+            R.drawable.earth, R.drawable.black,
             R.drawable.black, R.drawable.black,
             R.drawable.black, R.drawable.black,
             R.drawable.black, R.drawable.black,

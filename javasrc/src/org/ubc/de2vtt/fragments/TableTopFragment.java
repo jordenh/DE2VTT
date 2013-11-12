@@ -2,6 +2,7 @@ package org.ubc.de2vtt.fragments;
 
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.tabletop.TokenAdapter;
+import org.ubc.de2vtt.tabletop.TableTopOnTouchListener;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -41,5 +42,6 @@ public class TableTopFragment extends Fragment {
 	    };
 	    
 	    mGridView.setOnItemClickListener(shortListener);
+	    mGridView.setOnTouchListener(new TableTopOnTouchListener(42));
 	}
 }
