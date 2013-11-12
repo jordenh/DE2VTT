@@ -7,6 +7,7 @@ import org.ubc.de2vtt.fragments.MoveTokenFragment;
 import org.ubc.de2vtt.fragments.PassMessageFragment;
 import org.ubc.de2vtt.fragments.PlaceholderFragment;
 import org.ubc.de2vtt.fragments.SendImageFragment;
+import org.ubc.de2vtt.fragments.TableTopFragment;
 
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -151,26 +152,29 @@ public class MainActivity extends Activity {
 				long id) {
 			switchFragment(position);
 		}
-	}
-
+    }
+  
 	public void switchFragment(int position) {
 		Fragment fragment = new PlaceholderFragment();
 		Bundle args = new Bundle();
 		fragment.setArguments(args);
 
 		switch (position) {
-		case 1:
-			fragment = new MoveTokenFragment();
-			break;
-		case 3:
-			fragment = new SendImageFragment();
-			break;
-		case 4:
-    		fragment = new PassMessageFragment();
-    		break;
-    	case 5:
-    		fragment = new ConnectionFragment();
-    		break;
+			case 0:
+				fragment = new TableTopFragment();
+				break;
+			case 1:
+				fragment = new MoveTokenFragment();
+				break;
+			case 3:
+				fragment = new SendImageFragment();
+				break;
+			case 4:
+				fragment = new ConnectionFragment();
+				break;
+			case 5:
+	    		fragment = new ConnectionFragment();
+	    		break;
 		}
 
 		FragmentManager fragmentManager = getFragmentManager();
@@ -188,12 +192,7 @@ public class MainActivity extends Activity {
 		getActionBar().setTitle(title);
 	}
 
-	/**
-	 * Provides a static way to get the application context
-	 * 
-	 * @return application context
-	 */
-	static public Context getAppContext() {
-		return mContext;
-	}
+    static public Context getAppContext() {
+    	return mContext;
+    }
 }
