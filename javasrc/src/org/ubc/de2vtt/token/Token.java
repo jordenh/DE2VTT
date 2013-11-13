@@ -40,7 +40,7 @@ public class Token {
 	public Token(Received rcv) {
 		// Check command
 		byte[] data = rcv.getData();
-		id = (int) data[ID_INDEX] + 1;
+		id = (int) data[ID_INDEX];
 		x = getX(data);
 		y = getY(data);
 		bmp = null;
@@ -66,15 +66,15 @@ public class Token {
 		return (int) (arr[index] << 8 | arr[index + 1]);
 	}
 	
-	public Token(String tokName, Bitmap bitmap)
-	{
-		id = count++;
-		name = NAME_PREFIX + id;
-		x = 0;
-		y = 0;
-		bmp = bitmap;
-		picturePath = null;
-	}
+//	public Token(String tokName, Bitmap bitmap)
+//	{
+//		id = count++;
+//		name = NAME_PREFIX + id;
+//		x = 0;
+//		y = 0;
+//		bmp = bitmap;
+//		picturePath = null;
+//	}
 	
 	public SendableMove getSendable() {
 		return new SendableMove(id, x, y);

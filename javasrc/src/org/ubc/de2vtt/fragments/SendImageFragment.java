@@ -77,12 +77,12 @@ public class SendImageFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				sendToken();
-				ImageView imgView = (ImageView) mParentView.findViewById(R.id.imgView);
-				Bitmap bmp = ((BitmapDrawable)imgView.getDrawable()).getBitmap();
+				//ImageView imgView = (ImageView) mParentView.findViewById(R.id.imgView);
+				//Bitmap bmp = ((BitmapDrawable)imgView.getDrawable()).getBitmap();
 				
-				Token tok = new Token("hi", bmp);
-				TokenManager man = TokenManager.getSharedInstance();
-				man.add(tok);
+				//Token tok = new Token("hi", bmp);
+				//TokenManager man = TokenManager.getSharedInstance();
+				//man.add(tok);
 			}
 		});
 		
@@ -136,7 +136,7 @@ public class SendImageFragment extends Fragment {
 				Messenger messenger = Messenger.GetSharedInstance();
 				
 				messenger.send(msg);
-				receiver = new SingleReceiver(new SendTokenReceiveTask());
+				//receiver = new SingleReceiver(new SendTokenReceiveTask());
 				updateButtonState();
 			} else {
 				Log.v(TAG, "Attempt to send null bitmap.");
@@ -166,14 +166,13 @@ public class SendImageFragment extends Fragment {
 			cursor.close();
 			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
 
-			imageView.setImageResource(0);
-			
+			//imageView.setImageResource(0);
 			
 			bitmap = BitmapFactory.decodeFile(picturePath);
 			Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
 			imageView.setImageBitmap(scaled);
 			
-			//receiver = new SingleReceiver(new SendTokenReceiveTask());
+			receiver = new RepeatingReceiver(new SendTokenReceiveTask(), 500);
 			updateButtonState();
         }
     }
@@ -184,7 +183,7 @@ public class SendImageFragment extends Fragment {
 			Log.v(TAG, "Receive action called.");
 			TokenManager man = TokenManager.getSharedInstance();
 			Token newTok = new Token(rcv);
-			//newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
+			newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
 			//newTok.setupBitmap(selectedImage);
 			Log.v(TAG, "New token has id " + newTok.getId());
 			man.add(newTok);
