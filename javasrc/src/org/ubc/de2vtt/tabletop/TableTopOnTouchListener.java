@@ -1,6 +1,10 @@
 package org.ubc.de2vtt.tabletop;
 
 import org.ubc.de2vtt.R;
+import org.ubc.de2vtt.comm.Command;
+import org.ubc.de2vtt.comm.Message;
+import org.ubc.de2vtt.comm.Messenger;
+import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
 
@@ -13,6 +17,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 public class TableTopOnTouchListener implements View.OnTouchListener {
+	private static final String TAG = TableTopOnTouchListener.class.getSimpleName();
+	private static final int MAP_SCALE = 20;
 
 	private static final int width = 12;
 	private static final int height = 17;
@@ -98,6 +104,41 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
 		Bitmap destBmp = ((BitmapDrawable)destImage.getDrawable()).getBitmap();
 	
 		// determine if there is a token at the destination
+		setSrcDestination(pos, srcImage, destImage, srcBmp, destBmp);
+	
+		//((TokenAdapter)gridView.getAdapter()).swapThumbnails(mStartPos,  pos);
+	
+		// update the token location in the mTokPos array
+		mTokPos[mTokIndex] = pos;
+
+		Log.d(TAG, mTokPos[mTokIndex] + " drag to " + pos);
+	
+		// update the token itself
+		Token tok1 = mTokMan.get(mTokMan.getKey(mTokIndex));
+		tok1.move(pos%width, pos/width);
+		
+		Log.d(TAG, "Token now at (" + tok1.getX() + ", " + tok1.getY() + ")");
+	
+		// if there is another token at the same start position than show it
+		res = findFirstMatch(mStartPos);
+		
+		if (res != -1)
+		{
+				Token tok2 = mTokMan.get(mTokMan.getKey(res));
+				srcImage.setImageBitmap(tok2.getBitmap());
+		}
+		
+		SendableMove mv = new SendableMove(tok1.getId(), tok1.getX() * MAP_SCALE, tok1.getY() * MAP_SCALE);
+		Message msg = new Message(Command.MOVE_TOKEN, mv);
+		Messenger messenger = Messenger.GetSharedInstance();
+		messenger.send(msg);
+		
+		mDragStarted = false;
+	}
+
+	private void setSrcDestination(int pos, ImageView srcImage,
+			ImageView destImage, Bitmap srcBmp, Bitmap destBmp) {
+		int res;
 		res = findFirstMatch(pos);
 		
 		if (res == -1) {
@@ -111,30 +152,6 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
 			// set the ImageView at the end to the token
 			destImage.setImageBitmap(srcBmp);
 		}
-	
-		//((TokenAdapter)gridView.getAdapter()).swapThumbnails(mStartPos,  pos);
-	
-		// update the token location in the mTokPos array
-		mTokPos[mTokIndex] = pos;
-
-		Log.d("TableTopOnTouchListener", mTokPos[mTokIndex] + " drag to " + pos);
-	
-		// update the token itself
-		Token tok1 = mTokMan.get(mTokMan.getKey(mTokIndex));
-		tok1.move(pos%width, pos/width);
-		
-		Log.d("TableTopOnTouchListener", "Token now at (" + tok1.getX() + ", " + tok1.getY() + ")");
-	
-		// if there is another token at the same start position than show it
-		res = findFirstMatch(mStartPos);
-		
-		if (res != -1)
-		{
-				Token tok2 = mTokMan.get(mTokMan.getKey(res));
-				srcImage.setImageBitmap(tok2.getBitmap());
-		}
-		
-		mDragStarted = false;
 	}
 	
 	private int findFirstMatch(int pos) {

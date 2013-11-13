@@ -1,7 +1,6 @@
 package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.Messenger;
-
 import org.ubc.de2vtt.fragments.ConnectionFragment;
 import org.ubc.de2vtt.fragments.MoveTokenFragment;
 import org.ubc.de2vtt.fragments.PassMessageFragment;
@@ -19,6 +18,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +28,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
-
+	private static final String TAG = MainActivity.class.getSimpleName();
+	
 	private String[] mDrawerItems;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
@@ -155,6 +156,7 @@ public class MainActivity extends Activity {
     }
   
 	public void switchFragment(int position) {
+		Log.v(TAG, "Switching fragments.");
 		Fragment fragment = new PlaceholderFragment();
 		Bundle args = new Bundle();
 		fragment.setArguments(args);
