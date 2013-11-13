@@ -201,5 +201,9 @@ public class ConnectionFragment extends Fragment {
 	            }
 	        });
 	    }
+
+		@Override
+		protected void onFinishRun() {
+		}
 	}
 }

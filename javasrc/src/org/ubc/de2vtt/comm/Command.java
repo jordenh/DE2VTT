@@ -1,5 +1,7 @@
 package org.ubc.de2vtt.comm;
 
+import org.ubc.de2vtt.exceptions.InvalidCommandException;
+
 import android.util.Log;
 
 public enum Command {	
@@ -12,7 +14,9 @@ public enum Command {
 	MOVE_TOKEN((byte)6),
 	HANDSHAKE((byte)7),
 	PASS_MSG((byte)8),
-	UPDATE_ALIAS((byte)9);
+	UPDATE_ALIAS((byte)9),
+	OUTPUT_TOKEN_INFO((byte)10),
+	REMOVE_TOKEN((byte)11);
 	
 	public byte code;
 	
@@ -44,9 +48,12 @@ public enum Command {
 			return PASS_MSG;
 		case (byte) 9:
 			return UPDATE_ALIAS;
+		case (byte) 10:
+			return OUTPUT_TOKEN_INFO;
+		case (byte) 11:
+			return REMOVE_TOKEN;
 		default:
-			Log.v("Command", "Attempt to convert invalid command.");
-			return HANDSHAKE;
+			throw new InvalidCommandException();
 		}
 	}
 }

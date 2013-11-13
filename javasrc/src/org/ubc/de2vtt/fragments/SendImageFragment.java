@@ -188,5 +188,9 @@ public class SendImageFragment extends Fragment {
 			Log.v(TAG, "New token has id " + newTok.getId());
 			man.add(newTok);
 		}
+
+		@Override
+		protected void onFinishRun() {
+		}
 	}
 }

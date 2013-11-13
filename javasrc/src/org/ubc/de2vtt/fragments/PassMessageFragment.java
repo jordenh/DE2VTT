@@ -131,6 +131,10 @@ public class PassMessageFragment extends Fragment {
 	            }
 	        });
 	    }
+
+		@Override
+		protected void onFinishRun() {
+		}
 	}
 	
 }

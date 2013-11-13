@@ -2,22 +2,26 @@ package org.ubc.de2vtt.comm;
 
 import java.util.TimerTask;
 
-public abstract class ReceiveTask extends TimerTask {	
+import org.ubc.de2vtt.comm.mailbox.Mailbox;
+
+public class PerpetualReceiveTask extends TimerTask {
+	Mailbox mailbox;
+	
+	public PerpetualReceiveTask(Mailbox m) {
+		mailbox = m;
+	}
+	
 	public void run() {
 		Messenger messenger = Messenger.GetSharedInstance();
 		if (messenger.isConnected()) {
 			getMessage(messenger);
 		}
-		onFinishRun();
 	}
 	
 	private void getMessage(Messenger messenger) {
         Received rcv = messenger.receive();
         if (rcv != null) {
-            performAction(rcv);
+            mailbox.add(rcv);
         }
     }
-	
-	abstract protected void performAction(Received rcv);
-	abstract protected void onFinishRun();
 }

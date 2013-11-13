@@ -1,6 +1,9 @@
 package org.ubc.de2vtt;
 
+import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Messenger;
+import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.mailbox.Mailbox;
 import org.ubc.de2vtt.fragments.ConnectionFragment;
 import org.ubc.de2vtt.fragments.MoveTokenFragment;
 import org.ubc.de2vtt.fragments.PassMessageFragment;
@@ -70,6 +73,9 @@ public class MainActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 
+		Mailbox m = new Mailbox(this);
+		m.execute();
+		
 		// Attempt to connect
 		Messenger.GetSharedInstance();
 	}
@@ -187,6 +193,15 @@ public class MainActivity extends Activity {
 		setTitle(mDrawerItems[position]);
 		mTitle = mDrawerItems[position];
 		mDrawerLayout.closeDrawer(mDrawerList);
+	}
+	
+	public synchronized void onReceiveData(Received rcv) {
+		
+	}
+	
+	public boolean acceptCommand(Command cmd) {
+		// should be based on active fragment
+		return false;
 	}
 
 	@Override
