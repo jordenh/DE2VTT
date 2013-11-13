@@ -90,8 +90,11 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
 		pos = gridView.pointToPosition(x, y);
 		
 		// if the token isn't moving anywhere
-		if (mStartPos == pos)
-		{
+		if (mStartPos == pos) {
+			mDragStarted = false;
+			return;
+		} else if (pos == -1) {
+			mDragStarted = false;
 			return;
 		}
 		
