@@ -44,13 +44,13 @@ public class SendableBitmap implements Sendable {
 			sendPixBuf[j + 1] = (byte) d;
 		}
 		
-		byte ret[] = new byte[widthBuf.length + heightBuf.length + pixelBuf.length];
+		byte ret[] = new byte[widthBuf.length + heightBuf.length + sendPixBuf.length];
 		//Integer cursor = new Integer(0);
 		//putInt(widthBuf, ret, cursor);
 		//putInt(heightBuf, ret, cursor);
 		System.arraycopy(widthBuf, 0, ret, 0, widthBuf.length);
 		System.arraycopy(heightBuf, 0, ret, 4, heightBuf.length);
-		System.arraycopy(pixelBuf, 0, ret, 8, pixelBuf.length);
+		System.arraycopy(sendPixBuf, 0, ret, 8, sendPixBuf.length);
 		
 		return ret;
 	}
