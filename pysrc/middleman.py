@@ -71,7 +71,8 @@ def tcp_loopback():
         print("sent length: ", sent)
 
 def tcp_serial():
-    conn_id = 1
+    conn_id = 0
+    conn_map = {}
     tcp_send_queues = []
     uart_send_queue = queue.Queue()
 
@@ -92,6 +93,12 @@ def tcp_serial():
     while True:
         conn, addr = sock.accept()
 
+        if addr[0] in conn_map.keys():
+            conn_id = conn_map[addr[0]]
+        else:
+            conn_id += 1
+            conn_map[addr[0]] = conn_id
+
         tcp_send_queue = queue.Queue()
         tcp_send_queues.append(tcp_send_queue)
 
@@ -100,8 +107,6 @@ def tcp_serial():
         t = threading.Thread(target = tcp_worker, args = (conn, conn_id, tcp_send_queue, uart_send_queue))
         t.daemon = True
         t.start()
-
-        conn_id+= 1
 
 def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
     try:
@@ -158,7 +163,7 @@ def serial_worker(ser, tcp_send_queues, uart_send_queue):
 
             conn_id = ord(ser.read())
             print(conn_id)
-            
+
             if conn_id == 0:
                 ready = True
             else:

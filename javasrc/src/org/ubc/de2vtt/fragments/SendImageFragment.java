@@ -136,7 +136,7 @@ public class SendImageFragment extends Fragment {
 				Messenger messenger = Messenger.GetSharedInstance();
 				
 				messenger.send(msg);
-				//receiver = new SingleReceiver(new SendTokenReceiveTask());
+				receiver = new SingleReceiver(new SendTokenReceiveTask());
 				updateButtonState();
 			} else {
 				Log.v(TAG, "Attempt to send null bitmap.");

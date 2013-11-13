@@ -12,7 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 public class TokenAdapter extends BaseAdapter {
-
+	private static final String TAG = TokenAdapter.class.getSimpleName();
+	
 	private static final int width = 12;
 	private static final int height = 17;
 	private static final int blackId = R.drawable.black;
@@ -90,7 +91,7 @@ public class TokenAdapter extends BaseAdapter {
         	imageView.setImageResource(blackId);
        } else {
     	   if(mThumbIds[position] == null){
-    		   Log.d("TOKEN OH YEAH","THUMBNAILS AT " + position + " IS NULL BROTHER");
+    		   Log.d(TAG,"THUMBNAILS AT " + position + " IS NULL BROTHER");
     	   }
     		
     	   Token tok = tokMan.get(mThumbIds[position].intValue());
