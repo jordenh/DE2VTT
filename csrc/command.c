@@ -41,6 +41,7 @@ int executeCmd(msg * currentMsg) {
 	case SEND_TOKEN:
 		printf("Entering send Token\n");
 		token *newTok = allocateToken();
+		newTok->ownerID = currentMsg->androidID;
 		if(newTok){
 			receiveTokenPixArr(currentMsg->buffer, &(newTok->bmp));
 			loadedTokenCnt++;
@@ -74,6 +75,15 @@ int executeCmd(msg * currentMsg) {
 		printf("In Pass_msg command statement\n");
 		passMsg(currentMsg);
 		break;
+
+	case OUTPUT_TOKEN_INFO:
+		break;
+
+	case REMOVE_TOKEN:
+		printf("In Remove_Token");
+		removeTokenFromUser(currentMsg->androidID);
+		break;
+
 	default:
 		printf("Error, invalid command received on DE2!");
 		break;

@@ -131,12 +131,12 @@ public class SendImageFragment extends Fragment {
 		if (cmd == Command.SEND_MAP || cmd == Command.SEND_TOKEN) {
 			if (bitmap != null) {
 				Bitmap scaled = Bitmap.createScaledBitmap(bitmap, x, y, false);
-				SendableBitmap bmp = new SendableBitmap(scaled.copy(Bitmap.Config.RGB_565, false));
+				SendableBitmap bmp = new SendableBitmap(scaled.copy(Bitmap.Config.ARGB_8888, false));
 				Message msg = new Message(cmd, bmp);
 				Messenger messenger = Messenger.GetSharedInstance();
 				
 				messenger.send(msg);
-				//receiver = new SingleReceiver(new SendTokenReceiveTask());
+				receiver = new SingleReceiver(new SendTokenReceiveTask());
 				updateButtonState();
 			} else {
 				Log.v(TAG, "Attempt to send null bitmap.");

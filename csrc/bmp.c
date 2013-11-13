@@ -163,7 +163,7 @@ void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 				byte1 = buffer[cursor++];
 				byte2 = buffer[cursor++];
 
-				bmp->color[offset] = (byte2 << 8) | byte1;
+				bmp->color[offset] = ((byte1 << 8) & 0xFF00) | (byte2 & 0xFF);
 			}
 		}
 	} else {

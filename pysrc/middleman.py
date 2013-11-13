@@ -71,7 +71,8 @@ def tcp_loopback():
         print("sent length: ", sent)
 
 def tcp_serial():
-    conn_id = 1
+    conn_id = 0
+    conn_map = {}
     tcp_send_queues = []
     uart_send_queue = queue.Queue()
 
@@ -92,6 +93,12 @@ def tcp_serial():
     while True:
         conn, addr = sock.accept()
 
+        if addr[0] in conn_map.keys():
+            conn_id = conn_map[addr[0]]
+        else:
+            conn_id += 1
+            conn_map[addr[0]] = conn_id
+
         tcp_send_queue = queue.Queue()
         tcp_send_queues.append(tcp_send_queue)
 
@@ -101,47 +108,53 @@ def tcp_serial():
         t.daemon = True
         t.start()
 
-        conn_id+= 1
-
 def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
-    oldLen = 0
-    while True:
-        (sread, swrite, sexec) = select.select([conn], [], [], 0)
+    try:
+        oldLen = 0
+        while True:
+            (sread, swrite, sexec) = select.select([conn], [], [], 0)
 
-        if sread:
-            #data = conn.recv(65536).1()
-            
-            msgLen = 0
-            x = b''
-            data = b''
-            for i in reversed(range(0, 4)):
-                tmp=conn.recv(1)
-                x+= tmp
-                msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
-                data += tmp
-            
-            # 5 is for command length, and 4 bytes of message length info
-            while len(data) < (msgLen + 5): 
-                oldLen = len(data)
-                data += conn.recv(msgLen)
-                print("received ", len(data), " data of ", msgLen, " so far!")
-                if oldLen == len(data):
-                    break;
-            
-            #data = conn.recv(BUFF)
-            if not data: break
-            #print("received data: ", data.encode())
+            if sread:
+                #data = conn.recv(65536).1()
+                
+                msgLen = 0
+                x = b''
+                data = b''
+                for i in reversed(range(0, 4)):
+                    tmp=conn.recv(1)
+                    x+= tmp
+                    msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
+                    data += tmp
+                
+                # 5 is for command length, and 4 bytes of message length info
+                while len(data) < (msgLen + 5): 
+                    oldLen = len(data)
+                    data += conn.recv(msgLen)
+                    print("received ", len(data), " data of ", msgLen, " so far!")
+                    if oldLen == len(data):
+                        break;
+                
+                #data = conn.recv(BUFF)
+                if not data: break
+                #print("received data: ", data.encode())
 
-            #Append connection id to data
-            #data = (chr(conn_id) + data).encode()
-            data = chr(conn_id).encode() + data
-            print("data: ", data)
+                #Append connection id to data
+                #data = (chr(conn_id) + data).encode()
+                data = chr(conn_id).encode() + data
+                print("data: ", data)
 
-            uart_send_queue.put(data)
-            
-        if not tcp_send_queue.empty():
-            data = tcp_send_queue.get()
-            conn.send(data)
+                uart_send_queue.put(data)
+                
+            if not tcp_send_queue.empty():
+                data = tcp_send_queue.get()
+                conn.send(data)
+    except:
+        print("catch tcp exception")
+        REMOVE_TOKEN = 11
+        data =   chr(0).encode() + chr(0).encode() + chr(0).encode() + chr(0).encode() + chr(REMOVE_TOKEN).encode()
+        data = chr(conn_id).encode() + data
+        print("data: ", data)
+        uart_send_queue.put(data)
 
 def serial_worker(ser, tcp_send_queues, uart_send_queue):
     ready = False
@@ -150,7 +163,7 @@ def serial_worker(ser, tcp_send_queues, uart_send_queue):
 
             conn_id = ord(ser.read())
             print(conn_id)
-            
+
             if conn_id == 0:
                 ready = True
             else:

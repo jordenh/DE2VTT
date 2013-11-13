@@ -17,6 +17,10 @@ void initTokens(void);
 
 token * allocateToken(void);
 
+void removeTokenMsg(msg * rmvMsg);
+
+void removeTokenFromUser(unsigned int ownerID);
+
 void removeToken(unsigned int tokenID);
 
 void drawAllTokens(void);
