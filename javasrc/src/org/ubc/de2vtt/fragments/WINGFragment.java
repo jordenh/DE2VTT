@@ -24,11 +24,11 @@ public abstract class WINGFragment extends Fragment {
 	/**
 	 * This method must be called before commandAccepted
 	 */
-	protected Command[] setAcceptedCommands(Command... cmds) {
+	protected List<Command> setAcceptedCommands(Command... cmds) {
 		List<Command> l = new LinkedList<Command>();
 		for (Command c : cmds) {
 			l.add(c);
 		}
-		return (Command[]) l.toArray();
+		return l;
 	}
 }

@@ -16,6 +16,7 @@ public class SocketConnector extends AsyncTask<String, Integer, Socket> {
 	// to connect to the specified IP.
 	@Override
 	protected Socket doInBackground(String... params) {
+		Log.v(TAG, "Attempting to open socket.");
 		Socket socket = null;
 		String ip = params[0];
 		Integer port = Integer.decode(params[1]);

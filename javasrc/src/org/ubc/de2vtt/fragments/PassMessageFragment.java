@@ -36,7 +36,6 @@ public class PassMessageFragment extends WINGFragment {
 	protected View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
-	private Receiver receiver;
 	private boolean active; 
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,7 +59,7 @@ public class PassMessageFragment extends WINGFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		receiver.cancel();
+		//receiver.cancel();
 		active = false;
 	}
 	

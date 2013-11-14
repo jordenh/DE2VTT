@@ -30,7 +30,6 @@ public class ConnectionFragment extends WINGFragment {
 	private View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
-	private Receiver receiver;
 	private boolean active;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,7 +45,6 @@ public class ConnectionFragment extends WINGFragment {
 		mActivity = this.getActivity();
 		active = true;
 		
-		receiver = new RepeatingReceiver(new ConnectionFragmentReceiveTask(), 500);
 		updateButtonStatus();
 		
 		setAcceptedCommands(Command.HANDSHAKE);
@@ -89,7 +87,6 @@ public class ConnectionFragment extends WINGFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		receiver.cancel();
 		active = false;
 	}
 	
@@ -122,7 +119,6 @@ public class ConnectionFragment extends WINGFragment {
 		
 		mMessenger.sendStringMessage(msg, Command.HANDSHAKE);
 		// TODO: possible change to a rearm
-		receiver = new SingleReceiver(new ConnectionFragmentReceiveTask());
 	}
 	
 	public void closeSocket() {

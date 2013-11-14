@@ -37,7 +37,6 @@ public class SendImageFragment extends WINGFragment {
 	private static final String TAG = SendImageFragment.class.getSimpleName();	
 	
 	protected View mParentView;
-	private Receiver receiver;
 	
 	private static final int REQUEST_CODE = 1;
     private Bitmap bitmap;
@@ -55,7 +54,6 @@ public class SendImageFragment extends WINGFragment {
 			imageView.setScaleType(ScaleType.FIT_XY);
 		}
 		
-		receiver = new RepeatingReceiver(new SendTokenReceiveTask(), 500);
 		updateButtonState();
 		
 		return mParentView;
@@ -136,7 +134,6 @@ public class SendImageFragment extends WINGFragment {
 				Messenger messenger = Messenger.GetSharedInstance();
 				
 				messenger.send(msg);
-				receiver = new SingleReceiver(new SendTokenReceiveTask());
 				updateButtonState();
 			} else {
 				Log.v(TAG, "Attempt to send null bitmap.");
@@ -149,7 +146,6 @@ public class SendImageFragment extends WINGFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		receiver.cancel();
 	}
 	
 	@Override
@@ -172,7 +168,6 @@ public class SendImageFragment extends WINGFragment {
 			Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
 			imageView.setImageBitmap(scaled);
 			
-			receiver = new RepeatingReceiver(new SendTokenReceiveTask(), 500);
 			updateButtonState();
         }
     }

@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -101,6 +102,11 @@ public class MainActivity extends Activity {
 				getActionBar().setTitle(R.string.app_name);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
+				// close keyboard
+				InputMethodManager inputManager = (InputMethodManager)            
+					  getSystemService(Context.INPUT_METHOD_SERVICE); 
+					    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),      
+					    InputMethodManager.HIDE_NOT_ALWAYS);
 			}
 		};
 	}
@@ -202,6 +208,7 @@ public class MainActivity extends Activity {
 	}
 	
 	public synchronized void onReceiveData(Received rcv) {
+		Log.v(TAG, "Received data.");
 		switch (rcv.getCommand()) {
 			case MOVE_TOKEN:
 				TokenManager tm = TokenManager.getSharedInstance();

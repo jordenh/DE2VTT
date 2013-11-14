@@ -1,6 +1,7 @@
 package org.ubc.de2vtt.comm.mailbox;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Timer;
@@ -25,6 +26,7 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 	private MainActivity activity;
 	static boolean waiting = false;
 	private static Mailbox sharedInstance;
+	private static boolean active = false;
 	
 	public static Mailbox getSharedInstance(MainActivity m) {
 		if (sharedInstance == null) {
@@ -43,9 +45,9 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 		data = new ConcurrentHashMap<Command, Queue<Received>>();
 		
 		// Initialize queues
-		Command[] commands = getCommands();
-		for (int i = 0; i < commands.length; i++) {
-			data.put(commands[i], new ConcurrentLinkedQueue<Received>());
+		List<Command> commands = getCommands();
+		for (Command c : commands) {
+			data.put(c, new ConcurrentLinkedQueue<Received>());
 		}
 		
 		// Set reference for callbacks
@@ -64,15 +66,15 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 					Thread.interrupted();
 				}
 			}
-			r.cancel();	
+			//r.cancel();	
 		}
 	}
 	
 	public void callbackAll() {
-		Command[] commands = getCommands();
-		for (int i = 0; i < commands.length; i++) {
-			if (activity.acceptCommand(commands[i])) {
-				callbackSingle(commands[i]);
+		List<Command> commands = getCommands();
+		for (Command c : commands) {
+			if (activity.acceptCommand(c)) {
+				callbackSingle(c);
 			}
 		}
 	}
@@ -112,8 +114,8 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 		return q.peek() != null;
 	}
 
-	private Command[] getCommands() {
-		ArrayList<Command> commands = new ArrayList<Command>();
+	private List<Command> getCommands() {
+		List<Command> commands = new ArrayList<Command>();
 		for (int i = 0;; i++) {
 			try {
 				Command c = Command.Convert((byte) i);
@@ -122,12 +124,14 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 				break;
 			}
 		}
-		return (Command[]) commands.toArray();
+		return commands;
 	}
 	
 	private class MailboxReceiveTask extends ReceiveTask {
 		@Override
 		protected void performAction(Received rcv) {
+			// only runs if rcv is not null
+			Log.v(TAG, "Received a message.");
 			add(rcv);	
 			
 			// Notify activity
@@ -144,5 +148,13 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 	public void add(Received rcv) {
 		Queue<Received> q = data.get(rcv.getCommand());
 		q.add(rcv);
+	}
+
+	public Void execute() {
+		if (!active) {
+			active = true;
+			super.execute();
+		}
+		return null;
 	}
 }
