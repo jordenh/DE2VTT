@@ -5,11 +5,14 @@ import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.mailbox.Mailbox;
 import org.ubc.de2vtt.fragments.ConnectionFragment;
-import org.ubc.de2vtt.fragments.MoveTokenFragment;
+import org.ubc.de2vtt.fragments.ManageTokenFragment;
 import org.ubc.de2vtt.fragments.PassMessageFragment;
 import org.ubc.de2vtt.fragments.PlaceholderFragment;
 import org.ubc.de2vtt.fragments.SendImageFragment;
 import org.ubc.de2vtt.fragments.TableTopFragment;
+import org.ubc.de2vtt.fragments.WINGFragment;
+import org.ubc.de2vtt.token.Token;
+import org.ubc.de2vtt.token.TokenManager;
 
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -39,6 +42,7 @@ public class MainActivity extends Activity {
 	private static Context mContext;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private String mTitle;
+	private WINGFragment activeFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,7 @@ public class MainActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 
-		Mailbox m = new Mailbox(this);
+		Mailbox m = Mailbox.getSharedInstance(this);
 		m.execute();
 		
 		// Attempt to connect
@@ -163,7 +167,7 @@ public class MainActivity extends Activity {
   
 	public void switchFragment(int position) {
 		Log.v(TAG, "Switching fragments.");
-		Fragment fragment = new PlaceholderFragment();
+		WINGFragment fragment = new PlaceholderFragment();
 		Bundle args = new Bundle();
 		fragment.setArguments(args);
 
@@ -172,7 +176,7 @@ public class MainActivity extends Activity {
 				fragment = new TableTopFragment();
 				break;
 			case 1:
-				fragment = new MoveTokenFragment();
+				fragment = new ManageTokenFragment();
 				break;
 			case 3:
 				fragment = new SendImageFragment();
@@ -184,6 +188,8 @@ public class MainActivity extends Activity {
 	    		fragment = new ConnectionFragment();
 	    		break;
 		}
+		
+		activeFragment = fragment;
 
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction()
@@ -196,7 +202,18 @@ public class MainActivity extends Activity {
 	}
 	
 	public synchronized void onReceiveData(Received rcv) {
-		
+		switch (rcv.getCommand()) {
+			case MOVE_TOKEN:
+				TokenManager tm = TokenManager.getSharedInstance();
+				Token t = new Token(rcv);
+				tm.move(t);
+				break;
+			default:
+				// signal active fragment
+				if (!activeFragment.passReceived(rcv)) {
+					Log.e(TAG, "Failed to pass message to fragment.");
+				}
+		}
 	}
 	
 	public boolean acceptCommand(Command cmd) {

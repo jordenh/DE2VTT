@@ -1,10 +1,9 @@
 package org.ubc.de2vtt.comm.mailbox;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -14,15 +13,32 @@ import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
 import org.ubc.de2vtt.exceptions.InvalidCommandException;
+import org.ubc.de2vtt.exceptions.MailboxNotInitializeException;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class Mailbox extends AsyncTask<Void, Void, Void> {
+	private static final String TAG = Mailbox.class.getSimpleName();
+	
 	private final Map<Command, Queue<Received>> data;	
 	private MainActivity activity;
 	static boolean waiting = false;
+	private static Mailbox sharedInstance;
 	
-	public Mailbox(MainActivity m) {
+	public static Mailbox getSharedInstance(MainActivity m) {
+		if (sharedInstance == null) {
+			if (m != null) {
+				sharedInstance = new Mailbox(m);
+			} else {
+				Log.e(TAG, "Mailbox never setup with activity reference.");
+				throw new MailboxNotInitializeException();
+			}
+		}
+		return sharedInstance;
+	}
+	
+	protected Mailbox(MainActivity m) {
 		// Initialize map
 		data = new ConcurrentHashMap<Command, Queue<Received>>();
 		
@@ -40,7 +56,7 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 	protected Void doInBackground(Void... params) {
 		while (true) {
 			waiting = true;
-			RepeatingReceiver r = new RepeatingReceiver(new MailboxReceiveTask(), 500);
+			RepeatingReceiver r = new RepeatingReceiver(new MailboxReceiveTask(), 100);
 			while(waiting) {
 				try {
 					Thread.sleep(1);
@@ -52,10 +68,18 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 		}
 	}
 	
-	private void callback() {
+	public void callbackAll() {
 		Command[] commands = getCommands();
 		for (int i = 0; i < commands.length; i++) {
-			Received r = getNext(commands[i]);
+			if (activity.acceptCommand(commands[i])) {
+				callbackSingle(commands[i]);
+			}
+		}
+	}
+
+	private void callbackSingle(Command cmd) {
+		while (hasNext(cmd)) {
+			Received r = getNext(cmd);
 			if (r != null) {
 				activity.onReceiveData(r);
 			}
@@ -105,6 +129,10 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected void performAction(Received rcv) {
 			add(rcv);	
+			
+			// Notify activity
+			MailboxCallback callBack = new MailboxCallback();
+			callBack.execute(sharedInstance);
 		}
 
 		@Override

@@ -30,7 +30,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class PassMessageFragment extends Fragment {
+public class PassMessageFragment extends WINGFragment {
 	private static final String TAG = PassMessageFragment.class.getSimpleName();	
 	
 	protected View mParentView;
@@ -46,11 +46,13 @@ public class PassMessageFragment extends Fragment {
 		setupSpinner();
 		setupOnClickListeners();
 
-		receiver = new SingleReceiver(new ConnectionFragmentReceiveTask());
+		//receiver = new SingleReceiver(new ConnectionFragmentReceiveTask());
 		updateButtonState();
 		
 		mActivity = this.getActivity();
 		active = true;
+		
+		setAcceptedCommands(Command.PASS_MSG);
 		
 		return mParentView;
 	}
@@ -111,30 +113,45 @@ public class PassMessageFragment extends Fragment {
 		mMessenger.send(toSend);
 	}
 	
-	public class ConnectionFragmentReceiveTask extends ReceiveTask {
-	    protected void performAction(Received rcv) {
-	    	Log.v(TAG, "Timer fires.");
-	    	if (active) {
-	    		updateReceivedField(rcv);
-	    	}
-	    }
-	    
-	    private void updateReceivedField(Received rcv) {
-	        final String msgStr = rcv.DataToString();
-	        mActivity.runOnUiThread(new Runnable() {
-	            public void run() {
-	            	updateButtonState();
-	                TextView tv = (TextView) mParentView.findViewById(R.id.inMsgLabel);
-	                if (msgStr != null && msgStr.length() > 0) {
-	                    tv.setText(msgStr);
-	                }
-	            }
-	        });
-	    }
+//	public class ConnectionFragmentReceiveTask extends ReceiveTask {
+//	    protected void performAction(Received rcv) {
+//	    	Log.v(TAG, "Timer fires.");
+//	    	if (active) {
+//	    		updateReceivedField(rcv);
+//	    	}
+//	    }
+//	    
+//	    private void updateReceivedField(Received rcv) {
+//	        final String msgStr = rcv.DataToString();
+//	        mActivity.runOnUiThread(new Runnable() {
+//	            public void run() {
+//	            	updateButtonState();
+//	                TextView tv = (TextView) mParentView.findViewById(R.id.inMsgLabel);
+//	                if (msgStr != null && msgStr.length() > 0) {
+//	                    tv.setText(msgStr);
+//	                }
+//	            }
+//	        });
+//	    }
+//
+//		@Override
+//		protected void onFinishRun() {
+//		}
+//	}
 
-		@Override
-		protected void onFinishRun() {
-		}
+	@Override
+	public boolean passReceived(Received r) {
+		final String msgStr = r.DataToString();
+		mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+            	updateButtonState();
+                TextView tv = (TextView) mParentView.findViewById(R.id.inMsgLabel);
+                if (msgStr != null && msgStr.length() > 0) {
+                    tv.setText(msgStr);
+                }
+            }
+        });
+		return false;
 	}
 	
 }

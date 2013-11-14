@@ -33,7 +33,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-public class SendImageFragment extends Fragment {
+public class SendImageFragment extends WINGFragment {
 	private static final String TAG = SendImageFragment.class.getSimpleName();	
 	
 	protected View mParentView;
@@ -192,5 +192,11 @@ public class SendImageFragment extends Fragment {
 		@Override
 		protected void onFinishRun() {
 		}
+	}
+
+	@Override
+	public boolean passReceived(Received r) {
+		Log.e(TAG, "Received message from Mailbox via MainActivity");
+		return false;
 	}
 }

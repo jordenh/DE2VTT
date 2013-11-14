@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class ConnectionFragment extends Fragment {
+public class ConnectionFragment extends WINGFragment {
 	private static final String TAG = ConnectionFragment.class.getSimpleName();
 	public static final String SHARED_PREFS_IP = "ip";	
 	public static final String SHARED_PREFS_PORT = "port";
@@ -48,6 +48,8 @@ public class ConnectionFragment extends Fragment {
 		
 		receiver = new RepeatingReceiver(new ConnectionFragmentReceiveTask(), 500);
 		updateButtonStatus();
+		
+		setAcceptedCommands(Command.HANDSHAKE);
 		
 		return mParentView;
 	}
@@ -188,8 +190,13 @@ public class ConnectionFragment extends Fragment {
 	    		updateReceivedField(rcv);
 	    	}
 	    }
-	    
-	    private void updateReceivedField(Received rcv) {
+
+		@Override
+		protected void onFinishRun() {
+		}
+	}
+	
+	 private void updateReceivedField(Received rcv) {
 	        final String msgStr = rcv.DataToString();
 	        mActivity.runOnUiThread(new Runnable() {
 	            public void run() {
@@ -202,8 +209,9 @@ public class ConnectionFragment extends Fragment {
 	        });
 	    }
 
-		@Override
-		protected void onFinishRun() {
-		}
+	@Override
+	public boolean passReceived(Received r) {
+		updateReceivedField(r);
+		return true;
 	}
 }

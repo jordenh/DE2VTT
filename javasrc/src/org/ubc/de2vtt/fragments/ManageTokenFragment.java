@@ -1,6 +1,7 @@
 package org.ubc.de2vtt.fragments;
 
 import org.ubc.de2vtt.MainActivity;
+import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.token.ImageAdapter;
 import org.ubc.de2vtt.token.TokenActivity;
 import org.ubc.de2vtt.R;
@@ -18,7 +19,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import android.widget.Toast;
 
-public class MoveTokenFragment extends Fragment {
+public class ManageTokenFragment extends WINGFragment {
 	private View mParentView;
 	private Activity mActivity;
 
@@ -45,7 +46,7 @@ public class MoveTokenFragment extends Fragment {
 			
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-				Toast.makeText(MoveTokenFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+				Toast.makeText(ManageTokenFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
 				
 				((MainActivity)mActivity).switchFragment(0);
 			}} ;
@@ -57,7 +58,7 @@ public class MoveTokenFragment extends Fragment {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
 				
-				Toast.makeText(MoveTokenFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+				Toast.makeText(ManageTokenFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
 				
 				Intent myIntent = new Intent(mActivity.getApplicationContext(), TokenActivity.class);
 
@@ -71,6 +72,12 @@ public class MoveTokenFragment extends Fragment {
 			
 		mGridView.setOnItemClickListener(shortListener);
 		mGridView.setOnItemLongClickListener(longListener);
+	}
+
+	@Override
+	public boolean passReceived(Received r) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
 
