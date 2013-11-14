@@ -76,12 +76,18 @@ int executeCmd(msg * currentMsg) {
 		passMsg(currentMsg);
 		break;
 
+	case UPDATE_ALIAS:
+		break;
+
 	case OUTPUT_TOKEN_INFO:
 		break;
 
-	case REMOVE_TOKEN:
+	case REMOVE_ALL_TOKEN:
 		printf("In Remove_Token");
 		removeTokenFromUser(currentMsg->androidID);
+		break;
+
+	case REMOVE_TOKEN:
 		break;
 
 	default:

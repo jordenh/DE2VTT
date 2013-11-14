@@ -18,6 +18,7 @@ typedef enum command{
 	PASS_MSG,
 	UPDATE_ALIAS,
 	OUTPUT_TOKEN_INFO,
+	REMOVE_ALL_TOKEN,
 	REMOVE_TOKEN
 } command;
 

@@ -145,8 +145,8 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
                 conn.send(data)
     except:
         print("catch tcp exception")
-        REMOVE_TOKEN = 11
-        data =   chr(0).encode() + chr(0).encode() + chr(0).encode() + chr(0).encode() + chr(REMOVE_TOKEN).encode()
+        REMOVE_ALL_TOKEN = 11
+        data =   chr(0).encode() + chr(0).encode() + chr(0).encode() + chr(0).encode() + chr(REMOVE_ALL_TOKEN).encode()
         data = chr(conn_id).encode() + data
         print("data: ", data)
         uart_send_queue.put(data)
