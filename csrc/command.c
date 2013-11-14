@@ -5,13 +5,6 @@ extern BMP map;
 extern token * tokenArr;
 extern int loadedTokenCnt;
 
-int nopTest(void) {
-
-	printf("FML");
-	return 0;
-
-}
-
 int executeCmd(msg * currentMsg) {
 	if(currentMsg == NULL) {
 		return -1;
@@ -68,6 +61,7 @@ int executeCmd(msg * currentMsg) {
 		break;
 
 	case HANDSHAKE:
+		printf("In hand_shake command\n");
 		sendMessage(currentMsg);
 		break;
 
