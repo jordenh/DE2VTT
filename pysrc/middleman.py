@@ -11,7 +11,6 @@ import time
 
 HOST = ''
 PORT = 50002
-BUFF = 65536
 
 def open_serial():
     if 'linux' in sys.platform:
@@ -61,17 +60,15 @@ def tcp_loopback():
     print("Connection Address", addr, "\n")
 
     while True:
-        #time.sleep(0.1)
-        data = conn.recv(BUFF)
+        data = conn.recv(1024)
         if not data: break
-        #print("received data: ", data)
         print("data: ", data)
         print("received data length: ", len(data))
         sent = conn.send(data)
         print("sent length: ", sent)
 
 def tcp_serial():
-    conn_id = 0
+    id_count = 0
     conn_map = {}
     tcp_send_queues = []
     uart_send_queue = queue.Queue()
@@ -96,7 +93,9 @@ def tcp_serial():
         if addr[0] in conn_map.keys():
             conn_id = conn_map[addr[0]]
         else:
-            conn_id += 1
+            id_count+=1
+
+            conn_id = id_count
             conn_map[addr[0]] = conn_id
 
         tcp_send_queue = queue.Queue()
@@ -115,8 +114,7 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
             (sread, swrite, sexec) = select.select([conn], [], [], 0)
 
             if sread:
-                #data = conn.recv(65536).1()
-                
+
                 msgLen = 0
                 x = b''
                 data = b''
@@ -125,26 +123,23 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
                     x+= tmp
                     msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
                     data += tmp
-                
+
                 # 5 is for command length, and 4 bytes of message length info
-                while len(data) < (msgLen + 5): 
+                while len(data) < (msgLen + 5):
                     oldLen = len(data)
                     data += conn.recv(msgLen)
                     print("received ", len(data), " data of ", msgLen, " so far!")
                     if oldLen == len(data):
                         break;
-                
-                #data = conn.recv(BUFF)
+
                 if not data: break
-                #print("received data: ", data.encode())
 
                 #Append connection id to data
-                #data = (chr(conn_id) + data).encode()
                 data = chr(conn_id).encode() + data
                 print("data: ", data)
 
                 uart_send_queue.put(data)
-                
+
             if not tcp_send_queue.empty():
                 data = tcp_send_queue.get()
                 conn.send(data)
@@ -158,11 +153,12 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
 
 def serial_worker(ser, tcp_send_queues, uart_send_queue):
     ready = False
+
     while True:
         if ser.inWaiting() > 0:
 
             conn_id = ord(ser.read())
-            print(conn_id)
+            print("Connection Id: " + str(conn_id))
 
             if conn_id == 0:
                 ready = True
@@ -175,7 +171,8 @@ def serial_worker(ser, tcp_send_queues, uart_send_queue):
                     msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
 
                 print("length: ", str(msgLen))
-                # data includes the command in this code (+1)
+
+                #Data includes the command in this code (+1)
                 data = ser.read(msgLen + 1)
                 print(data)
 
@@ -184,7 +181,7 @@ def serial_worker(ser, tcp_send_queues, uart_send_queue):
                 tcp_send_queues[conn_id - 1].put(data)
 
         if (not uart_send_queue.empty()) and ready:
-            print("about to ser_send ")
+            print("Sending data through the serial port.")
             data = uart_send_queue.get()
             ser.write(data)
             ready = False
@@ -214,12 +211,13 @@ This program allows you to transmit data between serial and TCP.
 
     if usr_input == 0:
         serial_loopback()
+
     elif usr_input == 1:
         while True:
             try:
                 tcp_loopback()
             except:
-                print("Excepted")
+                print("Caught exception in tcp loopback.")
     else:
         tcp_serial()
 
