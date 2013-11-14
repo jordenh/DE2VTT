@@ -30,11 +30,31 @@ token * allocateToken(void) {
 	return NULL;
 }
 
+void removeTokenMsg(msg * rmvMsg){
+	unsigned int ownerID = (unsigned int)(*(rmvMsg->buffer));
+
+	removeTokenFromUser(ownerID);
+}
+
+void removeTokenFromUser(unsigned int ownerID) {
+	int i;
+	for(i = 0; i < MAX_TOKENS; i++) {
+		if(tokenArr[i].ownerID == ownerID) {
+			tokenArr[i].tokenID = 0;
+			tokenArr[i].ownerID = 0;
+			//STUB TBD - DRAW BACKROUND MAP SECTION IN THIS LOCATION.
+			if(tokenArr[i].bmp.color) free(tokenArr[i].bmp.color);
+			loadedTokenCnt--;
+		}
+	}
+}
+
 void removeToken(unsigned int tokenID) {
 	int i;
 	for(i = 0; i < MAX_TOKENS; i++) {
 		if(tokenArr[i].tokenID == tokenID) {
 			tokenArr[i].tokenID = 0;
+			tokenArr[i].ownerID = 0;
 			//STUB TBD - DRAW BACKROUND MAP SECTION IN THIS LOCATION.
 			if(tokenArr[i].bmp.color) free(tokenArr[i].bmp.color);
 			loadedTokenCnt--;

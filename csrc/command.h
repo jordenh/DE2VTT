@@ -16,7 +16,9 @@ typedef enum command{
 	MOVE_TOKEN,
 	HANDSHAKE,
 	PASS_MSG,
-	UPDATE_ALIAS
+	UPDATE_ALIAS,
+	OUTPUT_TOKEN_INFO,
+	REMOVE_TOKEN
 } command;
 
 int nopTest(void);
