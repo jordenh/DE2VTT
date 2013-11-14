@@ -2,6 +2,7 @@ package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.fragments.ConnectionFragment;
+import org.ubc.de2vtt.fragments.GameConfigFragment;
 import org.ubc.de2vtt.fragments.MoveTokenFragment;
 import org.ubc.de2vtt.fragments.PassMessageFragment;
 import org.ubc.de2vtt.fragments.PlaceholderFragment;
@@ -167,6 +168,9 @@ public class MainActivity extends Activity {
 				break;
 			case 1:
 				fragment = new MoveTokenFragment();
+				break;
+			case 2:
+				fragment = new GameConfigFragment();
 				break;
 			case 3:
 				fragment = new SendImageFragment();

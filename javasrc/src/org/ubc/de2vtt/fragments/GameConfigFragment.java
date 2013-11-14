@@ -16,7 +16,7 @@ public class GameConfigFragment extends Fragment {
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mParentView = inflater.inflate(R.layout.fragment_movetoken,  container, false);
+		mParentView = inflater.inflate(R.layout.fragment_gameconfig,  container, false);
 		mActivity = this.getActivity();
 		
 	    setupOnClickListeners();

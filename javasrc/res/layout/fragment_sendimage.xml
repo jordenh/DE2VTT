@@ -6,7 +6,7 @@
     
     <Button 
         android:text="@string/pick_image" 
-        android:id="@+id/btnPickImage"
+        android:id="@+id/btnSelectImage"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
     
