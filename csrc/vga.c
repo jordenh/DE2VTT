@@ -79,9 +79,9 @@ void drawUserIDs(void) {
 
 	for(i = 0; i < 5; i++) {
 		//TBD - make a "constants" h file
-		xPos = (SCREEN_CHAR_WIDTH - 3 - strlen(connUserAlias[i]));
+		xPos = (SCREEN_CHAR_WIDTH - 4 - strlen(connUserAlias[i]));
 		alt_up_char_buffer_string(char_buffer, connUserAlias[i] , xPos, i);
-		xPos = (SCREEN_CHAR_WIDTH - 1);
+		xPos = (SCREEN_CHAR_WIDTH - 2);
 		cArr[0] = (connUserIDs[i] % 10) - '0'; // unique IDs for 0-9
 		alt_up_char_buffer_string(char_buffer, cArr , xPos, i);
 	}

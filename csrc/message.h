@@ -5,6 +5,7 @@
 #include "altera_up_avalon_rs232.h"
 #include "system.h"
 #include "vga.h"
+#include "utilities.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -28,6 +29,8 @@ void setupMessage(void);
 unsigned int isIDSaved(msg * inMsg);
 
 unsigned int storeNewID(int ID);
+
+unsigned int updateConnUserAlias(msg * inMsg);
 
 void getMessage(msg * inMsg);
 

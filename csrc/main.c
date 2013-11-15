@@ -54,7 +54,7 @@ int main() {
 			msg_m.buffer = NULL;
 		}
 
-		//drawUserIDs(); // -- continue this! TBD - currently broken...
+		drawUserIDs(); // -- continue this! TBD - currently broken...
 		printf("Obtaining message\n");
 		getMessage(&msg_m);
 		printf("Executing message command\n");
