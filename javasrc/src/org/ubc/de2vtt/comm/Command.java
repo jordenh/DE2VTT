@@ -2,8 +2,6 @@ package org.ubc.de2vtt.comm;
 
 import org.ubc.de2vtt.exceptions.InvalidCommandException;
 
-import android.util.Log;
-
 public enum Command {	
 	CONNECT((byte)0),
 	DISCONNECT((byte)1),

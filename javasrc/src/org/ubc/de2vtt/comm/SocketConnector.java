@@ -5,6 +5,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.ubc.de2vtt.comm.mailbox.Mailbox;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -44,7 +46,9 @@ public class SocketConnector extends AsyncTask<String, Integer, Socket> {
 	// automatically called, in the UI (main) thread to store
 	// the socket in this app's persistent storage
 	protected void onPostExecute(Socket s) {
+		Log.v(TAG, "onPostExecute");
 		Messenger msg = Messenger.GetSharedInstance();
 		msg.setSocket(s);
+		Mailbox.getSharedInstance(null).execute();
 	}
 }

@@ -1,26 +1,16 @@
 package org.ubc.de2vtt.fragments;
 
 import org.ubc.de2vtt.R;
-import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
-import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.comm.receivers.Receiver;
-import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
-import org.ubc.de2vtt.comm.receivers.SingleReceiver;
 import org.ubc.de2vtt.comm.sendables.SendableBitmap;
-import org.ubc.de2vtt.token.Token;
-import org.ubc.de2vtt.token.TokenManager;
-
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -172,22 +162,18 @@ public class SendImageFragment extends WINGFragment {
         }
     }
 	
-	private class SendTokenReceiveTask extends ReceiveTask {
-		@Override
-		protected void performAction(Received rcv) {
-			Log.v(TAG, "Receive action called.");
-			TokenManager man = TokenManager.getSharedInstance();
-			Token newTok = new Token(rcv);
-			newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
-			//newTok.setupBitmap(selectedImage);
-			Log.v(TAG, "New token has id " + newTok.getId());
-			man.add(newTok);
-		}
-
-		@Override
-		protected void onFinishRun() {
-		}
-	}
+//	private class SendTokenReceiveTask extends ReceiveTask {
+//		@Override
+//		protected void performAction(Received rcv) {
+//			Log.v(TAG, "Receive action called.");
+//			TokenManager man = TokenManager.getSharedInstance();
+//			Token newTok = new Token(rcv);
+//			newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
+//			//newTok.setupBitmap(selectedImage);
+//			Log.v(TAG, "New token has id " + newTok.getId());
+//			man.add(newTok);
+//		}
+//	}
 
 	@Override
 	public boolean passReceived(Received r) {

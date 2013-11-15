@@ -14,14 +14,13 @@ import org.ubc.de2vtt.fragments.WINGFragment;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
 
-import android.os.Bundle;
-import android.os.StrictMode;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -79,7 +78,6 @@ public class MainActivity extends Activity {
 		getActionBar().setHomeButtonEnabled(true);
 
 		Mailbox m = Mailbox.getSharedInstance(this);
-		m.execute();
 		
 		// Attempt to connect
 		Messenger.GetSharedInstance();

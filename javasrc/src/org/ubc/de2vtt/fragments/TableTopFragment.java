@@ -6,7 +6,6 @@ import org.ubc.de2vtt.tabletop.TokenAdapter;
 import org.ubc.de2vtt.tabletop.TableTopOnTouchListener;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

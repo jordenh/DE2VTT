@@ -2,13 +2,18 @@ package org.ubc.de2vtt.comm;
 
 import java.util.TimerTask;
 
+import android.util.Log;
+
 public abstract class ReceiveTask extends TimerTask {	
+	private static final String TAG = ReceiveTask.class.getSimpleName();
+	
 	public void run() {
+		//Log.v(TAG, "run");
 		Messenger messenger = Messenger.GetSharedInstance();
 		if (messenger.isConnected()) {
+			//Log.v(TAG, "Messenger connected.");
 			getMessage(messenger);
 		}
-		onFinishRun();
 	}
 	
 	private void getMessage(Messenger messenger) {
@@ -19,5 +24,4 @@ public abstract class ReceiveTask extends TimerTask {
     }
 	
 	abstract protected void performAction(Received rcv);
-	abstract protected void onFinishRun();
 }

@@ -5,7 +5,6 @@ import java.util.Set;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.Uri;
 
 public class SharedPreferencesManager {
 	//private final String TAG = SharedPreferencesManager.class.getSimpleName();

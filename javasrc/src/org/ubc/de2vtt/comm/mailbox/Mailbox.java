@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -14,7 +13,7 @@ import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
 import org.ubc.de2vtt.exceptions.InvalidCommandException;
-import org.ubc.de2vtt.exceptions.MailboxNotInitializeException;
+import org.ubc.de2vtt.exceptions.MailboxNotInitializedException;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -24,9 +23,10 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 	
 	private final Map<Command, Queue<Received>> data;	
 	private MainActivity activity;
-	static boolean waiting = false;
 	private static Mailbox sharedInstance;
 	private static boolean active = false;
+	private RepeatingReceiver timer;
+	private ReceiveTask task;
 	
 	public static Mailbox getSharedInstance(MainActivity m) {
 		if (sharedInstance == null) {
@@ -34,7 +34,7 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 				sharedInstance = new Mailbox(m);
 			} else {
 				Log.e(TAG, "Mailbox never setup with activity reference.");
-				throw new MailboxNotInitializeException();
+				throw new MailboxNotInitializedException();
 			}
 		}
 		return sharedInstance;
@@ -56,18 +56,25 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 	
 	@Override
 	protected Void doInBackground(Void... params) {
-		while (true) {
-			waiting = true;
-			RepeatingReceiver r = new RepeatingReceiver(new MailboxReceiveTask(), 100);
-			while(waiting) {
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					Thread.interrupted();
-				}
-			}
-			//r.cancel();	
+		if (timer != null) {
+			task.cancel();
+			task = null;
+			timer.cancel();
+			timer = null;
 		}
+		Log.v(TAG, "Starting new receiver.");
+		task = new MailboxReceiveTask();
+		timer = new RepeatingReceiver(task, 500);
+		return null;
+	}
+	
+	public void kill() {
+		task.cancel();
+		task = null;
+		timer.cancel();
+		timer = null;
+		sharedInstance = null;
+		active = false;
 	}
 	
 	public void callbackAll() {
@@ -131,17 +138,11 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected void performAction(Received rcv) {
 			// only runs if rcv is not null
-			Log.v(TAG, "Received a message.");
 			add(rcv);	
 			
 			// Notify activity
 			MailboxCallback callBack = new MailboxCallback();
 			callBack.execute(sharedInstance);
-		}
-
-		@Override
-		protected void onFinishRun() {
-			waiting = false;
 		}
 	}
 	
@@ -153,6 +154,7 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 	public Void execute() {
 		if (!active) {
 			active = true;
+			Log.v(TAG, "Executing");
 			super.execute();
 		}
 		return null;

@@ -7,7 +7,6 @@ import org.ubc.de2vtt.token.TokenActivity;
 import org.ubc.de2vtt.R;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;

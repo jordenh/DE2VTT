@@ -4,8 +4,6 @@ import java.nio.ByteBuffer;
 
 import org.ubc.de2vtt.comm.sendables.Sendable;
 
-import android.util.Log;
-
 public class Message {
 	private static String TAG = Message.class.getSimpleName();
 	

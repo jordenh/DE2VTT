@@ -1,20 +1,15 @@
 package org.ubc.de2vtt.fragments;
 
+import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Messenger;
-import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.comm.receivers.Receiver;
-import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
-import org.ubc.de2vtt.comm.receivers.SingleReceiver;
-
+import org.ubc.de2vtt.comm.mailbox.Mailbox;
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -91,6 +86,8 @@ public class ConnectionFragment extends WINGFragment {
 	}
 	
 	public void openSocket() {
+		Mailbox m = Mailbox.getSharedInstance((MainActivity)getActivity());
+		
 		String ip = getConnectToIP();
 		Integer port = getConnectToPort();
 		
@@ -123,6 +120,8 @@ public class ConnectionFragment extends WINGFragment {
 	
 	public void closeSocket() {
 		mMessenger.closeSocket();
+		Mailbox m = Mailbox.getSharedInstance(null);
+		m.kill();
 		updateButtonStatus();
 	}
 	
@@ -179,18 +178,14 @@ public class ConnectionFragment extends WINGFragment {
 		btn.setEnabled(!canSend);
 	}
 
-	public class ConnectionFragmentReceiveTask extends ReceiveTask {
-	    protected void performAction(Received rcv) {
-	    	Log.v(TAG, "Timer fires.");
-	    	if (active) {
-	    		updateReceivedField(rcv);
-	    	}
-	    }
-
-		@Override
-		protected void onFinishRun() {
-		}
-	}
+//	public class ConnectionFragmentReceiveTask extends ReceiveTask {
+//	    protected void performAction(Received rcv) {
+//	    	Log.v(TAG, "Timer fires.");
+//	    	if (active) {
+//	    		updateReceivedField(rcv);
+//	    	}
+//	    }
+//	}
 	
 	 private void updateReceivedField(Received rcv) {
 	        final String msgStr = rcv.DataToString();
