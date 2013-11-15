@@ -26,6 +26,8 @@ javasrc/local.properties
 # Eclipse project files
 javasrc/.classpath
 javasrc/.project
+csrc/.cproject
+csrc/.project
 
 #Stupid, god awful, bsp generated files
 *.elf
@@ -36,3 +38,7 @@ Makefile
 *.o
 *.d
 *.force_relink
+
+DE2VCTTC_bsp/
+csrc/create-this-app
+csrc/readme.txt
