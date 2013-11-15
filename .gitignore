@@ -39,6 +39,6 @@ Makefile
 *.d
 *.force_relink
 
-DE2VCTTC_bsp/
+DE2VTTC_bsp/
 csrc/create-this-app
 csrc/readme.txt
