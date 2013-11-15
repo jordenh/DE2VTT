@@ -12,7 +12,11 @@ public enum Command {
 	MOVE_TOKEN((byte)6),
 	HANDSHAKE((byte)7),
 	PASS_MSG((byte)8),
-	UPDATE_ALIAS((byte)9);
+	UPDATE_ALIAS((byte)9),
+	OUTPUT_TOKEN_INFO((byte)10),
+	REMOVE_ALL_TOKEN((byte)11),
+	REMOVE_TOKEN((byte)12)
+	;
 	
 	public byte code;
 	
@@ -44,6 +48,13 @@ public enum Command {
 			return PASS_MSG;
 		case (byte) 9:
 			return UPDATE_ALIAS;
+		case (byte) 10:
+			return OUTPUT_TOKEN_INFO;
+		case (byte) 11:
+			return REMOVE_ALL_TOKEN;
+		case (byte) 12:
+			return REMOVE_TOKEN;
+		
 		default:
 			Log.v("Command", "Attempt to convert invalid command.");
 			return HANDSHAKE;

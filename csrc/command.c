@@ -5,19 +5,13 @@ extern BMP map;
 extern token * tokenArr;
 extern int loadedTokenCnt;
 
-int nopTest(void) {
-
-	printf("FML");
-	return 0;
-
-}
-
 int executeCmd(msg * currentMsg) {
 	if(currentMsg == NULL) {
 		return -1;
 	}
 
 	unsigned int nextCmd = currentMsg->cmd;//cmdInt;
+	unsigned char byteInfo;
 	msg * rspnsMsg;
 
 	switch ((command)nextCmd) {
@@ -68,6 +62,7 @@ int executeCmd(msg * currentMsg) {
 		break;
 
 	case HANDSHAKE:
+		printf("In hand_shake command\n");
 		sendMessage(currentMsg);
 		break;
 
@@ -76,12 +71,24 @@ int executeCmd(msg * currentMsg) {
 		passMsg(currentMsg);
 		break;
 
+	case UPDATE_ALIAS:
+		printf("In Update_Alias\n");
+		updateConnUserAlias(currentMsg);
+		break;
+
 	case OUTPUT_TOKEN_INFO:
+		//This is a java side command - the DE2 will update all connected androids that a token has moved.
+		break;
+
+	case REMOVE_ALL_TOKEN:
+		printf("In Remove_ALL_Token");
+		removeTokenFromUser(currentMsg->androidID);
 		break;
 
 	case REMOVE_TOKEN:
 		printf("In Remove_Token");
-		removeTokenFromUser(currentMsg->androidID);
+		byteInfo = *(currentMsg->buffer); // first byte in buffer is Token_ID;
+		removeToken(byteInfo);
 		break;
 
 	default:
