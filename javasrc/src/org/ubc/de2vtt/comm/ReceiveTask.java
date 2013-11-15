@@ -2,8 +2,6 @@ package org.ubc.de2vtt.comm;
 
 import java.util.TimerTask;
 
-import android.util.Log;
-
 public abstract class ReceiveTask extends TimerTask {	
 	private static final String TAG = ReceiveTask.class.getSimpleName();
 	
