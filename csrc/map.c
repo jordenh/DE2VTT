@@ -13,8 +13,18 @@ void receiveMap(unsigned char *buffer) {
 	receiveTokenPixArr(buffer, &map);
 }
 
-void partialMapRedraw(int x, int y){
+void partialMapReDraw(int x, int y, int width, int height) {
+	int i, j, offset;
+	short int color;
 
+	for(i = 0; i < height; i++) {
+		offset = (y + i) * map.infoheader.width + x;
+
+		for(j = 0; j < width; j++) {
+			color = map.color[offset + j];
+			drawPixelFast(x+j, y+i, color);
+		}
+	}
 }
 
 void drawMap() {

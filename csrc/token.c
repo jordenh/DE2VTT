@@ -12,6 +12,7 @@ void initTokens(void) {
 		tokenArr[i].x = 0;
 		tokenArr[i].y = 0;
 	}
+
 	loadedTokenCnt = 0;
 }
 
@@ -40,7 +41,9 @@ void removeTokenFromUser(unsigned int ownerID) {
 		if(tokenArr[i].ownerID == ownerID) {
 			tokenArr[i].tokenID = 0;
 			tokenArr[i].ownerID = 0;
-			//STUB TBD - DRAW BACKROUND MAP SECTION IN THIS LOCATION.
+
+			partialMapReDraw(tokenArr[i].x, tokenArr[i].y, tokenArr[i].bmp.infoheader.width, tokenArr[i].bmp.infoheader.height);
+
 			if(tokenArr[i].bmp.color) free(tokenArr[i].bmp.color);
 			loadedTokenCnt--;
 		}
@@ -53,7 +56,9 @@ void removeToken(unsigned int tokenID) {
 		if(tokenArr[i].tokenID == tokenID) {
 			tokenArr[i].tokenID = 0;
 			tokenArr[i].ownerID = 0;
-			//STUB TBD - DRAW BACKROUND MAP SECTION IN THIS LOCATION.
+
+			partialMapReDraw(tokenArr[i].x, tokenArr[i].y, tokenArr[i].bmp.infoheader.width, tokenArr[i].bmp.infoheader.height);
+
 			if(tokenArr[i].bmp.color) free(tokenArr[i].bmp.color);
 			loadedTokenCnt--;
 		}
@@ -84,8 +89,11 @@ void moveTokenMsg(msg * moveMsg){
 
 void moveToken(unsigned int tokenID, int x, int y) {
 	int i;
+
 	for (i = 0; i < MAX_TOKENS; i++) {
 		if(tokenArr[i].tokenID == tokenID) {
+			partialMapReDraw(tokenArr[i].x, tokenArr[i].y, tokenArr[i].bmp.infoheader.width, tokenArr[i].bmp.infoheader.height);
+
 			tokenArr[i].x = x;
 			tokenArr[i].y = y;
 
