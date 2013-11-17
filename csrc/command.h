@@ -3,6 +3,7 @@
 
 #include "message.h"
 #include "bmp.h"
+#include "map.h"
 #include "token.h"
 #include "utilities.h"
 
@@ -20,8 +21,6 @@ typedef enum command{
 	OUTPUT_TOKEN_INFO,
 	REMOVE_TOKEN
 } command;
-
-int nopTest(void);
 
 int executeCmd(msg *m);
 
