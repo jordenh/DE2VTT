@@ -36,8 +36,6 @@ typedef struct {
 } BMP;
 
 void parseBmp(char *fileName, BMP *bmp);
-void freeBmps();
-void freeSplash();
 void drawBmp(BMP *bmp, int x, int y);
 void eraseBmp(BMP *bmp, int x, int y);
 

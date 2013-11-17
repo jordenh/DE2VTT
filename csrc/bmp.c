@@ -195,20 +195,6 @@ int readDWordChar(char * buffer) {
 	return ((unsigned short int)byte1 << 24) | ((unsigned short int)byte2 << 16) | ((unsigned short int)byte3 << 8) | (unsigned short int)byte4;
 }
 
-void freeBmps(){
-	free(playerBmp->color);
-	free(sharkBmp->color);
-
-	free(sharkBmp);
-	free(playerBmp);
-}
-
-void freeSplash() {
-	free(splashBmp->color);
-	free(splashBmp);
-}
-
-
 void drawBmp (BMP *bmp, int x, int y) {
 	int i,j;
 	int offset;

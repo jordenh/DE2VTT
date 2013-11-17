@@ -13,8 +13,6 @@
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
 
-extern BMP map;
-
 int init() {
 	if (openSdCard() == -1) {
 		printf("Error: Failed to open sd card\n");
@@ -57,15 +55,11 @@ int main() {
 		printf("Executing message command\n");
 		statusInt = executeCmd(&msg_m);
 
-		printf("Completed message command\n");
-
-		drawBmp(&map, 0, 0);
-		drawAllTokens();
-
 		if(statusInt == -1) {
-			printf("error occured in executing Command.\n");
+			printf("error occurred in executing Command.\n");
+		} else {
+			printf("Completed message command\n");
 		}
-
 
 		/*if (hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
@@ -79,5 +73,3 @@ int main() {
 
 	return 0;
 }
-
-
