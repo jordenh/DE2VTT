@@ -34,12 +34,12 @@ void drawPixel(int x, int y, int color) {
  * CAUSING UNEXPECTED BEHAVIOR.
  */
 void drawPixelFast(unsigned int x, unsigned int y, unsigned int color) {
-	unsigned int addr;
+	unsigned int addr = 0;
 
-	addr = ((x & pixel_buffer->x_coord_mask) << 1);
-	addr += (((y & pixel_buffer->y_coord_mask) * 320) << 1);
+	addr |= ((x & pixel_buffer->x_coord_mask) << pixel_buffer->x_coord_offset);
+	addr |= ((y & pixel_buffer->y_coord_mask) << pixel_buffer->y_coord_offset);
 
-	IOWR_16DIRECT(PIXEL_BUFFER_BASE, addr, color);
+	IOWR_16DIRECT(pixel_buffer->buffer_start_address, addr, color);
 }
 
 void drawLine(int x0, int y0, int x1, int y1, int color) {

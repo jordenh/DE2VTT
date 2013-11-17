@@ -136,12 +136,14 @@ void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 
 	bmp->infoheader.width = 0;
 	bmp->infoheader.height = 0;
+
 	//obtain width
 	for(i = ((sizeof(sizeArr) / sizeof(sizeArr[0])) - 1); i >= 0; i--) {
 		sizeArr[i] = buffer[cursor++];
 		printf("received: sizeArr[i] %d\n", sizeArr[i]);
 		bmp->infoheader.width += (0xFF & sizeArr[i]) << i*8;
 	}
+
 	//obtain height
 	for(i = ((sizeof(sizeArr) / sizeof(sizeArr[0])) - 1); i >= 0; i--) {
 		sizeArr[i] = buffer[cursor++];
@@ -166,9 +168,8 @@ void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 			}
 		}
 	} else {
-		printf("Error, didnt allocate memory for token color\n");
+		printf("Error, didn't allocate memory for token color\n");
 	}
-
 }
 
 unsigned char readByteChar(char * buffer) {
@@ -207,8 +208,7 @@ void drawBmp (BMP *bmp, int x, int y) {
 				if(x + j >= SCREEN_WIDTH || x + j <= 0)
 					continue;
 
-				drawLine(x + j, y + i, x + j, y + i, bmp->color[offset +j]);
-				//drawPixelFast(x + j, y + i, bmp->color[offset +j]);
+				drawPixelFast(x + j, y + i, bmp->color[offset +j]);
 			}
 		}
 	}
