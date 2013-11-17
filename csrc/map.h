@@ -5,6 +5,7 @@
 
 extern BMP map;
 
+void receiveMap();
 void partialMapReDraw();
 void drawMap();
 

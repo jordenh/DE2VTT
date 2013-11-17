@@ -21,9 +21,10 @@ int executeCmd(msg * currentMsg) {
 		break;
 	case SEND_MAP:
 		printf("Entering send SEND_MAP\n");
+
 		if(loadedTokenCnt < MAX_TOKENS){
-			//receiveTokenPixArr(currentMsg->buffer, &map);
-			loadedTokenCnt++;
+			receiveMap(currentMsg->buffer);
+			drawMap();
 		} else {
 			printf("Error when Android sending map!\n");
 			return -1;
