@@ -1,13 +1,13 @@
 #include "map.h"
 
 BMP map;
-int allocated_map = 0;
+int allocatedMap = 0;
 
 void receiveMap(unsigned char *buffer) {
-	if(allocated_map) {
+	if(allocatedMap) {
 		free(map.color);
 	} else {
-		allocated_map = 1;
+		allocatedMap = 1;
 	}
 
 	receiveTokenPixArr(buffer, &map);
@@ -17,12 +17,14 @@ void partialMapReDraw(int x, int y, int width, int height) {
 	int i, j, offset;
 	short int color;
 
-	for(i = 0; i < height; i++) {
-		offset = (y + i) * map.infoheader.width + x;
+	if(allocatedMap) {
+		for(i = 0; i < height; i++) {
+			offset = (y + i) * map.infoheader.width + x;
 
-		for(j = 0; j < width; j++) {
-			color = map.color[offset + j];
-			drawPixelFast(x+j, y+i, color);
+			for(j = 0; j < width; j++) {
+				color = map.color[offset + j];
+				drawPixelFast(x+j, y+i, color);
+			}
 		}
 	}
 }
