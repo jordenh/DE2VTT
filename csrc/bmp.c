@@ -56,7 +56,6 @@ void parseBmp (char *fileName, BMP *bmp) {
 	closeFile(fh);
 }
 
-
 //TBD
 void receiveToken (char *buffer, BMP *bmp) {
 	int i, j, k;
@@ -194,33 +193,6 @@ int readDWordChar(char * buffer) {
 	byte4 = (short int)(*(buffer+3));
 
 	return ((unsigned short int)byte1 << 24) | ((unsigned short int)byte2 << 16) | ((unsigned short int)byte3 << 8) | (unsigned short int)byte4;
-}
-
-
-void parseBmps() {
-	splashBmp = malloc(sizeof(BMP));
-	loadBmp = malloc(sizeof(BMP));
-	pressBmp = malloc(sizeof(BMP));
-	sharkBmp = malloc(sizeof(BMP));
-	playerBmp = malloc(sizeof(BMP));
-
-	cnadoBmp = malloc(sizeof(BMP));
-	pnadoaBmp = malloc(sizeof(BMP));
-	pnadobBmp = malloc(sizeof(BMP));
-	//nnadoaBmp = malloc(sizeof(BMP));
-	//nnadobBmp = malloc(sizeof(BMP));
-
-	parseBmp("splash.bmp", splashBmp);
-	parseBmp("loadtx.bmp", loadBmp);
-	parseBmp("press.bmp", pressBmp);
-	parseBmp("shark.bmp", sharkBmp);
-	parseBmp("player.bmp", playerBmp);
-
-	parseBmp("cnado.bmp", cnadoBmp);
-	parseBmp("pnadoa.bmp", pnadoaBmp);
-	parseBmp("pnadob.bmp", pnadobBmp);
-	//parseBmp("nnadoa.bmp", nnadoaBmp);
-	//parseBmp("nnadob.bmp", nnadobBmp);
 }
 
 void freeBmps(){

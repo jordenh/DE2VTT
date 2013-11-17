@@ -35,20 +35,7 @@ typedef struct {
 	short int *color;
 } BMP;
 
-BMP *splashBmp;
-BMP *loadBmp;
-BMP *pressBmp;
-BMP *playerBmp;
-BMP *sharkBmp;
-
-BMP *cnadoBmp;
-BMP *pnadoaBmp;
-BMP *pnadobBmp;
-BMP *nnadoaBmp;
-BMP *nnadobBmp;
-
 void parseBmp(char *fileName, BMP *bmp);
-void parseBmps();
 void freeBmps();
 void freeSplash();
 void drawBmp(BMP *bmp, int x, int y);

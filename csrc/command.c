@@ -1,16 +1,8 @@
-
 #include "command.h"
 
 extern BMP map;
 extern token * tokenArr;
 extern int loadedTokenCnt;
-
-int nopTest(void) {
-
-	printf("FML");
-	return 0;
-
-}
 
 int executeCmd(msg * currentMsg) {
 	if(currentMsg == NULL) {

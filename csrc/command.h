@@ -21,8 +21,6 @@ typedef enum command{
 	REMOVE_TOKEN
 } command;
 
-int nopTest(void);
-
 int executeCmd(msg *m);
 
 #endif /* COMMAND_H_ */
