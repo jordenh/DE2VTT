@@ -1,7 +1,5 @@
-
 #include "token.h"
 
-BMP map;
 token tokenArr[MAX_TOKENS];
 int loadedTokenCnt = 0;
 
@@ -90,11 +88,12 @@ void moveToken(unsigned int tokenID, int x, int y) {
 		if(tokenArr[i].tokenID == tokenID) {
 			tokenArr[i].x = x;
 			tokenArr[i].y = y;
+
+			drawBmp(&tokenArr[i].bmp, tokenArr[i].x, tokenArr[i].y);
 			break;
 		}
 	}
 }
-
 
 msg * createResponsesMsg(msg * initialMsg, token * curTok) {
 	int i;
@@ -122,10 +121,3 @@ msg * createResponsesMsg(msg * initialMsg, token * curTok) {
 
 	return responseMsg;
 }
-
-
-
-
-
-
-
