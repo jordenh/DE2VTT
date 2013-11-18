@@ -114,7 +114,6 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
             (sread, swrite, sexec) = select.select([conn], [], [], 0)
 
             if sread:
-
                 msgLen = 0
                 x = b''
                 data = b''
