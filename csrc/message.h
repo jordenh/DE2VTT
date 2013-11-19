@@ -2,7 +2,6 @@
 #ifndef MESSAGE_H_
 #define MESSAGE_H_
 
-#include "altera_up_avalon_rs232.h"
 #include "system.h"
 #include "vga.h"
 #include "utilities.h"

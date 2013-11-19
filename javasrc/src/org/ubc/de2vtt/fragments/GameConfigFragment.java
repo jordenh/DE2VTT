@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 public class GameConfigFragment extends Fragment {
 	private View mParentView;
@@ -25,7 +26,7 @@ public class GameConfigFragment extends Fragment {
 	}
 	
 	private void setupOnClickListeners() {
-		
+		Button btnGetReleaseDM = (Button) mParentView.findViewById(R.id.btnGetReleaseDM);
 		
 	}
 }

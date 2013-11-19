@@ -51,9 +51,11 @@ int executeCmd(msg * currentMsg) {
 
 		break;
 	case GET_DM:
+		printf("In get_dm");
 
 		break;
 	case RELEASE_DM:
+		printf("In release_dm");
 
 		break;
 	case MOVE_TOKEN:
@@ -89,6 +91,14 @@ int executeCmd(msg * currentMsg) {
 		printf("In Remove_Token");
 		byteInfo = *(currentMsg->buffer); // first byte in buffer is Token_ID;
 		removeToken(byteInfo);
+		break;
+
+	case GET_DM_ID:
+		printf("In get_dm_id");
+		break;
+
+	case SEND_DM_ID:
+		printf("In send_dm_id");
 		break;
 
 	default:

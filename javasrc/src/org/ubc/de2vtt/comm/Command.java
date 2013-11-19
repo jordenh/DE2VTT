@@ -15,7 +15,9 @@ public enum Command {
 	UPDATE_ALIAS((byte)9),
 	OUTPUT_TOKEN_INFO((byte)10),
 	REMOVE_ALL_TOKEN((byte)11),
-	REMOVE_TOKEN((byte)12)
+	REMOVE_TOKEN((byte)12),
+	GET_DM_ID((byte)13),
+	SEND_DM_ID((byte)14)
 	;
 	
 	public byte code;

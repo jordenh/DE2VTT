@@ -15,7 +15,9 @@ typedef enum command{
 	UPDATE_ALIAS,
 	OUTPUT_TOKEN_INFO,
 	REMOVE_ALL_TOKEN,
-	REMOVE_TOKEN
+	REMOVE_TOKEN,
+	GET_DM_ID,
+	SEND_DM_ID
 } command;
 
 char * IntToCharBuf(unsigned int inputInt, unsigned int numChars);
