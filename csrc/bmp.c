@@ -56,7 +56,6 @@ void parseBmp (char *fileName, BMP *bmp) {
 	closeFile(fh);
 }
 
-
 //TBD
 void receiveToken (char *buffer, BMP *bmp) {
 	int i, j, k;
@@ -137,12 +136,14 @@ void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 
 	bmp->infoheader.width = 0;
 	bmp->infoheader.height = 0;
+
 	//obtain width
 	for(i = ((sizeof(sizeArr) / sizeof(sizeArr[0])) - 1); i >= 0; i--) {
 		sizeArr[i] = buffer[cursor++];
 		printf("received: sizeArr[i] %d\n", sizeArr[i]);
 		bmp->infoheader.width += (0xFF & sizeArr[i]) << i*8;
 	}
+
 	//obtain height
 	for(i = ((sizeof(sizeArr) / sizeof(sizeArr[0])) - 1); i >= 0; i--) {
 		sizeArr[i] = buffer[cursor++];
@@ -167,9 +168,8 @@ void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 			}
 		}
 	} else {
-		printf("Error, didnt allocate memory for token color\n");
+		printf("Error, didn't allocate memory for token color\n");
 	}
-
 }
 
 unsigned char readByteChar(char * buffer) {
@@ -196,47 +196,6 @@ int readDWordChar(char * buffer) {
 	return ((unsigned short int)byte1 << 24) | ((unsigned short int)byte2 << 16) | ((unsigned short int)byte3 << 8) | (unsigned short int)byte4;
 }
 
-
-void parseBmps() {
-	splashBmp = malloc(sizeof(BMP));
-	loadBmp = malloc(sizeof(BMP));
-	pressBmp = malloc(sizeof(BMP));
-	sharkBmp = malloc(sizeof(BMP));
-	playerBmp = malloc(sizeof(BMP));
-
-	cnadoBmp = malloc(sizeof(BMP));
-	pnadoaBmp = malloc(sizeof(BMP));
-	pnadobBmp = malloc(sizeof(BMP));
-	//nnadoaBmp = malloc(sizeof(BMP));
-	//nnadobBmp = malloc(sizeof(BMP));
-
-	parseBmp("splash.bmp", splashBmp);
-	parseBmp("loadtx.bmp", loadBmp);
-	parseBmp("press.bmp", pressBmp);
-	parseBmp("shark.bmp", sharkBmp);
-	parseBmp("player.bmp", playerBmp);
-
-	parseBmp("cnado.bmp", cnadoBmp);
-	parseBmp("pnadoa.bmp", pnadoaBmp);
-	parseBmp("pnadob.bmp", pnadobBmp);
-	//parseBmp("nnadoa.bmp", nnadoaBmp);
-	//parseBmp("nnadob.bmp", nnadobBmp);
-}
-
-void freeBmps(){
-	free(playerBmp->color);
-	free(sharkBmp->color);
-
-	free(sharkBmp);
-	free(playerBmp);
-}
-
-void freeSplash() {
-	free(splashBmp->color);
-	free(splashBmp);
-}
-
-
 void drawBmp (BMP *bmp, int x, int y) {
 	int i,j;
 	int offset;
@@ -249,8 +208,7 @@ void drawBmp (BMP *bmp, int x, int y) {
 				if(x + j >= SCREEN_WIDTH || x + j <= 0)
 					continue;
 
-				drawLine(x + j, y + i, x + j, y + i, bmp->color[offset +j]);
-				//drawPixelFast(x + j, y + i, bmp->color[offset +j]);
+				drawPixelFast(x + j, y + i, bmp->color[offset +j]);
 			}
 		}
 	}

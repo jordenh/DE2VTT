@@ -1,4 +1,3 @@
-
 #include "message.h"
 
 int connUserIDs[NUM_USERS] = {0,0,0,0,0};
@@ -7,36 +6,35 @@ char * connUserAlias[NUM_USERS];
 FILE* uart;
 
 void setupMessage(void) {
-
 	int i;
+
 	for(i = 0; i < NUM_USERS; i++) {
 		if(connUserAlias[i] == NULL) {
 			connUserAlias[i] = malloc(sizeof(char) * MAX_ALIAS_SIZE);
 		}
+
 		*connUserAlias[i] = '\0';
 	}
 
 	//printf("UART Initialization\n");
-	uart = fopen("/dev/uart_0", "r+"); //should set to RS232_0_NAME
+	uart = fopen("/dev/uart_0", "r+");
 
 	if(uart == NULL) {
 		printf("ERROR - uart not opened properly");
 	}
-
-	//clear buffer:
-	char c;
-	//while((c = fgetc(uart)) != '\n' && c != EOF);
 }
 
 // checks if the ID is saved in the connUserIDs array, and returns true if it exists, false otherwise.
 unsigned int isIDSaved(msg * inMsg) {
 	int i;
+
 	for(i = 0; i < NUM_USERS ; i++){
 			if(inMsg->androidID == connUserIDs[i]){
 				printf("android %d sending to DE2 already in system\n", connUserIDs[i]);
 				return 1;
 			}
 	}
+
 	return 0;
 }
 
@@ -51,6 +49,7 @@ unsigned int storeNewID(int ID) {
 			return 1;
 		}
 	}
+
 	return 0;
 }
 
@@ -80,9 +79,7 @@ void getMessage(msg * inMsg){
 	unsigned char msgLen[4];
 	inMsg->len = 0;
 
-	//while (fgetc(uart) == 0) {}; // TBD - have this step time out. -- Probably need to
-	//remove this line, since steven's middleman uart likely isnt passing 0's constatnly
-
+	//Middleman will only send a message to the DE2 if the first byte it receives is a zero
 	fputc('\0', uart);
 
 	//obtain android ID
@@ -99,7 +96,7 @@ void getMessage(msg * inMsg){
 		}
 	}
 
-	//obtain length
+	//obtain length (4 bytes)
 	for(i = ((sizeof(msgLen) / sizeof(msgLen[0])) - 1); i >= 0; i--) {
 		//printf("about to fgetc\n");
 		msgLen[i] = fgetc(uart);
