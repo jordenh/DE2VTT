@@ -10,7 +10,7 @@ void setupMessage(void) {
 
 	int i;
 	for(i = 0; i < NUM_USERS; i++) {
-		if(connUserAlias[i] != NULL) {
+		if(connUserAlias[i] == NULL) {
 			connUserAlias[i] = malloc(sizeof(char) * MAX_ALIAS_SIZE);
 		}
 		*connUserAlias[i] = '\0';
