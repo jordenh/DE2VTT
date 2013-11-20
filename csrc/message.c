@@ -61,15 +61,13 @@ unsigned int updateConnUserAlias(msg * inMsg) {
 	for(i = 0; i < NUM_USERS; i ++) {
 		if(connUserIDs[i] == inMsg->androidID) {
 			if(inMsg->cmd == (unsigned int)UPDATE_ALIAS) {
-				strncpy(connUserAlias[i], (char*)inMsg->buffer, (sizeof(connUserAlias[i]) - 1));
+				strncpy(connUserAlias[i], (char*)inMsg->buffer, (MAX_ALIAS_SIZE - 1));
 			} else {
 				sprintf(buf, "player%d", i);
-				printf("*updateConnUserAlias - %s\n", buf);
 				connUserAlias[i] = strncpy(connUserAlias[i], buf, (MAX_ALIAS_SIZE - 1)); //strlen(buf));//
-				printf("*updateConnUserAlias - %s\n", connUserAlias[i]);
 			}
 			connUserAlias[i][MAX_ALIAS_SIZE - 1] = '\0'; // enforce last byte to be null character, to avoid overflow
-			printf("connuserAlias %d updated to  %s\n", i, connUserAlias[i]);
+			alt_up_char_buffer_clear(char_buffer);
 			return 1;
 		}
 	}

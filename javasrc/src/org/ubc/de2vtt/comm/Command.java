@@ -51,14 +51,9 @@ public enum Command {
 		case (byte) 10:
 			return OUTPUT_TOKEN_INFO;
 		case (byte) 11:
-<<<<<<< HEAD
 			return REMOVE_ALL_TOKEN;
 		case (byte) 12:
 			return REMOVE_TOKEN;
-		
-=======
-			return REMOVE_TOKEN;
->>>>>>> 428e5d6fa84bc7b74edb51187ecdabeb631000d0
 		default:
 			throw new InvalidCommandException();
 		}
