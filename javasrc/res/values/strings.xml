@@ -45,9 +45,13 @@
     <string name="choose_rcvr">Choose Recipient</string>
     <string name="out_msg">Outgoing Messages</string>
     <string name="in_msg">Incoming Messages</string>
-    <string name="sender_ID">Sender\'s ID:</string>
+    <string name="sender_id">Sender\'s ID:</string>
     <string name="id">Id</string>
     <string name="name">Name</string>
     <string name="xy">X, Y</string>
-
+    
+    <!-- Game Config Fragment -->
+	<string name="button_update_alias">Update Alias</string>
+    <string name="in_alias">Input a new Alias</string>
+    
 </resources>

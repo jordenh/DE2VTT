@@ -7,21 +7,6 @@
 #include "token.h"
 #include "utilities.h"
 
-typedef enum command{
-	CONNECT,
-	DISCONNECT,
-	SEND_MAP,
-	SEND_TOKEN,
-	GET_DM,
-	RELEASE_DM,
-	MOVE_TOKEN,
-	HANDSHAKE,
-	PASS_MSG,
-	UPDATE_ALIAS,
-	OUTPUT_TOKEN_INFO,
-	REMOVE_TOKEN
-} command;
-
 int executeCmd(msg *m);
 
 #endif /* COMMAND_H_ */
