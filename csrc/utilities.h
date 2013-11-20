@@ -20,6 +20,8 @@ typedef enum command{
 	SEND_DM_ID
 } command;
 
+int DMId = 0;
+
 char * IntToCharBuf(unsigned int inputInt, unsigned int numChars);
 
 #endif /* UTILITIES_H_ */

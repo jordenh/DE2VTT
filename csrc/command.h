@@ -3,6 +3,7 @@
 
 #include "message.h"
 #include "bmp.h"
+#include "map.h"
 #include "token.h"
 #include "utilities.h"
 

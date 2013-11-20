@@ -114,7 +114,6 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
             (sread, swrite, sexec) = select.select([conn], [], [], 0)
 
             if sread:
-
                 msgLen = 0
                 x = b''
                 data = b''
@@ -158,11 +157,13 @@ def serial_worker(ser, tcp_send_queues, uart_send_queue):
         if ser.inWaiting() > 0:
 
             conn_id = ord(ser.read())
-            print("Connection Id: " + str(conn_id))
 
             if conn_id == 0:
+                print("DE2 is ready to receive data.")
                 ready = True
             else:
+                print("Connection Id: " + str(conn_id))
+
                 msgLen = 0
                 x = b''
                 for i in reversed(range(0, 4)):

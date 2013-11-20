@@ -1,4 +1,3 @@
-
 #include "command.h"
 
 extern BMP map;
@@ -23,9 +22,10 @@ int executeCmd(msg * currentMsg) {
 		break;
 	case SEND_MAP:
 		printf("Entering send SEND_MAP\n");
+
 		if(loadedTokenCnt < MAX_TOKENS){
-			receiveTokenPixArr(currentMsg->buffer, &map);
-			loadedTokenCnt++;
+			receiveMap(currentMsg->buffer);
+			drawMap();
 		} else {
 			printf("Error when Android sending map!\n");
 			return -1;
@@ -34,15 +34,20 @@ int executeCmd(msg * currentMsg) {
 		break;
 	case SEND_TOKEN:
 		printf("Entering send Token\n");
+
 		token *newTok = allocateToken();
 		newTok->ownerID = currentMsg->androidID;
+
 		if(newTok){
 			receiveTokenPixArr(currentMsg->buffer, &(newTok->bmp));
 			loadedTokenCnt++;
+
+			drawBmp(&newTok->bmp, newTok->x, newTok->y);
 		} else {
 			printf("Error when Android sending token!\n");
 			return -1;
 		}
+
 		// respond with token ID
 		rspnsMsg = createResponsesMsg(currentMsg, newTok);
 		sendMessage(rspnsMsg);

@@ -12,7 +12,7 @@
 #define SCREEN_HEIGHT 240
 #define SCREEN_CHAR_WIDTH 80
 
-alt_up_pixel_buffer_dma_dev* pixel_buffer;
+alt_up_pixel_buffer_dma_dev *pixel_buffer;
 alt_up_char_buffer_dev *char_buffer;
 
 extern int connUserIDs[];
