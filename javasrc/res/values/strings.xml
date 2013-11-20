@@ -49,5 +49,9 @@
     <string name="id">Id</string>
     <string name="name">Name</string>
     <string name="xy">X, Y</string>
-
+    
+    <!-- Game Config Fragment -->
+	<string name="button_updateAlias">Update Alias</string>
+    <string name="in_Alias">Input a new Alias</string>
+    
 </resources>
