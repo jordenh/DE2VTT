@@ -18,15 +18,11 @@ import android.widget.Toast;
 public class TableTopFragment extends Fragment {
 	protected View mParentView;
 	private Activity mActivity;
-	private GridView mGridView;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mParentView = inflater.inflate(R.layout.fragment_tabletop,  container, false);
-		mActivity = this.getActivity();
-
-		mGridView = (GridView) mParentView.findViewById(R.id.tabletop);
-	    mGridView.setAdapter(new TokenAdapter(this.mActivity));
+		mActivity = this.getActivity();;
 	    
 	    setupOnClickListeners();
 	  		
@@ -34,13 +30,6 @@ public class TableTopFragment extends Fragment {
 	}
 
 	private void setupOnClickListeners() {
-		OnItemClickListener shortListener = new OnItemClickListener() {
-	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-	            Toast.makeText(TableTopFragment.this.mActivity, "" + position, Toast.LENGTH_SHORT).show();
-	        }
-	    };
-	    
-	    mGridView.setOnItemClickListener(shortListener);
-	    mGridView.setOnTouchListener(new TableTopOnTouchListener());
+		
 	}
 }

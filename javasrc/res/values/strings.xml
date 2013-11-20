@@ -11,6 +11,7 @@
         <item>Game Config</item>
         <item>Send Image</item>
         <item>Pass Message</item>
+        <item>Roll Die</item>
         <item>Connection</item>
     </string-array>
 
@@ -49,5 +50,15 @@
     <string name="id">Id</string>
     <string name="name">Name</string>
     <string name="xy">X, Y</string>
-
+    
+    <!-- Die Roll Fragment -->
+	<string-array name="dice_types">
+        <item>d20</item>
+        <item>d12</item>
+        <item>d10</item>
+        <item>d8</item>
+        <item>d6</item>
+        <item>d4</item>
+    </string-array>
+    
 </resources>

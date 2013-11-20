@@ -1,12 +1,7 @@
 package org.ubc.de2vtt;
 
 import org.ubc.de2vtt.comm.Messenger;
-import org.ubc.de2vtt.fragments.ConnectionFragment;
-import org.ubc.de2vtt.fragments.MoveTokenFragment;
-import org.ubc.de2vtt.fragments.PassMessageFragment;
-import org.ubc.de2vtt.fragments.PlaceholderFragment;
-import org.ubc.de2vtt.fragments.SendImageFragment;
-import org.ubc.de2vtt.fragments.TableTopFragment;
+import org.ubc.de2vtt.fragments.*;
 
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -175,6 +170,9 @@ public class MainActivity extends Activity {
 				fragment = new PassMessageFragment();
 				break;
 			case 5:
+				fragment = new DieRollFragment();
+				break;
+			case 6:
 	    		fragment = new ConnectionFragment();
 	    		break;
 		}
