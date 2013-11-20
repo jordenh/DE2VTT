@@ -1,10 +1,13 @@
 package org.ubc.de2vtt.token;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 
 import org.ubc.de2vtt.SharedPreferencesManager;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.SparseArray;
 
@@ -13,6 +16,7 @@ public class TokenManager {
 	
 	static TokenManager sharedInstance;
 	private SparseArray<Token> tokenList;
+	private Queue<Bitmap> sendBmps;
 	
 	public static TokenManager getSharedInstance() {
 		if (sharedInstance == null) {
@@ -23,9 +27,13 @@ public class TokenManager {
 	
 	protected TokenManager() {
 		tokenList = new SparseArray<Token>();
+		sendBmps = new LinkedList<Bitmap>();
 	}
 	
 	public void add(Token tok) {
+		if (!sendBmps.isEmpty()) {
+			tok.setBmp(sendBmps.remove());
+		}
 		tokenList.append(tok.getId(), tok);
 	}
 	
@@ -35,6 +43,10 @@ public class TokenManager {
 	
 	public void save() {
 		new TokenSave().execute();
+	}
+	
+	public void queueBitmap(Bitmap bmp) {
+		sendBmps.add(bmp);
 	}
 	
 	private class TokenSave extends AsyncTask<Void, Integer, Void>  {

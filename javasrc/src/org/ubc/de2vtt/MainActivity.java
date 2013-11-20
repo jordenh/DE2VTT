@@ -1,22 +1,28 @@
 package org.ubc.de2vtt;
 
+import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Messenger;
+import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.mailbox.Mailbox;
 import org.ubc.de2vtt.fragments.*;
+import org.ubc.de2vtt.fragments.WINGFragment;
+import org.ubc.de2vtt.token.Token;
+import org.ubc.de2vtt.token.TokenManager;
 
-import android.os.Bundle;
-import android.os.StrictMode;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -31,6 +37,7 @@ public class MainActivity extends Activity {
 	private static Context mContext;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private String mTitle;
+	private WINGFragment activeFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +71,9 @@ public class MainActivity extends Activity {
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-
+		
+		Mailbox.getSharedInstance(this);
+		
 		// Attempt to connect
 		Messenger.GetSharedInstance();
 	}
@@ -86,6 +95,11 @@ public class MainActivity extends Activity {
 				getActionBar().setTitle(R.string.app_name);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
+				// close keyboard
+				InputMethodManager inputManager = (InputMethodManager)            
+					  getSystemService(Context.INPUT_METHOD_SERVICE); 
+					    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),      
+					    InputMethodManager.HIDE_NOT_ALWAYS);
 			}
 		};
 	}
@@ -152,7 +166,7 @@ public class MainActivity extends Activity {
   
 	public void switchFragment(int position) {
 		Log.v(TAG, "Switching fragments.");
-		Fragment fragment = new PlaceholderFragment();
+		WINGFragment fragment = new PlaceholderFragment();
 		Bundle args = new Bundle();
 		fragment.setArguments(args);
 
@@ -161,7 +175,10 @@ public class MainActivity extends Activity {
 				fragment = new TableTopFragment();
 				break;
 			case 1:
-				fragment = new MoveTokenFragment();
+				fragment = new ManageTokenFragment();
+				break;
+			case 2:
+				fragment = new GameConfigFragment();
 				break;
 			case 3:
 				fragment = new SendImageFragment();
@@ -176,6 +193,8 @@ public class MainActivity extends Activity {
 	    		fragment = new ConnectionFragment();
 	    		break;
 		}
+		
+		activeFragment = fragment;
 
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction()
@@ -185,6 +204,38 @@ public class MainActivity extends Activity {
 		setTitle(mDrawerItems[position]);
 		mTitle = mDrawerItems[position];
 		mDrawerLayout.closeDrawer(mDrawerList);
+	}
+	
+	public synchronized void onReceiveData(Received rcv) {
+		Log.v(TAG, "Received data.");
+		Token t;
+		TokenManager tm;
+		
+		switch (rcv.getCommand()) {
+			case MOVE_TOKEN:
+				Log.v(TAG, "Moving token.");
+				tm = TokenManager.getSharedInstance();
+				t = new Token(rcv);
+				tm.move(t);
+				// signal tabletop fragment if it is active?
+				break;
+			case SEND_TOKEN:
+				Log.v(TAG, "Receiving token.");
+				tm = TokenManager.getSharedInstance();
+				t = new Token(rcv);
+				tm.add(t);		
+				break;
+			default:
+				// signal active fragment
+				if (!activeFragment.passReceived(rcv)) {
+					Log.e(TAG, "Failed to pass message to fragment.");
+				}
+		}
+	}
+	
+	public boolean acceptCommand(Command cmd) {
+		// should be based on active fragment
+		return false;
 	}
 
 	@Override

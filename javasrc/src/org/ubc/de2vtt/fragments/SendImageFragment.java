@@ -1,26 +1,18 @@
 package org.ubc.de2vtt.fragments;
 
 import org.ubc.de2vtt.R;
-import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
-import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.comm.receivers.Receiver;
-import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
-import org.ubc.de2vtt.comm.receivers.SingleReceiver;
 import org.ubc.de2vtt.comm.sendables.SendableBitmap;
-import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -33,11 +25,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-public class SendImageFragment extends Fragment {
+public class SendImageFragment extends WINGFragment {
 	private static final String TAG = SendImageFragment.class.getSimpleName();	
 	
 	protected View mParentView;
-	private Receiver receiver;
 	
 	private static final int REQUEST_CODE = 1;
     private Bitmap bitmap;
@@ -55,7 +46,6 @@ public class SendImageFragment extends Fragment {
 			imageView.setScaleType(ScaleType.FIT_XY);
 		}
 		
-		receiver = new RepeatingReceiver(new SendTokenReceiveTask(), 500);
 		updateButtonState();
 		
 		return mParentView;
@@ -135,8 +125,10 @@ public class SendImageFragment extends Fragment {
 				Message msg = new Message(cmd, bmp);
 				Messenger messenger = Messenger.GetSharedInstance();
 				
+				TokenManager m = TokenManager.getSharedInstance();
+				m.queueBitmap(scaled);
+				
 				messenger.send(msg);
-				receiver = new SingleReceiver(new SendTokenReceiveTask());
 				updateButtonState();
 			} else {
 				Log.v(TAG, "Attempt to send null bitmap.");
@@ -149,12 +141,12 @@ public class SendImageFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		receiver.cancel();
 	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		Log.v(TAG, "onActivityResult entered.");
 		if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && null != data) {
 			selectedImage = data.getData();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
@@ -164,29 +156,36 @@ public class SendImageFragment extends Fragment {
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
-			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
-
 			//imageView.setImageResource(0);
 			
 			bitmap = BitmapFactory.decodeFile(picturePath);
-			Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+			final Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+			
+			Log.v(TAG, "Setting image bmp");
+			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
 			imageView.setImageBitmap(scaled);
 			
-			receiver = new RepeatingReceiver(new SendTokenReceiveTask(), 500);
 			updateButtonState();
         }
+		Log.v(TAG, "onActivityResult finished.");
     }
 	
-	private class SendTokenReceiveTask extends ReceiveTask {
-		@Override
-		protected void performAction(Received rcv) {
-			Log.v(TAG, "Receive action called.");
-			TokenManager man = TokenManager.getSharedInstance();
-			Token newTok = new Token(rcv);
-			newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
-			//newTok.setupBitmap(selectedImage);
-			Log.v(TAG, "New token has id " + newTok.getId());
-			man.add(newTok);
-		}
+//	private class SendTokenReceiveTask extends ReceiveTask {
+//		@Override
+//		protected void performAction(Received rcv) {
+//			Log.v(TAG, "Receive action called.");
+//			TokenManager man = TokenManager.getSharedInstance();
+//			Token newTok = new Token(rcv);
+//			newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
+//			//newTok.setupBitmap(selectedImage);
+//			Log.v(TAG, "New token has id " + newTok.getId());
+//			man.add(newTok);
+//		}
+//	}
+
+	@Override
+	public boolean passReceived(Received r) {
+		Log.e(TAG, "Received message from Mailbox via MainActivity");
+		return false;
 	}
 }
