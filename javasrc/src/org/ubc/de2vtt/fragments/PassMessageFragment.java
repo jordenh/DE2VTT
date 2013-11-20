@@ -11,14 +11,11 @@ import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.receivers.Receiver;
 import org.ubc.de2vtt.comm.receivers.SingleReceiver;
-import org.ubc.de2vtt.comm.sendables.SendableBitmap;
 import org.ubc.de2vtt.comm.sendables.SendableMove;
-import org.ubc.de2vtt.fragments.ConnectionFragment.ConnectionFragmentReceiveTask;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

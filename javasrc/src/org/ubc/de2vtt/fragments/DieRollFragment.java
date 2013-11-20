@@ -1,5 +1,7 @@
 package org.ubc.de2vtt.fragments;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.ubc.de2vtt.R;
@@ -16,7 +18,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DieRollFragment extends Fragment {
 	private static final String TAG = DieRollFragment.class.getSimpleName();	
@@ -26,6 +33,10 @@ public class DieRollFragment extends Fragment {
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
 	private ShakeListener mShakeListener;
+	private Spinner mDieTypeSelector;
+	private TextView mRollValue;
+	
+	private int mDieValues[] = {4, 6, 8, 10, 12, 20};
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -40,7 +51,11 @@ public class DieRollFragment extends Fragment {
         }
         
         mShakeListener = new ShakeListener();
-		
+
+        mDieTypeSelector = (Spinner)mParentView.findViewById(R.id.dieSpinner);
+        mRollValue = (TextView)mParentView.findViewById(R.id.dieValue);
+        
+		setupSpinner();
 	    setupOnShakeListeners();
 	  		
 		return mParentView;
@@ -68,11 +83,46 @@ public class DieRollFragment extends Fragment {
 				Log.v(TAG, "SHAKE!!");
 				Random randomGen = new Random();
 				
-				int randomInt = randomGen.nextInt(10);
+				int pos = (int) mDieTypeSelector.getSelectedItemId();
+				Log.v(TAG, "item selected :" + pos);
+				Toast.makeText(mActivity, "item selected :" + pos, Toast.LENGTH_SHORT).show();
 				
-				TextView dieValue = (TextView)mActivity.findViewById(R.id.dieValue);
-	        	dieValue.setText("" + randomInt);
+				int randomInt = 1 + randomGen.nextInt(mDieValues[pos]);
+	        	mRollValue.setText("" + randomInt);
 			}
 		}); 
+		
+		mDieTypeSelector.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				Log.v(TAG, "item selected :" + arg2);
+				Toast.makeText(mActivity, "item selected :" + arg2 + "; " + arg3, Toast.LENGTH_SHORT).show();
+				mRollValue.setText("1");
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+		});
+	}
+	
+	private void setupSpinner() {
+		// Obtain list of currently connected phone IDs (names), as well as title for main screen. TBD - add more 
+		List<String> dieTypes = new ArrayList<String>();
+		
+		for (int i = 0; i < mDieValues.length; i++){
+			dieTypes.add("D" + mDieValues[i]);
+		}
+		
+		// Create an ArrayAdapter using the string array and a default spinner layout
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>
+				(mActivity, android.R.layout.simple_spinner_item, dieTypes);
+		// Specify the layout to use when the list of choices appears
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// Apply the adapter to the spinner
+		mDieTypeSelector.setAdapter(adapter);
 	}
 }
