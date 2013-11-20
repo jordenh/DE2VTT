@@ -207,11 +207,22 @@ public class MainActivity extends Activity {
 	
 	public synchronized void onReceiveData(Received rcv) {
 		Log.v(TAG, "Received data.");
+		Token t;
+		TokenManager tm;
+		
 		switch (rcv.getCommand()) {
 			case MOVE_TOKEN:
-				TokenManager tm = TokenManager.getSharedInstance();
-				Token t = new Token(rcv);
+				Log.v(TAG, "Moving token.");
+				tm = TokenManager.getSharedInstance();
+				t = new Token(rcv);
 				tm.move(t);
+				// signal tabletop fragment if it is active?
+				break;
+			case SEND_TOKEN:
+				Log.v(TAG, "Receiving token.");
+				tm = TokenManager.getSharedInstance();
+				t = new Token(rcv);
+				tm.add(t);		
 				break;
 			default:
 				// signal active fragment

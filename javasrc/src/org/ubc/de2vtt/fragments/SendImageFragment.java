@@ -5,7 +5,10 @@ import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.mailbox.Mailbox;
 import org.ubc.de2vtt.comm.sendables.SendableBitmap;
+import org.ubc.de2vtt.token.TokenManager;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -123,6 +126,9 @@ public class SendImageFragment extends WINGFragment {
 				Message msg = new Message(cmd, bmp);
 				Messenger messenger = Messenger.GetSharedInstance();
 				
+				TokenManager m = TokenManager.getSharedInstance();
+				m.queueBitmap(scaled);
+				
 				messenger.send(msg);
 				updateButtonState();
 			} else {
@@ -141,6 +147,7 @@ public class SendImageFragment extends WINGFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		Log.v(TAG, "onActivityResult entered.");
 		if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && null != data) {
 			selectedImage = data.getData();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
@@ -150,16 +157,18 @@ public class SendImageFragment extends WINGFragment {
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
-			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
-
 			//imageView.setImageResource(0);
 			
 			bitmap = BitmapFactory.decodeFile(picturePath);
-			Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+			final Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+			
+			Log.v(TAG, "Setting image bmp");
+			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
 			imageView.setImageBitmap(scaled);
 			
 			updateButtonState();
         }
+		Log.v(TAG, "onActivityResult finished.");
     }
 	
 //	private class SendTokenReceiveTask extends ReceiveTask {

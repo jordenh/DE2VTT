@@ -242,7 +242,7 @@ public class Messenger {
 				in.read(buf);
 				
 			} else {
-				Log.v(TAG, "Nothing to receive.");
+				//Log.v(TAG, "Nothing to receive.");
 				return null;
 			}
 			

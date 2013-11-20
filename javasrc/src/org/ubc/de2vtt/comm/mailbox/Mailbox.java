@@ -143,9 +143,16 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 			// Notify activity
 			//MailboxCallback callBack = new MailboxCallback();
 			//callBack.execute(sharedInstance);
-			
+			Log.v(TAG, "performAction");
 			// TODO: remove
-			activity.onReceiveData(rcv);
+			
+			final Received r = rcv.copy();
+			
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					activity.onReceiveData(r);
+				}
+			});
 		}
 	}
 	
