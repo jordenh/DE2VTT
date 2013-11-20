@@ -80,15 +80,19 @@ int executeCmd(msg * currentMsg) {
 		printf("In Update_Alias\n");
 		updateConnUserAlias(currentMsg);
 		//TBD - send new alias name to all phones
+		alertUsersNewUser(currentMsg);
 		break;
 
 	case OUTPUT_TOKEN_INFO:
 		//This is a java side command - the DE2 will update all connected androids that a token has moved.
 		break;
 
-	case REMOVE_ALL_TOKEN:
-		printf("In Remove_ALL_Token");
+	case DISCONNECT_DEV:
+		printf("In DISCONNECT_DEV\n");
 		removeTokenFromUser(currentMsg->androidID);
+		alertUsersOfUserDC(currentMsg);
+		clearUserInfo(currentMsg);
+		alt_up_char_buffer_clear(char_buffer); // refresh buffer.
 		break;
 
 	case REMOVE_TOKEN:

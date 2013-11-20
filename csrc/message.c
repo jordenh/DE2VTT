@@ -74,6 +74,87 @@ unsigned int updateConnUserAlias(msg * inMsg) {
 	return 0;
 }
 
+void alertUsersNewUser(msg * currentMsg) {
+	int i;
+
+	msg alertMsg;
+	alertMsg.androidID = 0;
+	alertMsg.buffer = malloc(sizeof(char) * MAX_ALIAS_SIZE);
+	alertMsg.cmd = (unsigned int)UPDATE_ALIAS;
+	alertMsg.len = MAX_ALIAS_SIZE;//currentMsg->len; // correct?
+
+	printf("in alertUsersNewUser, alerting of new user: %d\n", currentMsg->androidID);
+	for(i = 0; i < NUM_USERS; i++) {
+		if(currentMsg->androidID == connUserIDs[i]) {
+			*(unsigned char*)alertMsg.buffer = (unsigned char)connUserIDs[i];
+			strncpy((char*)(alertMsg.buffer + 1), connUserAlias[i], MAX_ALIAS_SIZE - 1);
+			alertMsg.buffer[MAX_ALIAS_SIZE - 1] = '\0';
+			printf("about to send string: %s in alertUsersNewUser\n", (char*)alertMsg.buffer);
+		}
+	}
+	for(i = 0; i < NUM_USERS; i++) {
+		if((currentMsg->androidID != connUserIDs[i]) && (connUserIDs[i] != 0)) {
+			alertMsg.androidID = connUserIDs[i];
+			sendMessage(&alertMsg);
+		}
+	}
+	free(alertMsg.buffer);
+}
+
+void alertUserAllUsers(msg * currentMsg) {
+	int i;
+
+	msg alertMsg;
+	alertMsg.androidID = 0;
+	alertMsg.buffer = malloc(sizeof(char) * MAX_ALIAS_SIZE);
+	alertMsg.cmd = (unsigned int)UPDATE_ALIAS;
+	alertMsg.len = MAX_ALIAS_SIZE;//currentMsg->len; // correct? TBD
+
+	printf("in alertUserAllUsers, alerting new user: %d\n", currentMsg->androidID);
+	alertMsg.androidID = currentMsg->androidID;
+	for(i = 0; i < NUM_USERS; i++) {
+		if((currentMsg->androidID != connUserIDs[i]) && (connUserIDs[i] != 0)) {
+			*(unsigned char *)alertMsg.buffer = (unsigned char)connUserIDs[i];
+			strncpy((char*)(alertMsg.buffer + 1), connUserAlias[i], MAX_ALIAS_SIZE - 1);
+			alertMsg.buffer[MAX_ALIAS_SIZE - 1] = '\0';
+			printf("about to send string: %s in alertUserAlUsers\n", (char*)alertMsg.buffer);
+			sendMessage(&alertMsg);
+		}
+	}
+	free(alertMsg.buffer);
+}
+
+void alertUsersOfUserDC(msg * currentMsg) {
+	int i;
+
+	msg alertMsg;
+	alertMsg.androidID = 0;
+	alertMsg.cmd = (unsigned int)UPDATE_ALIAS;
+	alertMsg.len = MAX_ALIAS_SIZE;//currentMsg->len; // correct?
+
+	alertMsg.buffer = (unsigned char *)"\0"; //message of null indicates that android should remove the user from their memory.
+
+	for(i = 0; i < NUM_USERS; i++) {
+		if((currentMsg->androidID != connUserIDs[i]) && (connUserIDs[i] != 0)) {
+			printf("in alertUsersOfUserDC - sending to id %d about DC of %d", i, currentMsg->androidID);
+			alertMsg.androidID = connUserIDs[i];
+			sendMessage(&alertMsg);
+		}
+	}
+	free(alertMsg.buffer);
+}
+
+void clearUserInfo(msg * currentMsg) {
+	int i;
+
+	for(i = 0; i < NUM_USERS; i++) {
+		if(currentMsg->androidID == connUserIDs[i]) {
+			*connUserAlias[i] = '\0';
+			connUserIDs[i] = 0;
+		}
+	}
+}
+
 void getMessage(msg * inMsg){
 	int i;
 	unsigned char msgLen[4];
@@ -93,6 +174,8 @@ void getMessage(msg * inMsg){
 			printf("Error adding Android ID, ID array full\n");
 		else {
 			updateConnUserAlias(inMsg);
+			alertUsersNewUser(inMsg); //alert current users of new user
+			alertUserAllUsers(inMsg); //alert new user of all current users
 		}
 	}
 
@@ -158,32 +241,32 @@ void sendMessage(msg * sendMsg){
 }
 
 void passMsg(msg * passMsg) {
+	printf("in passMsg\n");
 	if(passMsg->buffer == NULL || uart == NULL){
 		printf("Error in sendMessage, buffer or uart is null!");
 		return;
 	}
 
-	char * msgString= (char *)passMsg->buffer;
-	unsigned int yPos = 1;
+	char * msgString = (char *)passMsg->buffer;
+	unsigned int yPos = 2;
 	unsigned int xPos;
+	unsigned int sendID = (unsigned int)(*(msgString));
 
-	switch( *(msgString++)) {
-	case 0:
+	if( sendID == 0) {
 		printf("about to write to screen!\n");
 		alt_up_char_buffer_clear(char_buffer);
 		xPos = (SCREEN_CHAR_WIDTH / 2) - (int)(strlen(msgString) / 2);
 		alt_up_char_buffer_string(char_buffer, msgString , xPos, yPos);
-		break;
-	/*case connUserIDs[0]:
-		break;
-	case connUserIDs[1]:
-		break;
-	case connUserIDs[2]:
-		break;
-	case connUserIDs[3]:
-		break;
-	case connUserIDs[4]:
-		break; */
+	} else if( (sendID == connUserIDs[0]) ||
+			( sendID == connUserIDs[1]) ||
+			( sendID == connUserIDs[2]) ||
+			( sendID == connUserIDs[3]) ||
+			( sendID == connUserIDs[4]) ) {
+		*(msgString) = passMsg->androidID; // byte 6 is now the ID of the device that sent the message.
+		passMsg->androidID = sendID;
+		sendMessage(passMsg);
+	} else {
+		printf("Error, tried to pass message to non-existant device!\n");
 	}
 
 }

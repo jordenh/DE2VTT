@@ -9,6 +9,7 @@ import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableMove;
+import org.ubc.de2vtt.users.UserManager;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -59,7 +60,11 @@ public class PassMessageFragment extends WINGFragment {
 		Spinner rcvrSpinner = (Spinner) mParentView.findViewById(R.id.rcvrSpinner);
 		// Obtain list of currently connected phone IDs (names), as well as title for main screen. TBD - add more 
 		List<String> rcvrIDs = new ArrayList<String>();
-		rcvrIDs.add("Table - ID: " + -1);
+		
+		UserManager UM = UserManager.getSharedInstance();
+		for(int i = 0; i < UM.count(); i++) {
+			rcvrIDs.add(UM.getAtIndex(i).getAlias() + " " + UM.getAtIndex(i).getID());
+		}
 		
 		// Create an ArrayAdapter using the string array and a default spinner layout
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>
@@ -99,36 +104,7 @@ public class PassMessageFragment extends WINGFragment {
 		msg += et.getText().toString() + '\0';
 		
 		mMessenger.sendStringMessage(msg, Command.PASS_MSG);
-		//SendableMove mv = new SendableMove(1, 50, 50);
-		//Message toSend = new Message(Command.MOVE_TOKEN, mv);
-		//mMessenger.send(toSend);
 	}
-	
-//	public class ConnectionFragmentReceiveTask extends ReceiveTask {
-//	    protected void performAction(Received rcv) {
-//	    	Log.v(TAG, "Timer fires.");
-//	    	if (active) {
-//	    		updateReceivedField(rcv);
-//	    	}
-//	    }
-//	    
-//	    private void updateReceivedField(Received rcv) {
-//	        final String msgStr = rcv.DataToString();
-//	        mActivity.runOnUiThread(new Runnable() {
-//	            public void run() {
-//	            	updateButtonState();
-//	                TextView tv = (TextView) mParentView.findViewById(R.id.inMsgLabel);
-//	                if (msgStr != null && msgStr.length() > 0) {
-//	                    tv.setText(msgStr);
-//	                }
-//	            }
-//	        });
-//	    }
-//
-//		@Override
-//		protected void onFinishRun() {
-//		}
-//	}
 
 	@Override
 	public boolean passReceived(Received r) {
