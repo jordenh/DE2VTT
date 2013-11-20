@@ -11,6 +11,7 @@
         <item>Game Config</item>
         <item>Send Image</item>
         <item>Pass Message</item>
+        <item>Receive Message</item>
         <item>Connection</item>
     </string-array>
 
@@ -57,4 +58,7 @@
     <!-- Game Config Fragment -->
 	<string name="button_update_alias">Update Alias</string>
     <string name="in_alias">Input a new Alias</string>
+    
+    <!-- Bulletins -->
+    <string name="from">From</string>
 </resources>

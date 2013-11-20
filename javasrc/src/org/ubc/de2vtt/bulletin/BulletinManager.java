@@ -8,7 +8,7 @@ public class BulletinManager {
 	
 	private static BulletinManager sharedInstance;
 	
-	public BulletinManager getSharedInstance() {
+	public static BulletinManager getSharedInstance() {
 		if (sharedInstance == null) {
 			sharedInstance = new BulletinManager();
 		}
@@ -17,6 +17,10 @@ public class BulletinManager {
 	
 	protected BulletinManager() {
 		bulletins = new ArrayList<Bulletin>();
+	}
+	
+	public List<Bulletin> getList() {
+		return bulletins;
 	}
 	
 	public Bulletin getAtIndex(int i) {

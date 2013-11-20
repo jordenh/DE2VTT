@@ -1,9 +1,12 @@
 package org.ubc.de2vtt;
 
+import org.ubc.de2vtt.bulletin.Bulletin;
+import org.ubc.de2vtt.bulletin.BulletinManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.mailbox.Mailbox;
+import org.ubc.de2vtt.fragments.BulletinFragment;
 import org.ubc.de2vtt.fragments.ConnectionFragment;
 import org.ubc.de2vtt.fragments.GameConfigFragment;
 import org.ubc.de2vtt.fragments.ManageTokenFragment;
@@ -193,6 +196,9 @@ public class MainActivity extends Activity {
 				fragment = new PassMessageFragment();
 				break;
 			case 5:
+				fragment = new BulletinFragment();
+				break;
+			case 6:
 	    		fragment = new ConnectionFragment();
 	    		break;
 		}
@@ -213,6 +219,8 @@ public class MainActivity extends Activity {
 		Log.v(TAG, "Received data.");
 		Token t;
 		TokenManager tm;
+		BulletinManager bm;
+		Bulletin b;
 		
 		switch (rcv.getCommand()) {
 			case MOVE_TOKEN:
@@ -227,6 +235,12 @@ public class MainActivity extends Activity {
 				tm = TokenManager.getSharedInstance();
 				t = new Token(rcv);
 				tm.add(t);		
+				break;
+			case PASS_MSG:
+				Log.v(TAG, "Receiving a bulletin.");
+				bm = BulletinManager.getSharedInstance();
+				b = new Bulletin(rcv);
+				bm.add(b);
 				break;
 			default:
 				// signal active fragment
