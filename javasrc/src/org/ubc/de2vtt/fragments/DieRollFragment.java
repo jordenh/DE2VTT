@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Random;
 
 import org.ubc.de2vtt.R;
+import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.rolldie.ShakeListener;
 import org.ubc.de2vtt.rolldie.ShakeListener.OnShakeListener;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -25,7 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DieRollFragment extends Fragment {
+public class DieRollFragment extends WINGFragment {
 	private static final String TAG = DieRollFragment.class.getSimpleName();	
 	
 	private Activity mActivity;
@@ -37,6 +37,11 @@ public class DieRollFragment extends Fragment {
 	private TextView mRollValue;
 	
 	private int mDieValues[] = {4, 6, 8, 10, 12, 20};
+	private int mDiePictureIds[] = {
+		R.drawable.d4,	R.drawable.d6,
+		R.drawable.d8,	R.drawable.d10,
+		R.drawable.d12, R.drawable.d20
+	};
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -54,6 +59,7 @@ public class DieRollFragment extends Fragment {
 
         mDieTypeSelector = (Spinner)mParentView.findViewById(R.id.dieSpinner);
         mRollValue = (TextView)mParentView.findViewById(R.id.dieValue);
+        mRollValue.setBackgroundResource(mDiePictureIds[0]);
         
 		setupSpinner();
 	    setupOnShakeListeners();
@@ -100,6 +106,8 @@ public class DieRollFragment extends Fragment {
 				Log.v(TAG, "item selected :" + arg2);
 				Toast.makeText(mActivity, "item selected :" + arg2 + "; " + arg3, Toast.LENGTH_SHORT).show();
 				mRollValue.setText("1");
+				
+				mRollValue.setBackgroundResource(mDiePictureIds[arg2]);
 			}
 
 			@Override
@@ -124,5 +132,11 @@ public class DieRollFragment extends Fragment {
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
 		mDieTypeSelector.setAdapter(adapter);
+	}
+
+	@Override
+	public boolean passReceived(Received r) {
+		// Don't need anything as this fragment is not expecting any messages
+		return false;
 	}
 }
