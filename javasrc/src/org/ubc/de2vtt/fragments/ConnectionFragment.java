@@ -1,6 +1,5 @@
 package org.ubc.de2vtt.fragments;
 
-import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
@@ -25,7 +24,6 @@ public class ConnectionFragment extends WINGFragment {
 	private View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
-	private boolean active;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -38,7 +36,6 @@ public class ConnectionFragment extends WINGFragment {
 		setupOnClickListeners();
 		
 		mActivity = this.getActivity();
-		active = true;
 		
 		updateButtonStatus();
 		
@@ -82,19 +79,13 @@ public class ConnectionFragment extends WINGFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		active = false;
 	}
 	
-	public void openSocket() {
-		Mailbox m = Mailbox.getSharedInstance((MainActivity)getActivity());
-		
+	public void openSocket() {		
 		String ip = getConnectToIP();
 		Integer port = getConnectToPort();
 		
 		mMessenger.openSocket(ip, port);
-		SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
-		man.putString(SHARED_PREFS_IP, ip);
-		man.putString(SHARED_PREFS_PORT, port.toString());
 		
 		final Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
@@ -121,7 +112,7 @@ public class ConnectionFragment extends WINGFragment {
 	public void closeSocket() {
 		mMessenger.closeSocket();
 		Mailbox m = Mailbox.getSharedInstance(null);
-		m.kill();
+		m.kill(getActivity());
 		updateButtonStatus();
 	}
 	

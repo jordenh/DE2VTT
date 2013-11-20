@@ -15,11 +15,13 @@ import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
 import org.ubc.de2vtt.exceptions.InvalidCommandException;
 import org.ubc.de2vtt.exceptions.MailboxNotInitializedException;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
 public class Mailbox extends AsyncTask<Void, Void, Void> {
 	private static final String TAG = Mailbox.class.getSimpleName();
+	private static MainActivity activityHandle;
 	
 	private final Map<Command, Queue<Received>> data;	
 	private MainActivity activity;
@@ -32,6 +34,9 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 		if (sharedInstance == null) {
 			if (m != null) {
 				sharedInstance = new Mailbox(m);
+			} 
+			else if(activityHandle != null) {
+				sharedInstance = new Mailbox(activityHandle);
 			} else {
 				Log.e(TAG, "Mailbox never setup with activity reference.");
 				throw new MailboxNotInitializedException();
@@ -66,6 +71,11 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 		task = new MailboxReceiveTask();
 		timer = new RepeatingReceiver(task, 500);
 		return null;
+	}
+	
+	public void kill(Activity a) {
+		kill();
+		activityHandle = (MainActivity)a;
 	}
 	
 	public void kill() {

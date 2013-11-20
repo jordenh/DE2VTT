@@ -28,7 +28,6 @@ public class PassMessageFragment extends WINGFragment {
 	protected View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
-	private boolean active; 
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -41,7 +40,6 @@ public class PassMessageFragment extends WINGFragment {
 		updateButtonState();
 		
 		mActivity = this.getActivity();
-		active = true;
 		
 		setAcceptedCommands(Command.PASS_MSG);
 		
@@ -51,8 +49,6 @@ public class PassMessageFragment extends WINGFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		//receiver.cancel();
-		active = false;
 	}
 	
 	private void setupSpinner() {
@@ -93,8 +89,8 @@ public class PassMessageFragment extends WINGFragment {
 	
 	public void passMsg() {
 		EditText et = (EditText)mParentView.findViewById(R.id.sendMsg);
-		Spinner sp = (Spinner)mParentView.findViewById(R.id.rcvrSpinner); // TBD - need to make this msg string concatonation correct.
-		String msg = "\0"; // again, need to properly set ID here - for now, set to zero to default to table. 
+		Spinner sp = (Spinner)mParentView.findViewById(R.id.rcvrSpinner); // TODO: - need to make this msg string concatonation correct.
+		String msg = "\0"; // TODO: again, need to properly set ID here - for now, set to zero to default to table. 
 		//String ID = sp.getSelectedItem().toString();
 		msg += et.getText().toString() + '\0';
 		

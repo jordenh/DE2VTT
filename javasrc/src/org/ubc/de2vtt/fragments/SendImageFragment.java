@@ -5,7 +5,6 @@ import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.comm.mailbox.Mailbox;
 import org.ubc.de2vtt.comm.sendables.SendableBitmap;
 import org.ubc.de2vtt.token.TokenManager;
 

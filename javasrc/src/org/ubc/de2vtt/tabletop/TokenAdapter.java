@@ -41,7 +41,7 @@ public class TokenAdapter extends BaseAdapter {
         	
         	if (isBlack[cell]) {
         		isBlack[cell] = false;
-        		mThumbIds[cell] = new Integer(id);
+        		mThumbIds[cell] = Integer.valueOf(id);
         	}
 		}
     }
