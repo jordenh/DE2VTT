@@ -9,7 +9,7 @@ void setupMessage(void) {
 	int i;
 
 	for(i = 0; i < NUM_USERS; i++) {
-		if(connUserAlias[i] != NULL) {
+		if(connUserAlias[i] == NULL) {
 			connUserAlias[i] = malloc(sizeof(char) * MAX_ALIAS_SIZE);
 		}
 
@@ -38,7 +38,7 @@ unsigned int isIDSaved(msg * inMsg) {
 	return 0;
 }
 
-// stores an ID in the connUsersIDs array, if room available. Returns fals if not added, true if added.
+// stores an ID in the connUsersIDs array, if room available. Returns 0 if not added, 1 if added.
 unsigned int storeNewID(int ID) {
 	int i;
 
@@ -50,6 +50,27 @@ unsigned int storeNewID(int ID) {
 		}
 	}
 
+	return 0;
+}
+
+// if alias != null, connAlias set to alia, else set to inMsgBuffer.
+unsigned int updateConnUserAlias(msg * inMsg) {
+	int i;
+	char buf[MAX_ALIAS_SIZE];
+
+	for(i = 0; i < NUM_USERS; i ++) {
+		if(connUserIDs[i] == inMsg->androidID) {
+			if(inMsg->cmd == (unsigned int)UPDATE_ALIAS) {
+				strncpy(connUserAlias[i], (char*)inMsg->buffer, (MAX_ALIAS_SIZE - 1));
+			} else {
+				sprintf(buf, "player%d", i);
+				connUserAlias[i] = strncpy(connUserAlias[i], buf, (MAX_ALIAS_SIZE - 1)); //strlen(buf));//
+			}
+			connUserAlias[i][MAX_ALIAS_SIZE - 1] = '\0'; // enforce last byte to be null character, to avoid overflow
+			alt_up_char_buffer_clear(char_buffer);
+			return 1;
+		}
+	}
 	return 0;
 }
 
@@ -70,13 +91,16 @@ void getMessage(msg * inMsg){
 	if(isIDSaved(inMsg) == 0) {
 		if (storeNewID(inMsg->androidID)  == 0)
 			printf("Error adding Android ID, ID array full\n");
+		else {
+			updateConnUserAlias(inMsg);
+		}
 	}
 
 	//obtain length (4 bytes)
 	for(i = ((sizeof(msgLen) / sizeof(msgLen[0])) - 1); i >= 0; i--) {
-		printf("about to fgetc\n");
+		//printf("about to fgetc\n");
 		msgLen[i] = fgetc(uart);
-		printf("received: msgLen[i] %d\n", msgLen[i]);
+		//printf("received: msgLen[i] %d\n", msgLen[i]);
 		inMsg->len += (0xFF & msgLen[i]) << i*8;
 	}
 
@@ -121,7 +145,7 @@ void sendMessage(msg * sendMsg){
 	// Start with the number of bytes in our message
 	for(i = ((sizeof(msgLen) / sizeof(msgLen[0])) - 1); i >= 0; i--) {
 		msgLen[i] = (sendMsg->len  >> i*8) & (0xFF);
-		printf("msgLen[i] = %d\n", msgLen[i]);
+		//printf("msgLen[i] = %d\n", msgLen[i]);
 		fputc(msgLen[i], uart);
 	}
 
