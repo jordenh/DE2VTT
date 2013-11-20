@@ -4,7 +4,6 @@
 #include "timer.h"
 #include "sd_card.h"
 #include "vga.h"
-#include "bmp.h"
 #include "input.h"
 #include "message.h"
 #include "command.h"
@@ -14,9 +13,7 @@
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
 
-extern BMP map;
-
-int init(void) {
+int init() {
 	if (openSdCard() == -1) {
 		printf("Error: Failed to open sd card\n");
 		return -1;
@@ -25,7 +22,6 @@ int init(void) {
 	}
 
 	initVga();
-	//parseBmps();
 	setupAudio();
 	setupMessage();
 	initTokens();
@@ -43,31 +39,27 @@ int main() {
 	if (init() == -1)
 		return -1;
 
-	startHardwareTimer();
+	//startHardwareTimer();
 
-	// main game loop;
 	while (1) {
-		//receive msg
-		//execute command
 		if(msg_m.buffer != NULL) {
 			free(msg_m.buffer);
 			msg_m.buffer = NULL;
 		}
 
 		//drawUserIDs(); // -- continue this! TBD - currently broken...
+
 		printf("Obtaining message\n");
 		getMessage(&msg_m);
+
 		printf("Executing message command\n");
 		statusInt = executeCmd(&msg_m);
-		printf("Completed message command\n");
-
-		drawBmp(&map, 0, 0);
-		drawAllTokens();
 
 		if(statusInt == -1) {
-			printf("error occured in executing Command.\n");
+			printf("error occurred in executing Command.\n");
+		} else {
+			printf("Completed message command\n");
 		}
-
 
 		/*if (hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
@@ -79,8 +71,5 @@ int main() {
 		}*/
 	}
 
-	freeBmps();
 	return 0;
 }
-
-
