@@ -1,20 +1,15 @@
 package org.ubc.de2vtt.fragments;
 
+import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Messenger;
-import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.comm.receivers.Receiver;
-import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
-import org.ubc.de2vtt.comm.receivers.SingleReceiver;
-
+import org.ubc.de2vtt.comm.mailbox.Mailbox;
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class ConnectionFragment extends Fragment {
+public class ConnectionFragment extends WINGFragment {
 	private static final String TAG = ConnectionFragment.class.getSimpleName();
 	public static final String SHARED_PREFS_IP = "ip";	
 	public static final String SHARED_PREFS_PORT = "port";
@@ -30,7 +25,6 @@ public class ConnectionFragment extends Fragment {
 	private View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
-	private Receiver receiver;
 	private boolean active;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,8 +40,9 @@ public class ConnectionFragment extends Fragment {
 		mActivity = this.getActivity();
 		active = true;
 		
-		receiver = new RepeatingReceiver(new ConnectionFragmentReceiveTask(), 500);
 		updateButtonStatus();
+		
+		setAcceptedCommands(Command.HANDSHAKE);
 		
 		return mParentView;
 	}
@@ -87,11 +82,12 @@ public class ConnectionFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		receiver.cancel();
 		active = false;
 	}
 	
 	public void openSocket() {
+		Mailbox m = Mailbox.getSharedInstance((MainActivity)getActivity());
+		
 		String ip = getConnectToIP();
 		Integer port = getConnectToPort();
 		
@@ -120,11 +116,12 @@ public class ConnectionFragment extends Fragment {
 		
 		mMessenger.sendStringMessage(msg, Command.HANDSHAKE);
 		// TODO: possible change to a rearm
-		receiver = new SingleReceiver(new ConnectionFragmentReceiveTask());
 	}
 	
 	public void closeSocket() {
 		mMessenger.closeSocket();
+		Mailbox m = Mailbox.getSharedInstance(null);
+		m.kill();
 		updateButtonStatus();
 	}
 	
@@ -181,15 +178,16 @@ public class ConnectionFragment extends Fragment {
 		btn.setEnabled(!canSend);
 	}
 
-	public class ConnectionFragmentReceiveTask extends ReceiveTask {
-	    protected void performAction(Received rcv) {
-	    	Log.v(TAG, "Timer fires.");
-	    	if (active) {
-	    		updateReceivedField(rcv);
-	    	}
-	    }
-	    
-	    private void updateReceivedField(Received rcv) {
+//	public class ConnectionFragmentReceiveTask extends ReceiveTask {
+//	    protected void performAction(Received rcv) {
+//	    	Log.v(TAG, "Timer fires.");
+//	    	if (active) {
+//	    		updateReceivedField(rcv);
+//	    	}
+//	    }
+//	}
+	
+	 private void updateReceivedField(Received rcv) {
 	        final String msgStr = rcv.DataToString();
 	        mActivity.runOnUiThread(new Runnable() {
 	            public void run() {
@@ -201,5 +199,10 @@ public class ConnectionFragment extends Fragment {
 	            }
 	        });
 	    }
+
+	@Override
+	public boolean passReceived(Received r) {
+		updateReceivedField(r);
+		return true;
 	}
 }

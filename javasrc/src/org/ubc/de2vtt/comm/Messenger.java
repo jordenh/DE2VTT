@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.TimerTask;
-import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -174,15 +172,15 @@ public class Messenger {
 			Log.e(TAG, "Receive timed out.");
 			resetSocket();
 			//r = attemptReceiveRecovery(r);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (InterruptedException e) {
 			resetSocket();
 			Log.e(TAG, "Receive interrupted out.");
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (ExecutionException e) {
 			resetSocket();
-			Log.e(TAG, "Receive computation mucket up.");
-			e.printStackTrace();
+			Log.e(TAG, "Receive computation mucked up.");
+			//e.printStackTrace();
 		}
 		return r;
 	}
@@ -208,6 +206,7 @@ public class Messenger {
 			mutex.lock();
 			Received r = null;
 			try {
+				//Log.v(TAG, "Trying receive");
 				r = receiveMessage();
 			}
 			finally {
@@ -222,7 +221,7 @@ public class Messenger {
 				try {
 					rcv = getMessage(rcv);
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.e(TAG, "IOException on receive.");
 				}			
 			} else {
 				Log.e(TAG, "Attempt to receive message from non-open socket.");
@@ -232,46 +231,25 @@ public class Messenger {
 		
 		private Received getMessage(Received rcv) throws IOException {
 			InputStream in = mSocket.getInputStream();
-			Vector<byte []> data = new Vector<byte[]>();
+			byte buf[] = null;
 			
 			// See if any bytes are available from the Middleman
 			int bytes_avail = in.available();
+			
 			if (bytes_avail > 0) {
 				// If so, read them in
-				byte buf[] = new byte[bytes_avail];
+				buf = new byte[bytes_avail];
 				in.read(buf);
+				
+			} else {
+				//Log.v(TAG, "Nothing to receive.");
+				return null;
+			}
+			
+			Log.v(TAG, "Received " + buf.length + " bytes");
 
-				data.add(buf);
-//				try {
-//					Thread.sleep(500);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-				//in.close();
-				in = mSocket.getInputStream();
-				bytes_avail = in.available();
-			}
-			
-			//Log.v(TAG, "Received " + data.size() + " chunks.");
-			
-			int totalLen = 0;
-			for (int i = 0; i < data.size(); i++) {
-				totalLen += data.get(i).length;
-			}
-			
-			byte [] args = new byte[totalLen];
-			int cursor = 0;
-			for (int i = 0; i < data.size(); i++) {
-				byte [] partial = data.get(i);
-				System.arraycopy(partial, 0, args, cursor, partial.length);
-				cursor += partial.length;
-			}
-			
-			//Log.v(TAG, "Total size is " + args.length);
-			
-			if (args.length > 4) {
-				rcv = new Received(args);
+			if (buf.length > 4) {
+				rcv = new Received(buf);
 			}
 			return rcv;
 		}

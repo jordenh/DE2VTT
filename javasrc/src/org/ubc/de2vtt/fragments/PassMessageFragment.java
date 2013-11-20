@@ -7,19 +7,11 @@ import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
-import org.ubc.de2vtt.comm.ReceiveTask;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.comm.receivers.Receiver;
-import org.ubc.de2vtt.comm.receivers.SingleReceiver;
-import org.ubc.de2vtt.comm.sendables.SendableBitmap;
 import org.ubc.de2vtt.comm.sendables.SendableMove;
-import org.ubc.de2vtt.fragments.ConnectionFragment.ConnectionFragmentReceiveTask;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,13 +22,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class PassMessageFragment extends Fragment {
+public class PassMessageFragment extends WINGFragment {
 	private static final String TAG = PassMessageFragment.class.getSimpleName();	
 	
 	protected View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
-	private Receiver receiver;
 	private boolean active; 
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,11 +37,13 @@ public class PassMessageFragment extends Fragment {
 		setupSpinner();
 		setupOnClickListeners();
 
-		receiver = new SingleReceiver(new ConnectionFragmentReceiveTask());
+		//receiver = new SingleReceiver(new ConnectionFragmentReceiveTask());
 		updateButtonState();
 		
 		mActivity = this.getActivity();
 		active = true;
+		
+		setAcceptedCommands(Command.PASS_MSG);
 		
 		return mParentView;
 	}
@@ -58,7 +51,7 @@ public class PassMessageFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		receiver.cancel();
+		//receiver.cancel();
 		active = false;
 	}
 	
@@ -111,26 +104,45 @@ public class PassMessageFragment extends Fragment {
 		//mMessenger.send(toSend);
 	}
 	
-	public class ConnectionFragmentReceiveTask extends ReceiveTask {
-	    protected void performAction(Received rcv) {
-	    	Log.v(TAG, "Timer fires.");
-	    	if (active) {
-	    		updateReceivedField(rcv);
-	    	}
-	    }
-	    
-	    private void updateReceivedField(Received rcv) {
-	        final String msgStr = rcv.DataToString();
-	        mActivity.runOnUiThread(new Runnable() {
-	            public void run() {
-	            	updateButtonState();
-	                TextView tv = (TextView) mParentView.findViewById(R.id.inMsgLabel);
-	                if (msgStr != null && msgStr.length() > 0) {
-	                    tv.setText(msgStr);
-	                }
-	            }
-	        });
-	    }
+//	public class ConnectionFragmentReceiveTask extends ReceiveTask {
+//	    protected void performAction(Received rcv) {
+//	    	Log.v(TAG, "Timer fires.");
+//	    	if (active) {
+//	    		updateReceivedField(rcv);
+//	    	}
+//	    }
+//	    
+//	    private void updateReceivedField(Received rcv) {
+//	        final String msgStr = rcv.DataToString();
+//	        mActivity.runOnUiThread(new Runnable() {
+//	            public void run() {
+//	            	updateButtonState();
+//	                TextView tv = (TextView) mParentView.findViewById(R.id.inMsgLabel);
+//	                if (msgStr != null && msgStr.length() > 0) {
+//	                    tv.setText(msgStr);
+//	                }
+//	            }
+//	        });
+//	    }
+//
+//		@Override
+//		protected void onFinishRun() {
+//		}
+//	}
+
+	@Override
+	public boolean passReceived(Received r) {
+		final String msgStr = r.DataToString();
+		mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+            	updateButtonState();
+                TextView tv = (TextView) mParentView.findViewById(R.id.inMsgLabel);
+                if (msgStr != null && msgStr.length() > 0) {
+                    tv.setText(msgStr);
+                }
+            }
+        });
+		return false;
 	}
 	
 }

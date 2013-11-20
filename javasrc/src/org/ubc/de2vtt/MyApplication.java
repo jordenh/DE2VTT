@@ -2,12 +2,15 @@ package org.ubc.de2vtt;
 
 import java.net.Socket;
 
+import org.ubc.de2vtt.comm.mailbox.Mailbox;
+
 import android.app.Application;
 import android.util.Log;
 
 public class MyApplication extends Application {
 	private static final String TAG = MyApplication.class.getSimpleName();
 	Socket sock = null;
+	private static Mailbox mailbox;
 	
 	public static byte id = 0;
 	
@@ -21,5 +24,9 @@ public class MyApplication extends Application {
 	public void onTerminate() {
 		Log.d(TAG, "Application terminating.");
 		super.onTerminate();
+	}
+	
+	public static Mailbox getMailbox() {
+		return mailbox;
 	}
 }
