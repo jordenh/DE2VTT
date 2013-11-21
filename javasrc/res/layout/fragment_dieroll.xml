@@ -4,23 +4,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <Spinner
+        android:id="@+id/dieSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btnRoll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <Spinner
-            android:id="@+id/dieSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
+        android:text="@string/button_roll" />
 
     <TextView
         android:id="@+id/dieValue"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="50dp" />
 
 </LinearLayout>

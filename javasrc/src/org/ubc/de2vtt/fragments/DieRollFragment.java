@@ -17,10 +17,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +36,7 @@ public class DieRollFragment extends WINGFragment {
 	private Sensor mAccelerometer;
 	private ShakeListener mShakeListener;
 	private Spinner mDieTypeSelector;
+	private Button mRollButton;
 	private TextView mRollValue;
 	
 	private int mDieValues[] = {4, 6, 8, 10, 12, 20};
@@ -51,18 +54,17 @@ public class DieRollFragment extends WINGFragment {
 		mSensorManager = (SensorManager) mActivity.getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         
-        if (mAccelerometer == null) {
-        	Log.v(TAG, "Can't find accelerometer");
-        }
+        mRollButton = (Button)mParentView.findViewById(R.id.btnRoll);
+        mRollButton.setVisibility(View.GONE);
         
         mShakeListener = new ShakeListener();
 
         mDieTypeSelector = (Spinner)mParentView.findViewById(R.id.dieSpinner);
         mRollValue = (TextView)mParentView.findViewById(R.id.dieValue);
         mRollValue.setBackgroundResource(mDiePictureIds[0]);
-        
+     	
 		setupSpinner();
-	    setupOnShakeListeners();
+	    setupOnEventListeners();
 	  		
 		return mParentView;
 	}
@@ -70,31 +72,24 @@ public class DieRollFragment extends WINGFragment {
 	@Override
     public void onResume() {
         super.onResume();
-        // Add the following line to register the Session Manager Listener onResume
-        mSensorManager.registerListener(mShakeListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        
+        if (!mSensorManager.registerListener(mShakeListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL)) {
+        	mRollButton.setVisibility(View.VISIBLE);
+        }
     }
  
     @Override
     public void onPause() {
-        // Add the following line to unregister the Sensor Manager onPause
         mSensorManager.unregisterListener(mShakeListener);
         super.onPause();
     }
     
-	private void setupOnShakeListeners() {		
+	private void setupOnEventListeners() {		
 		mShakeListener.setOnShakeListener(new OnShakeListener() {
 
 			@Override
 			public void onShake(int count) {
-				Log.v(TAG, "SHAKE!!");
-				Random randomGen = new Random();
-				
-				int pos = (int) mDieTypeSelector.getSelectedItemId();
-				Log.v(TAG, "item selected :" + pos);
-				Toast.makeText(mActivity, "item selected :" + pos, Toast.LENGTH_SHORT).show();
-				
-				int randomInt = 1 + randomGen.nextInt(mDieValues[pos]);
-	        	mRollValue.setText("" + randomInt);
+				onShakeEvent();
 			}
 		}); 
 		
@@ -104,7 +99,7 @@ public class DieRollFragment extends WINGFragment {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				Log.v(TAG, "item selected :" + arg2);
-				Toast.makeText(mActivity, "item selected :" + arg2 + "; " + arg3, Toast.LENGTH_SHORT).show();
+				Toast.makeText(mActivity, "item selected :" + arg2 + ";", Toast.LENGTH_SHORT).show();
 				mRollValue.setText("1");
 				
 				mRollValue.setBackgroundResource(mDiePictureIds[arg2]);
@@ -115,6 +110,13 @@ public class DieRollFragment extends WINGFragment {
 				
 			}
 		});
+		
+		mRollButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onShakeEvent();
+			}
+        });
 	}
 	
 	private void setupSpinner() {
@@ -132,6 +134,18 @@ public class DieRollFragment extends WINGFragment {
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
 		mDieTypeSelector.setAdapter(adapter);
+	}
+
+	private void onShakeEvent() {
+		Log.v(TAG, "SHAKE!!");
+		Random randomGen = new Random();
+		
+		int pos = (int) mDieTypeSelector.getSelectedItemId();
+		Log.v(TAG, "item selected :" + pos);
+		Toast.makeText(mActivity, "item selected :" + pos, Toast.LENGTH_SHORT).show();
+		
+		int randomInt = 1 + randomGen.nextInt(mDieValues[pos]);
+    	mRollValue.setText("" + randomInt);
 	}
 
 	@Override

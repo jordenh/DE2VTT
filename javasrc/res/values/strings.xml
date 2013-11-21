@@ -52,11 +52,15 @@
     <string name="id">Id</string>
     <string name="xy">X, Y</string>
 
-    <!-- Misc -->
-    <string name="desc">desc</string>
-
     <!-- Game Config Fragment -->
 	<string name="button_update_alias">Update Alias</string>
     <string name="in_alias">Input a new Alias</string>
+    
+    <!-- Roll Die Fragment -->
+    <string name="button_roll">Roll!</string>
+    
+    <!-- Misc -->
+    <string name="desc">desc</string>
+
     
 </resources>
