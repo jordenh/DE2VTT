@@ -6,15 +6,7 @@ import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Mailbox;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.fragments.BulletinFragment;
-import org.ubc.de2vtt.fragments.ConnectionFragment;
-import org.ubc.de2vtt.fragments.GameConfigFragment;
-import org.ubc.de2vtt.fragments.ManageTokenFragment;
-import org.ubc.de2vtt.fragments.PassMessageFragment;
-import org.ubc.de2vtt.fragments.PlaceholderFragment;
-import org.ubc.de2vtt.fragments.SendImageFragment;
-import org.ubc.de2vtt.fragments.TableTopFragment;
-import org.ubc.de2vtt.fragments.WINGFragment;
+import org.ubc.de2vtt.fragments.*;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
 
@@ -202,6 +194,9 @@ public class MainActivity extends Activity {
 				fragment = new BulletinFragment();
 				break;
 			case 6:
+				fragment = new DieRollFragment();
+				break;
+			case 7:
 	    		fragment = new ConnectionFragment();
 	    		break;
 		}
