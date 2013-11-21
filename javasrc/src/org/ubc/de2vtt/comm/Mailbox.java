@@ -1,4 +1,4 @@
-package org.ubc.de2vtt.comm.mailbox;
+package org.ubc.de2vtt.comm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.ubc.de2vtt.MainActivity;
-import org.ubc.de2vtt.comm.Command;
-import org.ubc.de2vtt.comm.ReceiveTask;
-import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
 import org.ubc.de2vtt.exceptions.InvalidCommandException;
 import org.ubc.de2vtt.exceptions.MailboxNotInitializedException;

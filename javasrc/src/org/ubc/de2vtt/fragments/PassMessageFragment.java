@@ -93,9 +93,6 @@ public class PassMessageFragment extends WINGFragment {
 		msg += et.getText().toString() + '\0';
 		
 		mMessenger.sendStringMessage(msg, Command.PASS_MSG);
-		//SendableMove mv = new SendableMove(1, 50, 50);
-		//Message toSend = new Message(Command.MOVE_TOKEN, mv);
-		//mMessenger.send(toSend);
 	}
 	
 //	public class ConnectionFragmentReceiveTask extends ReceiveTask {
@@ -138,7 +135,6 @@ public class PassMessageFragment extends WINGFragment {
         });
 		return false;
 	}
-	
 }
 
 

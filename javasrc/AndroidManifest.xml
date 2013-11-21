@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.ubc.de2vtt"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0" xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk
         android:minSdkVersion="15"
-        android:targetSdkVersion="15" />
+        android:targetSdkVersion="15" tools:ignore="OldTargetApi"/>
 
     <uses-permission android:name="android.permission.INTERNET" />
 	<uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
