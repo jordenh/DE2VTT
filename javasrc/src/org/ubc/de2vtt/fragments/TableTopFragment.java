@@ -19,6 +19,7 @@ public class TableTopFragment extends WINGFragment {
 	protected View mParentView;
 	private Activity mActivity;
 	private GridView mGridView;
+	private TokenAdapter mAdapter;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -26,7 +27,8 @@ public class TableTopFragment extends WINGFragment {
 		mActivity = this.getActivity();
 
 		mGridView = (GridView) mParentView.findViewById(R.id.tabletop);
-	    mGridView.setAdapter(new TokenAdapter(this.mActivity));
+		mAdapter = new TokenAdapter(this.mActivity);
+	    mGridView.setAdapter(mAdapter);
 	    
 	    setupOnClickListeners();
 	    
@@ -49,6 +51,7 @@ public class TableTopFragment extends WINGFragment {
 	@Override
 	public boolean passReceived(Received r) {
 		// TODO Move token
-		return false;
+		mAdapter.notifyDataSetChanged(); // hopefully this will move things
+		return true;
 	}
 }

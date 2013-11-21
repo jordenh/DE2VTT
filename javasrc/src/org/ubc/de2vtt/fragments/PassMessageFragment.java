@@ -5,11 +5,8 @@ import java.util.List;
 
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.comm.Command;
-import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.comm.sendables.SendableMove;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -95,9 +92,6 @@ public class PassMessageFragment extends WINGFragment {
 		msg += et.getText().toString() + '\0';
 		
 		mMessenger.sendStringMessage(msg, Command.PASS_MSG);
-		//SendableMove mv = new SendableMove(1, 50, 50);
-		//Message toSend = new Message(Command.MOVE_TOKEN, mv);
-		//mMessenger.send(toSend);
 	}
 	
 //	public class ConnectionFragmentReceiveTask extends ReceiveTask {
@@ -140,7 +134,6 @@ public class PassMessageFragment extends WINGFragment {
         });
 		return false;
 	}
-	
 }
 
 

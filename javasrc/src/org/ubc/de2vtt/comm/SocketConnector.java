@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import org.ubc.de2vtt.SharedPreferencesManager;
-import org.ubc.de2vtt.comm.mailbox.Mailbox;
 import org.ubc.de2vtt.fragments.ConnectionFragment;
 
 import android.os.AsyncTask;

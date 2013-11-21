@@ -3,9 +3,10 @@ package org.ubc.de2vtt.fragments;
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
+import org.ubc.de2vtt.comm.Mailbox;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.comm.mailbox.Mailbox;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class ConnectionFragment extends WINGFragment {
-	private static final String TAG = ConnectionFragment.class.getSimpleName();
 	public static final String SHARED_PREFS_IP = "ip";	
 	public static final String SHARED_PREFS_PORT = "port";
 	
@@ -106,7 +106,6 @@ public class ConnectionFragment extends WINGFragment {
 		String msg = et.getText().toString();
 		
 		mMessenger.sendStringMessage(msg, Command.HANDSHAKE);
-		// TODO: possible change to a rearm
 	}
 	
 	public void closeSocket() {
@@ -168,15 +167,6 @@ public class ConnectionFragment extends WINGFragment {
 		btn = (Button) mParentView.findViewById(R.id.btnConnect);
 		btn.setEnabled(!canSend);
 	}
-
-//	public class ConnectionFragmentReceiveTask extends ReceiveTask {
-//	    protected void performAction(Received rcv) {
-//	    	Log.v(TAG, "Timer fires.");
-//	    	if (active) {
-//	    		updateReceivedField(rcv);
-//	    	}
-//	    }
-//	}
 	
 	 private void updateReceivedField(Received rcv) {
 	        final String msgStr = rcv.DataToString();

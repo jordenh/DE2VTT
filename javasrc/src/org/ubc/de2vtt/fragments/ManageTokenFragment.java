@@ -23,6 +23,7 @@ public class ManageTokenFragment extends WINGFragment {
 	private Activity mActivity;
 
     private GridView mGridView;
+    private ImageAdapter mImageAdapter;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -30,7 +31,8 @@ public class ManageTokenFragment extends WINGFragment {
 		mActivity = this.getActivity();
 		
 		mGridView = (GridView)mParentView.findViewById(R.id.gridview);
-	    mGridView.setAdapter(new ImageAdapter(this.mActivity));
+		mImageAdapter = new ImageAdapter(this.mActivity);
+	    mGridView.setAdapter(mImageAdapter);
 		
 	    setupOnClickListeners();
 		
@@ -75,8 +77,8 @@ public class ManageTokenFragment extends WINGFragment {
 
 	@Override
 	public boolean passReceived(Received r) {
-		// TODO Auto-generated method stub
-		return false;
+		mImageAdapter.notifyDataSetChanged();
+		return true;
 	}
 }
 

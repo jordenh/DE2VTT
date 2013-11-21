@@ -16,6 +16,7 @@ import android.widget.ListView;
 public class BulletinFragment extends WINGFragment {
 	private View parentView;
 	private ListView listView;
+	private BulletinAdapter adapter;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, 
 			Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class BulletinFragment extends WINGFragment {
 
 	private void setListViewAdapter() {
 		BulletinManager bm = BulletinManager.getSharedInstance();
-		BulletinAdapter adapter = new BulletinAdapter(getActivity(), R.layout.bulletin_row,
+		adapter = new BulletinAdapter(getActivity(), R.layout.bulletin_row,
 				bm.getList());
 		listView.setAdapter(adapter);
 	}
@@ -56,7 +57,7 @@ public class BulletinFragment extends WINGFragment {
 	
 	@Override
 	public boolean passReceived(Received r) {
-		// TODO should probably update the view
-		return false;
+		adapter.notifyDataSetChanged();
+		return true;
 	}
 }
