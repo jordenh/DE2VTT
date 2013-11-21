@@ -114,7 +114,7 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
         oldLen = 0
         while True:
             (sread, swrite, sexec) = select.select([conn], [], [], 0)
-
+            
             if sread:
                 msgLen = 0
                 x = b''
@@ -134,6 +134,14 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
                         break;
 
                 if not data: break
+                
+                # need to bounce the map
+                if (data.get(4) == 2):
+                    for i in range(0, id_count):
+                        try:
+                            tcp_send_queues[i].put(data)
+                        except:
+                            # nothing
 
                 #Append connection id to data
                 data = chr(conn_id).encode() + data
