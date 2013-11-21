@@ -105,11 +105,11 @@ def tcp_serial():
 
         print("Connection Id:", conn_id, " Connection Address", addr, "\n")
 
-        t = threading.Thread(target = tcp_worker, args = (conn, conn_id, tcp_send_queue, uart_send_queue))
+        t = threading.Thread(target = tcp_worker, args = (conn, conn_id, tcp_send_queue, uart_send_queue, tcp_send_queues))
         t.daemon = True
         t.start()
 
-def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
+def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue, tcp_send_queues):
     try:
         oldLen = 0
         while True:
@@ -138,10 +138,7 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
                 # need to bounce the map
                 if (data.get(4) == 2):
                     for i in range(0, id_count):
-                        try:
-                            tcp_send_queues[i].put(data)
-                        except:
-                            # nothing
+                        tcp_send_queues[i].put(data)
 
                 #Append connection id to data
                 data = chr(conn_id).encode() + data
