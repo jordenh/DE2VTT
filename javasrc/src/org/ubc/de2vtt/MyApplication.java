@@ -2,7 +2,7 @@ package org.ubc.de2vtt;
 
 import java.net.Socket;
 
-import org.ubc.de2vtt.comm.mailbox.Mailbox;
+import org.ubc.de2vtt.comm.Mailbox;
 
 import android.app.Application;
 import android.util.Log;

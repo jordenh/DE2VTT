@@ -1,9 +1,12 @@
 package org.ubc.de2vtt;
 
+import org.ubc.de2vtt.bulletin.Bulletin;
+import org.ubc.de2vtt.bulletin.BulletinManager;
 import org.ubc.de2vtt.comm.Command;
+import org.ubc.de2vtt.comm.Mailbox;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.comm.mailbox.Mailbox;
+import org.ubc.de2vtt.fragments.BulletinFragment;
 import org.ubc.de2vtt.fragments.ConnectionFragment;
 import org.ubc.de2vtt.fragments.GameConfigFragment;
 import org.ubc.de2vtt.fragments.ManageTokenFragment;
@@ -36,11 +39,11 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	private static final String TAG = MainActivity.class.getSimpleName();
+	private static Context mContext;
 	
 	private String[] mDrawerItems;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
-	private static Context mContext;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private String mTitle;
 	private WINGFragment activeFragment;
@@ -60,16 +63,10 @@ public class MainActivity extends Activity {
 
 		setContentView(R.layout.activity_main);
 
+		// For later static access
 		mContext = getApplicationContext();
 
-		mDrawerItems = getResources().getStringArray(R.array.app_drawer_array);
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.linear_layout);
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, mDrawerItems));
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
+		setupDrawerList();
 		setupDrawerToggle();
 
 		// Set the drawer toggle as the DrawerListener
@@ -82,6 +79,16 @@ public class MainActivity extends Activity {
 		
 		// Attempt to connect
 		Messenger.GetSharedInstance();
+	}
+
+	private void setupDrawerList() {
+		mDrawerItems = getResources().getStringArray(R.array.app_drawer_array);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.linear_layout);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, mDrawerItems));
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 	}
 
 	private void setupDrawerToggle() {
@@ -131,7 +138,6 @@ public class MainActivity extends Activity {
         } else {
         	switchFragment(0);
         }
-        	
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
@@ -193,6 +199,9 @@ public class MainActivity extends Activity {
 				fragment = new PassMessageFragment();
 				break;
 			case 5:
+				fragment = new BulletinFragment();
+				break;
+			case 6:
 	    		fragment = new ConnectionFragment();
 	    		break;
 		}
@@ -213,6 +222,8 @@ public class MainActivity extends Activity {
 		Log.v(TAG, "Received data.");
 		Token t;
 		TokenManager tm;
+		BulletinManager bm;
+		Bulletin b;
 		
 		switch (rcv.getCommand()) {
 			case MOVE_TOKEN:
@@ -220,13 +231,36 @@ public class MainActivity extends Activity {
 				tm = TokenManager.getSharedInstance();
 				t = new Token(rcv);
 				tm.move(t);
-				// signal tabletop fragment if it is active?
+				
+				if (activeFragment instanceof TableTopFragment) {
+					// signal fragment that a token moved
+					activeFragment.passReceived(rcv);
+				}
+				
 				break;
 			case SEND_TOKEN:
 				Log.v(TAG, "Receiving token.");
 				tm = TokenManager.getSharedInstance();
 				t = new Token(rcv);
 				tm.add(t);		
+				
+				if (activeFragment instanceof ManageTokenFragment) {
+					// signal fragment that there is a new token
+					activeFragment.passReceived(rcv);
+				}
+				
+				break;
+			case PASS_MSG:
+				Log.v(TAG, "Receiving a bulletin.");
+				bm = BulletinManager.getSharedInstance();
+				b = new Bulletin(rcv);
+				bm.add(b);
+				
+				if (activeFragment instanceof BulletinFragment) {
+					// Notify of new bulletin
+					activeFragment.passReceived(rcv);
+				}
+				
 				break;
 			default:
 				// signal active fragment

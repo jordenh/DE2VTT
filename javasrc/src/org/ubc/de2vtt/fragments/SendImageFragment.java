@@ -28,6 +28,11 @@ import android.widget.ImageView.ScaleType;
 public class SendImageFragment extends WINGFragment {
 	private static final String TAG = SendImageFragment.class.getSimpleName();	
 	
+	private static final int TOKEN_X = 20;
+	private static final int TOKEN_Y = 20;
+	private static final int MAP_X = 340;
+	private static final int MAP_Y = 260;
+	
 	protected View mParentView;
 	
 	private static final int REQUEST_CODE = 1;
@@ -110,11 +115,11 @@ public class SendImageFragment extends WINGFragment {
     }
 	
 	public void sendToken() {
-		sendImage(Command.SEND_TOKEN, 20, 20);
+		sendImage(Command.SEND_TOKEN, TOKEN_X, TOKEN_Y);
 	}
 	
 	public void sendMap() {
-		sendImage(Command.SEND_MAP, 340, 260);
+		sendImage(Command.SEND_MAP, MAP_X, MAP_Y);
 	}
 	
 	public void sendImage(Command cmd, int x, int y) {
@@ -156,7 +161,6 @@ public class SendImageFragment extends WINGFragment {
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
-			//imageView.setImageResource(0);
 			
 			bitmap = BitmapFactory.decodeFile(picturePath);
 			final Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
@@ -169,19 +173,6 @@ public class SendImageFragment extends WINGFragment {
         }
 		Log.v(TAG, "onActivityResult finished.");
     }
-	
-//	private class SendTokenReceiveTask extends ReceiveTask {
-//		@Override
-//		protected void performAction(Received rcv) {
-//			Log.v(TAG, "Receive action called.");
-//			TokenManager man = TokenManager.getSharedInstance();
-//			Token newTok = new Token(rcv);
-//			newTok.setBmp(bitmap.copy(Bitmap.Config.RGB_565, false));
-//			//newTok.setupBitmap(selectedImage);
-//			Log.v(TAG, "New token has id " + newTok.getId());
-//			man.add(newTok);
-//		}
-//	}
 
 	@Override
 	public boolean passReceived(Received r) {

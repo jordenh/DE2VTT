@@ -33,8 +33,6 @@ public class SharedPreferencesManager {
 				Context.MODE_PRIVATE);
 		mEditor = mSharedPrefs.edit();
 	}
-	
-	// TODO: Add putXXX / getXXX methods as needed
 
 	public boolean putInt(String key, int val) {
 		mEditor.putInt(key, val);
