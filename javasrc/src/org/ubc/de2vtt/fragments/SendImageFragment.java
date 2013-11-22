@@ -38,7 +38,7 @@ public class SendImageFragment extends WINGFragment {
 	private static final int REQUEST_CODE = 1;
     private Bitmap bitmap;
     private Uri selectedImage;
-
+    
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mParentView = inflater.inflate(R.layout.fragment_sendimage,  container, false);

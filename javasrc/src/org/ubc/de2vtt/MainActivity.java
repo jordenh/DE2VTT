@@ -7,6 +7,7 @@ import org.ubc.de2vtt.comm.Mailbox;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.fragments.*;
+import org.ubc.de2vtt.fragments.WINGFragment.FragDrawerId;
 import org.ubc.de2vtt.notifications.notifications;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
@@ -144,12 +145,11 @@ public class MainActivity extends Activity {
             Log.v(TAG, "OnCreate: intent action" + action);
 
             if(action != null){
-                if(action.equalsIgnoreCase("NOTIFY_NEW_MESSAGE")){
-                	switchFragment(5); // hard coded to switch to bulletin board!
+                if(action.equalsIgnoreCase(mContext.getResources().getString(R.string.in_msg_notification))){
+                	notifications.removeNotify(mContext, 
+                			mContext.getResources().getString(R.string.in_msg_notification));
+                	switchFragment(WINGFragment.FragDrawerId.BulletinFragDrawerId.ordinal()); // hard coded to switch to bulletin board!
                 }
-                /*if(action.equalsIgnoreCase(getResources().getString(R.string.notification_action_article))){
-                    goFrag(getResources().getInteger(R.integer.FRAG_FRESH_INT));
-                } */ // better syntax - use this after proof of concept.
             }else{
                 Log.v(TAG, "Oncreate: Intent was null");
             }
@@ -197,30 +197,29 @@ public class MainActivity extends Activity {
 		Bundle args = new Bundle();
 		fragment.setArguments(args);
 
-		switch (position) {
-			case 0:
+		switch (WINGFragment.FragDrawerId.values()[position]) {
+			case TableTopFragDrawerId:
 				fragment = new TableTopFragment();
 				break;
-			case 1:
+			case ManageTokenFragDrawerId:
 				fragment = new ManageTokenFragment();
 				break;
-			case 2:
+			case GameConfigFragDrawerId:
 				fragment = new GameConfigFragment();
 				break;
-			case 3:
+			case SendImageFragDrawerId:
 				fragment = new SendImageFragment();
 				break;
-			case 4:
+			case PassMessageFragDrawerId:
 				fragment = new PassMessageFragment();
 				break;
-			case 5:
-				Log.v(TAG, "switching to bulletin frag");
+			case BulletinFragDrawerId:
 				fragment = new BulletinFragment();
 				break;
-			case 6:
+			case DieRollFragDrawerId:
 				fragment = new DieRollFragment();
 				break;
-			case 7:
+			case ConnectionFragDrawerId:
 	    		fragment = new ConnectionFragment();
 	    		break;
 		}
@@ -279,7 +278,8 @@ public class MainActivity extends Activity {
 					// Notify of new bulletin
 					activeFragment.passReceived(rcv);
 				} else {
-					notifications.notifyOfNewMessage();
+					notifications.notify(mContext, 
+							mContext.getResources().getString(R.string.in_msg_notification));
 				}
 				
 				break;
