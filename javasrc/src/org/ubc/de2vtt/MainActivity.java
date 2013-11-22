@@ -9,6 +9,8 @@ import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.fragments.*;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
+import org.ubc.de2vtt.users.User;
+import org.ubc.de2vtt.users.UserManager;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -256,6 +258,11 @@ public class MainActivity extends Activity {
 					activeFragment.passReceived(rcv);
 				}
 				
+				break;
+			case UPDATE_ALIAS:
+				Log.v(TAG, "Updating Alias List.");
+				UserManager um = UserManager.getSharedInstance();
+				um.handleUpdateAlias(rcv);
 				break;
 			default:
 				// signal active fragment

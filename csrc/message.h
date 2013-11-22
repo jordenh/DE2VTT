@@ -30,6 +30,14 @@ unsigned int storeNewID(int ID);
 
 unsigned int updateConnUserAlias(msg * inMsg);
 
+void alertUsersNewUser(msg * currentMsg);
+
+void alertUserAllUsers(msg * currentMsg);
+
+void alertUsersOfUserDC(msg * currentMsg);
+
+void clearUserInfo(msg * currentMsg);
+
 void getMessage(msg * inMsg);
 
 void sendMessage(msg * sendMsg);
