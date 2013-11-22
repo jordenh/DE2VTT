@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -205,14 +206,21 @@ public class Messenger {
 		private Received getMessage(Received rcv) throws IOException {
 			InputStream in = mSocket.getInputStream();
 			byte buf[] = null;
+			byte lenBuf[] = new byte[4];
 			
 			// See if any bytes are available from the Middleman
 			int bytes_avail = in.available();
 			
 			if (bytes_avail > 0) {
-				// If so, read them in
-				buf = new byte[bytes_avail];
-				in.read(buf);
+				// If so, find how long the args are
+				in.read(lenBuf, 0, 4);
+				
+				ByteBuffer bb = ByteBuffer.wrap(lenBuf);
+				int len = bb.getInt();
+				buf = new byte[len + 4 + 1]; // length and command
+				
+				System.arraycopy(lenBuf, 0, buf, 0, 4);
+				in.read(buf, 4, len + 1);
 				
 			} else {
 				//Log.v(TAG, "Nothing to receive.");
