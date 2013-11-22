@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.fragments.PassMessageFragment;
+
+import android.util.Log;
 
 public class UserManager {
-        private List<User> user;
+		private static final String TAG = UserManager.class.getSimpleName();
+        
+		private List<User> user;
         
         private static UserManager sharedInstance;
         
@@ -47,12 +52,15 @@ public class UserManager {
         	byte[] data = rcv.getData();
         	if (data.length == 0) {
         		//Do nothing - erroneous data transmission
+        		return;
         	}else if (data.length == 1) {
         		//Disconnecting this device ID - remove from user List
         		int ID = data[0];
+        		Log.v(TAG, "handlingUpdateAlias - removing user");
         		for(int i = 0; i < count(); i++){
         			if(getAtIndex(i).getID() == ID) {
         				removeAtIndex(i);
+        				return;
         			}
         		}
         	} else {
@@ -61,6 +69,7 @@ public class UserManager {
         		for(i = 0; i < count(); i++){
         			if(getAtIndex(i).getID() == ID) {
         				getAtIndex(i).setAlias(new String(data, 1, data.length - 1, Charset.forName("US-ASCII")));
+        				return;
         			}
         		}
         		//Add new ID and Alias from received msg. 
