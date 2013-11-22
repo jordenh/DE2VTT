@@ -4,6 +4,7 @@ import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.notifications.notifications;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -65,6 +66,9 @@ public class GameConfigFragment extends WINGFragment {
 		} else {
 			Log.v(TAG, "update of alias didn't get sent, as the string must be between 1-40 characters long.");
 		}
+		
+		//TEMP!
+		notifications.notifyOfNewMessage();
 	}
 	
 	@Override

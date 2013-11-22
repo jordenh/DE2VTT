@@ -7,6 +7,7 @@ import org.ubc.de2vtt.comm.Mailbox;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.fragments.*;
+import org.ubc.de2vtt.notifications.notifications;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
 import org.ubc.de2vtt.users.User;
@@ -256,6 +257,8 @@ public class MainActivity extends Activity {
 				if (activeFragment instanceof BulletinFragment) {
 					// Notify of new bulletin
 					activeFragment.passReceived(rcv);
+				} else {
+					notifications.notifyOfNewMessage();
 				}
 				
 				break;
