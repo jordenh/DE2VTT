@@ -50,6 +50,7 @@ public class BulletinFragment extends WINGFragment {
 					long id) {
 				BulletinManager bm = BulletinManager.getSharedInstance();
 				bm.removeAtIndex(position);
+				adapter.notifyDataSetChanged();
 				return true;
 			}
 		});

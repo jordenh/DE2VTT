@@ -28,6 +28,15 @@ public class UserManager {
                 user.add(new User(0, "Table"));
         }
         
+        public String getAliasWithID(int id) {
+        	for (User u : user) {
+        		if (u.getID() == id) {
+        			return u.getAlias();
+        		}
+        	}
+        	return Integer.toString(id);
+        }
+        
         public User getAtIndex(int i) {
                 return user.get(i);
         }

@@ -61,7 +61,8 @@
     <string name="button_roll">Roll!</string>
     
     <!-- Bulletins -->
-    <string name="from">From</string>
+    <string name="from">From </string>
+    <string name="nameColon">Name: </string>
     
     <!-- Misc -->
     <string name="desc">desc</string>
