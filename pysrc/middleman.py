@@ -121,6 +121,7 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue, tcp_send_queues):
                 data = b''
                 for i in reversed(range(0, 4)):
                     tmp=conn.recv(1)
+                    print("tmp[i]: ", i, " - ", tmp)
                     x+= tmp
                     msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
                     data += tmp
@@ -129,8 +130,9 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue, tcp_send_queues):
                 while len(data) < (msgLen + 5):
                     oldLen = len(data)
                     data += conn.recv(msgLen)
-                    print("received ", len(data), " data of ", msgLen, " so far!")
+                    print("received ", len(data), " data of ", (msgLen + 5), " so far!")
                     if oldLen == len(data):
+                        print("caught oldLen == len")
                         break;
 
                 if not data: break
