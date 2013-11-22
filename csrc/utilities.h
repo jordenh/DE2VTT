@@ -14,15 +14,11 @@ typedef enum command{
 	PASS_MSG,
 	UPDATE_ALIAS,
 	OUTPUT_TOKEN_INFO,
-	REMOVE_ALL_TOKEN,
-	REMOVE_TOKEN,
 	DISCONNECT_DEV,
 	REMOVE_TOKEN,
 	GET_DM_ID,
-	SEND_DM_ID
+	TEST_GET_DM
 } command;
-
-int DMId = 0;
 
 char * IntToCharBuf(unsigned int inputInt, unsigned int numChars);
 

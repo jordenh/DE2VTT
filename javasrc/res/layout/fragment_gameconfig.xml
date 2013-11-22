@@ -25,9 +25,15 @@
         android:id="@+id/btnUpdateAlias" />
     
 	<Button
-	    android:id="@+id/btnGetReleaseDM"
+	    android:id="@+id/btnGetDM"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:text="@string/button_getDM" />
+
+	<Button
+	    android:id="@+id/btnReleaseDM"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:text="@string/button_releaseDM" />
     
 </LinearLayout>

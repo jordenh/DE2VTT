@@ -2,8 +2,10 @@ package org.ubc.de2vtt.fragments;
 
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.comm.Command;
+import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.sendables.SendableNull;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -18,15 +20,24 @@ import android.widget.TextView;
 
 public class GameConfigFragment extends WINGFragment {	
 	private static final String TAG = GameConfigFragment.class.getSimpleName();
+	public static final String SHARED_PREFS_DM_ID = "dm_id";	
 	
 	protected View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
+	
+	private Button mUpdateAliasBtn;
+	private Button mGetDMBtn;
+	private Button mReleaseDMBtn;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mParentView = inflater.inflate(R.layout.fragment_gameconfig,  container, false);
 	
+		mUpdateAliasBtn = (Button)mParentView.findViewById(R.id.btnUpdateAlias);
+		mGetDMBtn = (Button)mParentView.findViewById(R.id.btnGetDM);
+		mReleaseDMBtn  = (Button) mParentView.findViewById(R.id.btnReleaseDM);
+		
 		setupOnClickListeners();
 
 		updateButtonState();
@@ -37,13 +48,32 @@ public class GameConfigFragment extends WINGFragment {
 	}
 
 	private void setupOnClickListeners() {		
-
-		Button sendTokBtn = (Button) mParentView.findViewById(R.id.btnUpdateAlias);
-		sendTokBtn.setOnClickListener(new OnClickListener() {
+		
+		mUpdateAliasBtn.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				passMsg();
+			}
+		});
+		
+		mGetDMBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Message msg = new Message(Command.GET_DM, SendableNull.GetSharedInstance());
+		        
+		        mMessenger.send(msg);
+			}
+		});
+		
+		mReleaseDMBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Message msg = new Message(Command.RELEASE_DM, SendableNull.GetSharedInstance());
+		        
+				mMessenger.send(msg);
 			}
 		});
 	}
@@ -51,8 +81,9 @@ public class GameConfigFragment extends WINGFragment {
 	private void updateButtonState() {
 		boolean canSend = Messenger.readyToSend();
 		
-		Button sendMsgBtn = (Button) mParentView.findViewById(R.id.btnUpdateAlias);
-		sendMsgBtn.setEnabled(canSend);
+		mUpdateAliasBtn.setEnabled(canSend);
+		mGetDMBtn.setEnabled(canSend);
+		mReleaseDMBtn.setEnabled(canSend);
 	}
 	
 	

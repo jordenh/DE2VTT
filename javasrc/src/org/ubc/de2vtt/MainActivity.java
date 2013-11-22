@@ -4,12 +4,13 @@ import org.ubc.de2vtt.bulletin.Bulletin;
 import org.ubc.de2vtt.bulletin.BulletinManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Mailbox;
+import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.sendables.SendableNull;
 import org.ubc.de2vtt.fragments.*;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
-import org.ubc.de2vtt.users.User;
 import org.ubc.de2vtt.users.UserManager;
 
 import android.app.Activity;
@@ -73,6 +74,11 @@ public class MainActivity extends Activity {
 		
 		// Attempt to connect
 		Messenger.GetSharedInstance();
+		
+		Message msg = new Message(Command.TEST_GET_ID, SendableNull.GetSharedInstance());
+        Messenger messenger = Messenger.GetSharedInstance();
+        
+        messenger.send(msg);
 	}
 
 	private void setupDrawerList() {
@@ -264,6 +270,13 @@ public class MainActivity extends Activity {
 				UserManager um = UserManager.getSharedInstance();
 				um.handleUpdateAlias(rcv);
 				break;
+			case GET_DM_ID:
+				Log.v(TAG, "Updating DM id");
+				
+				int dmID = rcv.DataToInt();
+				
+				SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
+				man.putInt(GameConfigFragment.SHARED_PREFS_DM_ID, dmID);
 			default:
 				// signal active fragment
 				if (!activeFragment.passReceived(rcv)) {

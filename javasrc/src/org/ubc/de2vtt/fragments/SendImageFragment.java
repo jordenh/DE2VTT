@@ -112,7 +112,7 @@ public class SendImageFragment extends WINGFragment {
                 intent.setAction(Intent.ACTION_GET_CONTENT);
 
                 startActivityForResult(Intent.createChooser(intent,"Select Image"), REQUEST_CODE);
-    }
+        }
         
         public void sendToken() {
                 sendImage(Command.SEND_TOKEN, TOKEN_X, TOKEN_Y);

@@ -92,6 +92,12 @@ public class Received implements Sendable {
 		}
 	}
 	
+	public int DataToInt() {
+		ByteBuffer wrapped = ByteBuffer.wrap(data);
+		
+		return wrapped.getInt();
+	}
+	
 	public Bitmap DataToBitmap() {
 		throw new NotImplementedException();
 		// if this needs to be done it should be done on a background thread
