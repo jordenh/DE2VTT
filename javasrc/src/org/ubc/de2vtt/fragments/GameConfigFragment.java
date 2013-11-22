@@ -16,13 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class GameConfigFragment extends WINGFragment {
-	private static final String TAG = GameConfigFragment.class.getSimpleName();	
+public class GameConfigFragment extends WINGFragment {	
+	private static final String TAG = GameConfigFragment.class.getSimpleName();
 	
 	protected View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
-	private boolean active; 
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -33,18 +32,9 @@ public class GameConfigFragment extends WINGFragment {
 		updateButtonState();
 		
 		mActivity = this.getActivity();
-		active = true;
 		
 		return mParentView;
 	}
-	
-	@Override
-	public void onPause() {
-		super.onPause();
-		//receiver.cancel();
-		active = false;
-	}
-	
 
 	private void setupOnClickListeners() {		
 

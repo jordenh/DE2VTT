@@ -5,7 +5,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import org.ubc.de2vtt.comm.mailbox.Mailbox;
+import org.ubc.de2vtt.SharedPreferencesManager;
+import org.ubc.de2vtt.fragments.ConnectionFragment;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -14,14 +15,17 @@ import android.util.Log;
 public class SocketConnector extends AsyncTask<String, Integer, Socket> {
 	private static final String TAG = SocketConnector.class.getSimpleName();
 	
+	String ip;
+	Integer port;
+	
 	// The main parcel of work for this thread.  Opens a socket
 	// to connect to the specified IP.
 	@Override
 	protected Socket doInBackground(String... params) {
 		Log.v(TAG, "Attempting to open socket.");
 		Socket socket = null;
-		String ip = params[0];
-		Integer port = Integer.decode(params[1]);
+		ip = params[0];
+		port = Integer.decode(params[1]);
 		
 		if (ip == null || port == null) {
 			Log.e(TAG, "Invalid parameters.");
@@ -49,6 +53,15 @@ public class SocketConnector extends AsyncTask<String, Integer, Socket> {
 		Log.v(TAG, "onPostExecute");
 		Messenger msg = Messenger.GetSharedInstance();
 		msg.setSocket(s);
+		if (s != null) {
+			saveConnectionInfo(ip, port);
+		}
 		Mailbox.getSharedInstance(null).execute();
+	}
+	
+	private void saveConnectionInfo(String ip, Integer port) {
+		SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
+		man.putString(ConnectionFragment.SHARED_PREFS_IP, ip);
+		man.putString(ConnectionFragment.SHARED_PREFS_PORT, port.toString());
 	}
 }

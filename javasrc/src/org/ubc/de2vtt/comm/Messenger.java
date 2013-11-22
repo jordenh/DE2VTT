@@ -108,18 +108,6 @@ public class Messenger {
 	public void send(Message msg) {
 		new SocketSender().execute(msg);
 	}
-
-	private void attemptSendRecovery(Message msg) {
-		SocketSender s;
-		msg.setDelay(1501);
-		s = (SocketSender) new SocketSender().execute(msg);
-		try {
-			s.get(5000, TimeUnit.MILLISECONDS);
-		} catch (Exception ee) {
-			Log.e(TAG, "Double send fail.");
-			ee.printStackTrace();
-		}
-	}
 	
 	private class SocketSender extends AsyncTask<Message, Integer, Void> {
 		@Override
@@ -182,21 +170,6 @@ public class Messenger {
 			resetSocket();
 			Log.e(TAG, "Receive computation mucked up.");
 			//e.printStackTrace();
-		}
-		return r;
-	}
-
-	// TODO: would be nice to be able to recover from errors
-	// nicer to not have errors though
-	private Received attemptReceiveRecovery(Received r) {
-		SocketReceiver task;
-		task = (SocketReceiver) new SocketReceiver();
-		task.execute();
-		try {
-			r = task.get(3000, TimeUnit.MILLISECONDS);
-		} catch (Exception ee) {
-			Log.e(TAG, "Double recceive fail.");
-			ee.printStackTrace();
 		}
 		return r;
 	}

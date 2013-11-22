@@ -2,8 +2,6 @@ package org.ubc.de2vtt.comm;
 
 import java.util.TimerTask;
 
-import org.ubc.de2vtt.comm.mailbox.Mailbox;
-
 public class PerpetualReceiveTask extends TimerTask {
 	Mailbox mailbox;
 	

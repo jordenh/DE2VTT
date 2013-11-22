@@ -23,6 +23,10 @@ javasrc/gen/
 # Local configuration file (sdk path, etc)
 javasrc/local.properties
 
+DE2VTTC_bsp/
+csrc/create-this-app
+csrc/readme.txt
+
 # Eclipse project files
 javasrc/.classpath
 javasrc/.project
