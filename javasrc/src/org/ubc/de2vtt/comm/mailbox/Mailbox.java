@@ -64,7 +64,7 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 		}
 		Log.v(TAG, "Starting new receiver.");
 		task = new MailboxReceiveTask();
-		timer = new RepeatingReceiver(task, 500);
+		timer = new RepeatingReceiver(task, 100);
 		return null;
 	}
 	
