@@ -138,7 +138,7 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue, tcp_send_queues):
                 if not data: break
                 
                 # need to bounce the map
-                if (data.get(4) == 2):
+                if (data[4]== 2):
                     for i in range(0, id_count):
                         tcp_send_queues[i].put(data)
 

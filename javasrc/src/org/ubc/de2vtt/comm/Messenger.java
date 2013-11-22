@@ -210,17 +210,35 @@ public class Messenger {
 			
 			// See if any bytes are available from the Middleman
 			int bytes_avail = in.available();
+			int read = 0;
 			
 			if (bytes_avail > 0) {
 				// If so, find how long the args are
 				in.read(lenBuf, 0, 4);
 				
+				for (byte b : lenBuf) {
+					String s = String.format("0x%x", b);
+							
+					Log.v(TAG, s);
+				}
+				
 				ByteBuffer bb = ByteBuffer.wrap(lenBuf);
 				int len = bb.getInt();
+				
+				if (len < 0) {
+					Log.e(TAG, "Received negative length.");
+					return null;
+				}
+				
+				Log.v(TAG, "Length is: " + len);
+				
 				buf = new byte[len + 4 + 1]; // length and command
 				
 				System.arraycopy(lenBuf, 0, buf, 0, 4);
-				in.read(buf, 4, len + 1);
+				read = in.read(buf, 4, len + 1);
+				while (read < len) {
+					read += in.read(buf, 4 + read, (len + 1) - read);
+				}
 				
 			} else {
 				//Log.v(TAG, "Nothing to receive.");
