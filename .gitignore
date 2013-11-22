@@ -42,3 +42,4 @@ Makefile
 DE2VTTC_bsp/
 csrc/create-this-app
 csrc/readme.txt
+*.db
