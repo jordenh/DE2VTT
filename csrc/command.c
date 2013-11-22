@@ -81,6 +81,7 @@ int executeCmd(msg * currentMsg) {
 	case UPDATE_ALIAS:
 		printf("In Update_Alias\n");
 		updateConnUserAlias(currentMsg);
+		//TBD - send new alias name to all phones
 		break;
 
 	case OUTPUT_TOKEN_INFO:

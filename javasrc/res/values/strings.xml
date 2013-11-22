@@ -11,6 +11,8 @@
         <item>Game Config</item>
         <item>Send Image</item>
         <item>Pass Message</item>
+        <item>Receive Message</item>
+        <item>Roll Die</item>
         <item>Connection</item>
     </string-array>
 
@@ -40,18 +42,28 @@
     <!-- Token Activity -->
     <string name="title_activity_token">Token Settings</string>
     <string name="view_tabletop">View on Tabletop</string>
-    <string name="id">Id</string>
+    <string name="medium_text">Medium Text</string>
     <string name="name">Name</string>
-    <string name="xy">X, Y</string>
-    
+
     <!-- Pass Message Fragment -->
     <string name="choose_rcvr">Choose Recipient</string>
     <string name="out_msg">Outgoing Messages</string>
     <string name="in_msg">Incoming Messages</string>
-    <string name="sender_ID">Sender\'s ID:</string>
-    
-    <!-- Game Config Fragment -->
-   <string name="button_getDM">Become DM</string>
-   <string name="button_releaseDM">Release DM</string>
+    <string name="sender_id">Sender\'s ID:</string>
+    <string name="id">Id</string>
+    <string name="xy">X, Y</string>
 
+    <!-- Game Config Fragment -->
+    <string name="button_update_alias">Update Alias</string>
+    <string name="in_alias">Input a new Alias</string>
+    <string name="button_getDM">Become the DM</string>
+    
+    <!-- Roll Die Fragment -->
+    <string name="button_roll">Roll!</string>
+    
+    <!-- Bulletins -->
+    <string name="from">From</string>
+    
+    <!-- Misc -->
+    <string name="desc">desc</string>
 </resources>

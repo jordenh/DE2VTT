@@ -46,6 +46,12 @@ public class Received implements Sendable {
 		data = b;
 	}
 	
+	public Received copy() {
+		Command c = Command.Convert(cmd.code);
+		byte[] d = data.clone();
+		return new Received(c, d);
+	}
+	
 	public void set(Received other) {
 		this.cmd = other.cmd;
 		this.data = new byte[other.data.length];

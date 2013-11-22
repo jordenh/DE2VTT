@@ -92,27 +92,29 @@ def tcp_serial():
 
         if addr[0] in conn_map.keys():
             conn_id = conn_map[addr[0]]
+            tcp_send_queue = tcp_send_queues[conn_id - 1]
         else:
             id_count+=1
 
             conn_id = id_count
             conn_map[addr[0]] = conn_id
-
-        tcp_send_queue = queue.Queue()
-        tcp_send_queues.append(tcp_send_queue)
+            
+            tcp_send_queue = queue.Queue()
+            tcp_send_queues.append(tcp_send_queue)
+        
 
         print("Connection Id:", conn_id, " Connection Address", addr, "\n")
 
-        t = threading.Thread(target = tcp_worker, args = (conn, conn_id, tcp_send_queue, uart_send_queue))
+        t = threading.Thread(target = tcp_worker, args = (conn, conn_id, tcp_send_queue, uart_send_queue, tcp_send_queues))
         t.daemon = True
         t.start()
 
-def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
+def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue, tcp_send_queues):
     try:
         oldLen = 0
         while True:
             (sread, swrite, sexec) = select.select([conn], [], [], 0)
-
+            
             if sread:
                 msgLen = 0
                 x = b''
@@ -132,6 +134,11 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
                         break;
 
                 if not data: break
+                
+                # need to bounce the map
+                if (data.get(4) == 2):
+                    for i in range(0, id_count):
+                        tcp_send_queues[i].put(data)
 
                 #Append connection id to data
                 data = chr(conn_id).encode() + data
@@ -140,6 +147,7 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue):
                 uart_send_queue.put(data)
 
             if not tcp_send_queue.empty():
+                print("actually sending data via TCP to android")
                 data = tcp_send_queue.get()
                 conn.send(data)
     except:

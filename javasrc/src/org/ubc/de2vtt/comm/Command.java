@@ -1,6 +1,6 @@
 package org.ubc.de2vtt.comm;
 
-import android.util.Log;
+import org.ubc.de2vtt.exceptions.InvalidCommandException;
 
 public enum Command {	
 	CONNECT((byte)0),
@@ -56,10 +56,8 @@ public enum Command {
 			return REMOVE_ALL_TOKEN;
 		case (byte) 12:
 			return REMOVE_TOKEN;
-		
 		default:
-			Log.v("Command", "Attempt to convert invalid command.");
-			return HANDSHAKE;
+			throw new InvalidCommandException();
 		}
 	}
 }

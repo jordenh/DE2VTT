@@ -1,28 +1,29 @@
 package org.ubc.de2vtt;
 
+import org.ubc.de2vtt.bulletin.Bulletin;
+import org.ubc.de2vtt.bulletin.BulletinManager;
+import org.ubc.de2vtt.comm.Command;
+import org.ubc.de2vtt.comm.Mailbox;
 import org.ubc.de2vtt.comm.Messenger;
-import org.ubc.de2vtt.fragments.ConnectionFragment;
-import org.ubc.de2vtt.fragments.GameConfigFragment;
-import org.ubc.de2vtt.fragments.MoveTokenFragment;
-import org.ubc.de2vtt.fragments.PassMessageFragment;
-import org.ubc.de2vtt.fragments.PlaceholderFragment;
-import org.ubc.de2vtt.fragments.SendImageFragment;
-import org.ubc.de2vtt.fragments.TableTopFragment;
+import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.fragments.*;
+import org.ubc.de2vtt.token.Token;
+import org.ubc.de2vtt.token.TokenManager;
 
-import android.os.Bundle;
-import android.os.StrictMode;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -30,13 +31,14 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	private static final String TAG = MainActivity.class.getSimpleName();
+	private static Context mContext;
 	
 	private String[] mDrawerItems;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
-	private static Context mContext;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private String mTitle;
+	private WINGFragment activeFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +55,10 @@ public class MainActivity extends Activity {
 
 		setContentView(R.layout.activity_main);
 
+		// For later static access
 		mContext = getApplicationContext();
 
-		mDrawerItems = getResources().getStringArray(R.array.app_drawer_array);
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.linear_layout);
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, mDrawerItems));
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
+		setupDrawerList();
 		setupDrawerToggle();
 
 		// Set the drawer toggle as the DrawerListener
@@ -70,9 +66,21 @@ public class MainActivity extends Activity {
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-
+		
+		Mailbox.getSharedInstance(this);
+		
 		// Attempt to connect
 		Messenger.GetSharedInstance();
+	}
+
+	private void setupDrawerList() {
+		mDrawerItems = getResources().getStringArray(R.array.app_drawer_array);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.linear_layout);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, mDrawerItems));
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 	}
 
 	private void setupDrawerToggle() {
@@ -92,6 +100,11 @@ public class MainActivity extends Activity {
 				getActionBar().setTitle(R.string.app_name);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
+				// close keyboard
+				InputMethodManager inputManager = (InputMethodManager)            
+					  getSystemService(Context.INPUT_METHOD_SERVICE); 
+					    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),      
+					    InputMethodManager.HIDE_NOT_ALWAYS);
 			}
 		};
 	}
@@ -117,7 +130,6 @@ public class MainActivity extends Activity {
         } else {
         	switchFragment(0);
         }
-        	
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
@@ -158,7 +170,7 @@ public class MainActivity extends Activity {
   
 	public void switchFragment(int position) {
 		Log.v(TAG, "Switching fragments.");
-		Fragment fragment = new PlaceholderFragment();
+		WINGFragment fragment = new PlaceholderFragment();
 		Bundle args = new Bundle();
 		fragment.setArguments(args);
 
@@ -167,7 +179,7 @@ public class MainActivity extends Activity {
 				fragment = new TableTopFragment();
 				break;
 			case 1:
-				fragment = new MoveTokenFragment();
+				fragment = new ManageTokenFragment();
 				break;
 			case 2:
 				fragment = new GameConfigFragment();
@@ -179,9 +191,17 @@ public class MainActivity extends Activity {
 				fragment = new PassMessageFragment();
 				break;
 			case 5:
+				fragment = new BulletinFragment();
+				break;
+			case 6:
+				fragment = new DieRollFragment();
+				break;
+			case 7:
 	    		fragment = new ConnectionFragment();
 	    		break;
 		}
+		
+		activeFragment = fragment;
 
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction()
@@ -191,6 +211,63 @@ public class MainActivity extends Activity {
 		setTitle(mDrawerItems[position]);
 		mTitle = mDrawerItems[position];
 		mDrawerLayout.closeDrawer(mDrawerList);
+	}
+	
+	public synchronized void onReceiveData(Received rcv) {
+		Log.v(TAG, "Received data.");
+		Token t;
+		TokenManager tm;
+		BulletinManager bm;
+		Bulletin b;
+		
+		switch (rcv.getCommand()) {
+			case MOVE_TOKEN:
+				Log.v(TAG, "Moving token.");
+				tm = TokenManager.getSharedInstance();
+				t = new Token(rcv);
+				tm.move(t);
+				
+				if (activeFragment instanceof TableTopFragment) {
+					// signal fragment that a token moved
+					activeFragment.passReceived(rcv);
+				}
+				
+				break;
+			case SEND_TOKEN:
+				Log.v(TAG, "Receiving token.");
+				tm = TokenManager.getSharedInstance();
+				t = new Token(rcv);
+				tm.add(t);		
+				
+				if (activeFragment instanceof ManageTokenFragment) {
+					// signal fragment that there is a new token
+					activeFragment.passReceived(rcv);
+				}
+				
+				break;
+			case PASS_MSG:
+				Log.v(TAG, "Receiving a bulletin.");
+				bm = BulletinManager.getSharedInstance();
+				b = new Bulletin(rcv);
+				bm.add(b);
+				
+				if (activeFragment instanceof BulletinFragment) {
+					// Notify of new bulletin
+					activeFragment.passReceived(rcv);
+				}
+				
+				break;
+			default:
+				// signal active fragment
+				if (!activeFragment.passReceived(rcv)) {
+					Log.e(TAG, "Failed to pass message to fragment.");
+				}
+		}
+	}
+	
+	public boolean acceptCommand(Command cmd) {
+		// should be based on active fragment
+		return false;
 	}
 
 	@Override

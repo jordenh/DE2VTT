@@ -63,7 +63,7 @@
             android:id="@+id/sndrIDLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sender_ID"
+            android:text="@string/sender_id"
             android:textAppearance="?android:attr/textAppearanceMedium" />
         
         <EditText

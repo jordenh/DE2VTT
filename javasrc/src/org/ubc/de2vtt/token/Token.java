@@ -51,7 +51,7 @@ public class Token {
 		y = getY(data);
 		bmp = null;
 		picturePath = null;
-		name = " ";
+		name = NAME_PREFIX + count++;
 	}
 	
 	public void setBmp(Bitmap bmp) {
