@@ -10,7 +10,7 @@ import org.ubc.de2vtt.fragments.PassMessageFragment;
 import android.util.Log;
 
 public class UserManager {
-		private static final String TAG = PassMessageFragment.class.getSimpleName();
+		private static final String TAG = UserManager.class.getSimpleName();
         
 		private List<User> user;
         

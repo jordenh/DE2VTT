@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class GameConfigFragment extends WINGFragment {	
+	private static final String TAG = GameConfigFragment.class.getSimpleName();
+	
 	protected View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
