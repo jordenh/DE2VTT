@@ -66,9 +66,6 @@ public class GameConfigFragment extends WINGFragment {
 		} else {
 			Log.v(TAG, "update of alias didn't get sent, as the string must be between 1-40 characters long.");
 		}
-		
-		//TEMP!
-		notifications.notifyOfNewMessage();
 	}
 	
 	@Override

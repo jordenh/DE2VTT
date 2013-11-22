@@ -74,6 +74,7 @@ public class MainActivity extends Activity {
 		
 		// Attempt to connect
 		Messenger.GetSharedInstance();
+		
 	}
 
 	private void setupDrawerList() {
@@ -136,6 +137,25 @@ public class MainActivity extends Activity {
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
+        
+        Intent intent = getIntent();
+        try{
+            String action = intent.getAction().toUpperCase();
+            Log.v(TAG, "OnCreate: intent action" + action);
+
+            if(action != null){
+                if(action.equalsIgnoreCase("NOTIFY_NEW_MESSAGE")){
+                	switchFragment(5); // hard coded to switch to bulletin board!
+                }
+                /*if(action.equalsIgnoreCase(getResources().getString(R.string.notification_action_article))){
+                    goFrag(getResources().getInteger(R.integer.FRAG_FRESH_INT));
+                } */ // better syntax - use this after proof of concept.
+            }else{
+                Log.v(TAG, "Oncreate: Intent was null");
+            }
+        }catch(Exception e){
+            Log.e(TAG, "Problem consuming action from intent", e);              
+        }
     }
 
 	@Override
@@ -194,6 +214,7 @@ public class MainActivity extends Activity {
 				fragment = new PassMessageFragment();
 				break;
 			case 5:
+				Log.v(TAG, "switching to bulletin frag");
 				fragment = new BulletinFragment();
 				break;
 			case 6:

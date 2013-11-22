@@ -26,8 +26,16 @@ public class notifications {
 		
 		
 		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent(context, BulletinFragment.class);
+		
+		//BulletinFragment.class.getPackage().toString()
+		//Intent resultIntent = context.getPackageManager().getLaunchIntentForPackage("org.ubc.de2vtt.fra");//new Intent(context, BulletinFragment.class);
+		Intent resultIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());//new Intent(context, BulletinFragment.class);
 
+		String action = "NOTIFY_NEW_MESSAGE";
+		if(action != null && resultIntent != null){         
+			resultIntent.setAction(action);         
+        }
+		
 		// The stack builder object will contain an artificial back stack for the
 		// started Activity.
 		// This ensures that navigating backward from the Activity leads out of
