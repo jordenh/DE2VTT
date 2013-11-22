@@ -3,6 +3,7 @@ package org.ubc.de2vtt.bulletin;
 import java.util.List;
 
 import org.ubc.de2vtt.R;
+import org.ubc.de2vtt.users.UserManager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,21 +30,20 @@ public class BulletinAdapter extends ArrayAdapter<Bulletin> {
 		View row = convertView;
 		BulletinHolder holder;
 		
-		if (row == null) {
-			LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-			row = inflater.inflate(textViewResourceId, parent, false);
-			
-			holder = new BulletinHolder();
-			
-			holder.name = (TextView)row.findViewById(R.id.tvName);
-			holder.text = (TextView)row.findViewById(R.id.tvBulletinText);
-		} else {
-			holder = (BulletinHolder)row.getTag();
-		}
+		LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+		row = inflater.inflate(textViewResourceId, parent, false);
+		
+		holder = new BulletinHolder();
+		
+		holder.name = (TextView)row.findViewById(R.id.tvName);
+		holder.text = (TextView)row.findViewById(R.id.tvBulletinText);
 		
 		Bulletin b = bulletins.get(position);
 		
-		holder.name.setText(b.getSenderID());
+		UserManager um = UserManager.getSharedInstance();
+		String name = um.getAliasWithID(b.getSenderID());
+		
+		holder.name.setText(name);
 		holder.text.setText(b.getText());
 		
 		return row;

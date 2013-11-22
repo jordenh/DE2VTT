@@ -7,6 +7,7 @@ import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.users.User;
 import org.ubc.de2vtt.users.UserManager;
 
 import android.app.Activity;
@@ -15,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +30,7 @@ public class PassMessageFragment extends WINGFragment {
 	protected View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
+	private User mDestination;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -67,6 +71,20 @@ public class PassMessageFragment extends WINGFragment {
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
 		rcvrSpinner.setAdapter(adapter);
+		
+		rcvrSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View v,
+					int position, long arg3) {
+				UserManager um = UserManager.getSharedInstance();
+				mDestination = um.getAtIndex(position);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
 
 	}
 
@@ -93,9 +111,12 @@ public class PassMessageFragment extends WINGFragment {
 	public void passMsg() {
 		EditText et = (EditText)mParentView.findViewById(R.id.sendMsg);
 		Spinner sp = (Spinner)mParentView.findViewById(R.id.rcvrSpinner); // TODO: - need to make this msg string concatonation correct.
-		String msg = "\0"; // TODO: again, need to properly set ID here - for now, set to zero to default to table. 
-		//String ID = sp.getSelectedItem().toString();
+		String msg = "\0";  
 		msg += et.getText().toString() + '\0';
+		
+		byte[] strBytes = msg.getBytes();
+		strBytes[0] = (byte)mDestination.getID();
+		msg = new String(strBytes);
 		
 		mMessenger.sendStringMessage(msg, Command.PASS_MSG);
 	}
