@@ -54,9 +54,4 @@ public class SendableBitmap implements Sendable {
 		
 		return ret;
 	}
-
-	private void putInt(byte[] intBuf, byte[] dest, Integer cursor) {
-		System.arraycopy(intBuf, 0, dest, cursor, intBuf.length);
-		cursor += intBuf.length;
-	}
 }

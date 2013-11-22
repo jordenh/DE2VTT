@@ -15,7 +15,7 @@ public class ImageAdapter extends BaseAdapter {
         mContext = c;
         mThumbIds = new Integer[tokMan.size()];
         for (int i = 0; i < tokMan.size(); i++) {
-        	mThumbIds[i] = new Integer(tokMan.getKey(i));
+        	mThumbIds[i] = Integer.valueOf(tokMan.getKey(i));
 		}
     }
 

@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class SharedPreferencesManager {
-	//private final String TAG = SharedPreferencesManager.class.getSimpleName();
-	
+public class SharedPreferencesManager {	
 	private static final String SHARED_PREFS_NAME = "DE2VTTPrefs";
 	
 	private static SharedPreferencesManager mSharedInstance;
@@ -33,8 +31,6 @@ public class SharedPreferencesManager {
 				Context.MODE_PRIVATE);
 		mEditor = mSharedPrefs.edit();
 	}
-	
-	// TODO: Add putXXX / getXXX methods as needed
 
 	public boolean putInt(String key, int val) {
 		mEditor.putInt(key, val);
