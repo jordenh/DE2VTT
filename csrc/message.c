@@ -74,6 +74,8 @@ unsigned int updateConnUserAlias(msg * inMsg) {
 	return 0;
 }
 
+//takes the message that called UPDATE_ALIAS and uses that new alias/ID
+//	in order to alert all other devices that the alias has changed.
 void alertUsersNewUser(msg * currentMsg) {
 	int i;
 
@@ -83,18 +85,18 @@ void alertUsersNewUser(msg * currentMsg) {
 	alertMsg.cmd = (unsigned int)UPDATE_ALIAS;
 	alertMsg.len = MAX_ALIAS_SIZE;//currentMsg->len; // correct?
 
-	printf("in alertUsersNewUser, alerting of new user: %d\n", currentMsg->androidID);
+	//printf("in alertUsersNewUser, alerting of new user: %d\n", currentMsg->androidID);
 	for(i = 0; i < NUM_USERS; i++) {
 		if(currentMsg->androidID == connUserIDs[i]) {
 			*(unsigned char*)alertMsg.buffer = (unsigned char)connUserIDs[i];
 			strncpy((char*)(alertMsg.buffer + 1), connUserAlias[i], MAX_ALIAS_SIZE - 1);
 			alertMsg.buffer[MAX_ALIAS_SIZE - 1] = '\0';
-			printf("about to send string: %s in alertUsersNewUser\n", (char*)alertMsg.buffer);
 		}
 	}
 	for(i = 0; i < NUM_USERS; i++) {
 		if((currentMsg->androidID != connUserIDs[i]) && (connUserIDs[i] != 0)) {
 			alertMsg.androidID = connUserIDs[i];
+			printf("about to send string: %s to %d in alertUsersNewUser\n", (char*)alertMsg.buffer, connUserIDs[i]);
 			sendMessage(&alertMsg);
 		}
 	}
@@ -110,7 +112,7 @@ void alertUserAllUsers(msg * currentMsg) {
 	alertMsg.cmd = (unsigned int)UPDATE_ALIAS;
 	alertMsg.len = MAX_ALIAS_SIZE;//currentMsg->len; // correct? TBD
 
-	printf("in alertUserAllUsers, alerting new user: %d\n", currentMsg->androidID);
+	//printf("in alertUserAllUsers, alerting new user: %d\n", currentMsg->androidID);
 	alertMsg.androidID = currentMsg->androidID;
 	for(i = 0; i < NUM_USERS; i++) {
 		if((currentMsg->androidID != connUserIDs[i]) && (connUserIDs[i] != 0)) {
@@ -132,11 +134,13 @@ void alertUsersOfUserDC(msg * currentMsg) {
 	alertMsg.cmd = (unsigned int)UPDATE_ALIAS;
 	alertMsg.len = MAX_ALIAS_SIZE;//currentMsg->len; // correct?
 
-	alertMsg.buffer = (unsigned char *)"\0"; //message of null indicates that android should remove the user from their memory.
+	alertMsg.buffer = malloc(2); //message of null indicates that android should remove the user from their memory.
+	alertMsg.buffer[0] = currentMsg->androidID;
+	alertMsg.buffer[1] = '\0';
 
 	for(i = 0; i < NUM_USERS; i++) {
 		if((currentMsg->androidID != connUserIDs[i]) && (connUserIDs[i] != 0)) {
-			printf("in alertUsersOfUserDC - sending to id %d about DC of %d", i, currentMsg->androidID);
+			printf("in alertUsersOfUserDC - sending to id %d about DC of %d", connUserIDs[i], currentMsg->androidID);
 			alertMsg.androidID = connUserIDs[i];
 			sendMessage(&alertMsg);
 		}
