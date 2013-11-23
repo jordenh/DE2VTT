@@ -4,7 +4,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.FloatMath;
  
 public class ShakeListener implements SensorEventListener {
  
@@ -42,7 +41,7 @@ public class ShakeListener implements SensorEventListener {
             float gZ = z / SensorManager.GRAVITY_EARTH;
  
             // gForce will be close to 1 when there is no movement.
-            float gForce = FloatMath.sqrt(gX * gX + gY * gY + gZ * gZ);
+            float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
  
             if (gForce > SHAKE_THRESHOLD_GRAVITY) {
                 final long now = System.currentTimeMillis();

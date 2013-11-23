@@ -9,7 +9,6 @@ import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.fragments.*;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
-import org.ubc.de2vtt.users.User;
 import org.ubc.de2vtt.users.UserManager;
 
 import android.app.Activity;
