@@ -98,10 +98,10 @@ def tcp_serial():
 
             conn_id = id_count
             conn_map[addr[0]] = conn_id
-            
+
             tcp_send_queue = queue.Queue()
             tcp_send_queues.append(tcp_send_queue)
-        
+
 
         print("Connection Id:", conn_id, " Connection Address", addr, "\n")
 
@@ -114,33 +114,32 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue, tcp_send_queues):
         oldLen = 0
         while True:
             (sread, swrite, sexec) = select.select([conn], [], [], 0)
-            
+
             if sread:
                 msgLen = 0
-                x = b''
                 data = b''
                 for i in reversed(range(0, 4)):
                     tmp=conn.recv(1)
-                    print("tmp[i]: ", i, " - ", tmp)
-                    x+= tmp
                     msgLen = (msgLen + (ord(tmp) * (1 << i * 8)))
                     data += tmp
 
-                # 5 is for command length, and 4 bytes of message length info
+                #command is 1 byte
+                data += conn.recv(1)
+
+                #5 is for command length, and 4 bytes of message length info
                 while len(data) < (msgLen + 5):
                     oldLen = len(data)
                     data += conn.recv(msgLen)
                     print("received ", len(data), " data of ", (msgLen + 5), " so far!")
                     if oldLen == len(data):
-                        print("caught oldLen == len")
                         break;
 
                 if not data: break
-                
-                # need to bounce the map
-                if (data[4]== 2):
-                    for i in range(0, id_count):
-                        tcp_send_queues[i].put(data)
+
+                #Broadcast map to all android devices
+                if (data[4] == 2):
+                    for queue in tcp_send_queues:
+                        queue.put(data)
 
                 #Append connection id to data
                 data = chr(conn_id).encode() + data
@@ -152,8 +151,9 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue, tcp_send_queues):
                 print("actually sending data via TCP to android")
                 data = tcp_send_queue.get()
                 conn.send(data)
-    except:
-        print("catch tcp exception")
+
+    except Exception as e:
+        print(e)
         REMOVE_ALL_TOKEN = 11
         data =   chr(0).encode() + chr(0).encode() + chr(0).encode() + chr(0).encode() + chr(REMOVE_ALL_TOKEN).encode()
         data = chr(conn_id).encode() + data
@@ -188,8 +188,7 @@ def serial_worker(ser, tcp_send_queues, uart_send_queue):
                 print(data)
 
                 #Push data to correct tcp queue
-                tcp_send_queues[conn_id - 1].put(x)
-                tcp_send_queues[conn_id - 1].put(data)
+                tcp_send_queues[conn_id - 1].put(x + data)
 
         if (not uart_send_queue.empty()) and ready:
             print("Sending data through the serial port.")
