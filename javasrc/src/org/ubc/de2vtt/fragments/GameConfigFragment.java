@@ -82,8 +82,8 @@ public class GameConfigFragment extends WINGFragment {
 		boolean canSend = Messenger.readyToSend();
 		
 		mUpdateAliasBtn.setEnabled(canSend);
-		mGetDMBtn.setEnabled(canSend);
-		mReleaseDMBtn.setEnabled(canSend);
+		//mGetDMBtn.setEnabled(canSend);
+		//mReleaseDMBtn.setEnabled(canSend);
 	}
 	
 	

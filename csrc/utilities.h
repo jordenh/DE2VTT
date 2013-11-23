@@ -16,8 +16,7 @@ typedef enum command{
 	OUTPUT_TOKEN_INFO,
 	DISCONNECT_DEV,
 	REMOVE_TOKEN,
-	GET_DM_ID,
-	TEST_GET_DM
+	GET_DM_ID
 } command;
 
 char * IntToCharBuf(unsigned int inputInt, unsigned int numChars);

@@ -16,8 +16,7 @@ public enum Command {
 	OUTPUT_TOKEN_INFO((byte)10),
 	REMOVE_ALL_TOKEN((byte)11),
 	REMOVE_TOKEN((byte)12),
-	GET_DM_ID((byte)13),
-	TEST_GET_ID((byte)14)
+	GET_DM_ID((byte)13)
 	;
 	
 	public byte code;
@@ -58,8 +57,6 @@ public enum Command {
 			return REMOVE_TOKEN;
 		case (byte) 13:
 			return GET_DM_ID;
-		case (byte) 14:
-			return TEST_GET_ID;
 		default:
 			throw new InvalidCommandException();
 		}

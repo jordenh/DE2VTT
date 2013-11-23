@@ -72,7 +72,7 @@ int executeCmd(msg * currentMsg) {
 		rspnsMsg->cmd = GET_DM_ID;
 		rspnsMsg->len = sizeof(int);
 
-		alertUserAllUsers(rspnsMsg);
+		sendMessageToAllUsers(rspnsMsg);
 
 		free(rspnsMsg->buffer);
 		free(rspnsMsg);
@@ -89,13 +89,13 @@ int executeCmd(msg * currentMsg) {
 		rspnsMsg->cmd = GET_DM_ID;
 		rspnsMsg->len = sizeof(int);
 
-		alertUserAllUsers(rspnsMsg);
+		sendMessageToAllUsers(rspnsMsg);
 
 		free(rspnsMsg->buffer);
 		free(rspnsMsg);
 		printf("DM id %i", dmID);
 		break;
-	case TEST_GET_DM:
+	case GET_DM_ID:
 			printf("In test_get_dm");
 
 			rspnsMsg = malloc(sizeof(msg));
@@ -105,7 +105,7 @@ int executeCmd(msg * currentMsg) {
 			rspnsMsg->cmd = GET_DM_ID;
 			rspnsMsg->len = sizeof(int);
 
-			alertUserAllUsers(rspnsMsg);
+			sendMessageToAllUsers(rspnsMsg);
 
 			free(rspnsMsg->buffer);
 			free(rspnsMsg);
@@ -149,11 +149,6 @@ int executeCmd(msg * currentMsg) {
 		printf("In Remove_Token");
 		byteInfo = *(currentMsg->buffer); // first byte in buffer is Token_ID;
 		removeToken(byteInfo);
-		break;
-
-	case GET_DM_ID:
-		printf("In get_dm_id");
-		// Android side command
 		break;
 
 	default:

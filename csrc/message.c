@@ -244,6 +244,17 @@ void sendMessage(msg * sendMsg){
 	fflush(uart);
 }
 
+void sendMessageToAllUsers(msg * currentMsg) {
+	int i;
+
+	for(i = 0; i < NUM_USERS; i++) {
+		if(connUserIDs[i] != 0) {
+			currentMsg->androidID = i;
+			sendMessage(&currentMsg);
+		}
+	}
+}
+
 void passMsg(msg * passMsg) {
 	printf("in passMsg\n");
 	if(passMsg->buffer == NULL || uart == NULL){

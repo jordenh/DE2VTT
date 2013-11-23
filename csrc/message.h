@@ -42,6 +42,8 @@ void getMessage(msg * inMsg);
 
 void sendMessage(msg * sendMsg);
 
+void sendMessageToAllUsers(msg * sendMsg);
+
 void passMsg(msg * passMsg);
 
 

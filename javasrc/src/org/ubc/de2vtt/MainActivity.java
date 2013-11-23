@@ -8,6 +8,7 @@ import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableNull;
+import org.ubc.de2vtt.comm.sendables.SendableString;
 import org.ubc.de2vtt.fragments.*;
 import org.ubc.de2vtt.fragments.WINGFragment.FragDrawerId;
 import org.ubc.de2vtt.notifications.notifications;
@@ -76,11 +77,6 @@ public class MainActivity extends Activity {
 		
 		// Attempt to connect
 		Messenger.GetSharedInstance();
-		
-		Message msg = new Message(Command.TEST_GET_ID, SendableNull.GetSharedInstance());
-        Messenger messenger = Messenger.GetSharedInstance();
-        
-        messenger.send(msg);
 	}
 
 	private void setupDrawerList() {
@@ -297,7 +293,7 @@ public class MainActivity extends Activity {
 				Log.v(TAG, "Updating DM id");
 				
 				int dmID = rcv.DataToInt();
-				
+				Toast.makeText(this, "dm id :" + dmID, Toast.LENGTH_SHORT).show();
 				SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
 				man.putInt(GameConfigFragment.SHARED_PREFS_DM_ID, dmID);
 			default:
