@@ -31,4 +31,8 @@ void moveToken(unsigned int tokenID, int x, int y);
 
 msg * createResponsesMsg(msg * initialMsg, token * curTok);
 
+void alertUsersOfTokenInfo(msg * currentMsg, int tokenID);
+
+void removeTokensOfOneUser(msg * currentMsg);
+
 #endif /* TOKEN_H_ */

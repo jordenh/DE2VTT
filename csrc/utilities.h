@@ -2,6 +2,8 @@
 #ifndef UTILITIES_H_
 #define UTILITIES_H_
 
+#define MAX_TOKENS 100
+
 typedef enum command{
 	CONNECT,
 	DISCONNECT,
@@ -15,7 +17,8 @@ typedef enum command{
 	UPDATE_ALIAS,
 	OUTPUT_TOKEN_INFO,
 	DISCONNECT_DEV,
-	REMOVE_TOKEN
+	REMOVE_TOKEN,
+	GET_DM_ID
 } command;
 
 char * IntToCharBuf(unsigned int inputInt, unsigned int numChars);

@@ -127,12 +127,12 @@ void alertUserAllUsers(msg * currentMsg) {
 }
 
 void alertUsersOfUserDC(msg * currentMsg) {
-	int i;
+	int i, j;
 
 	msg alertMsg;
 	alertMsg.androidID = 0;
 	alertMsg.cmd = (unsigned int)UPDATE_ALIAS;
-	alertMsg.len = MAX_ALIAS_SIZE;//currentMsg->len; // correct?
+	alertMsg.len = 2; // size of buffer for ID and 0.
 
 	alertMsg.buffer = malloc(2); //message of null indicates that android should remove the user from their memory.
 	alertMsg.buffer[0] = currentMsg->androidID;
@@ -173,16 +173,6 @@ void getMessage(msg * inMsg){
 	} while(inMsg->androidID == EOF || inMsg->androidID == '\n');
 	printf("I got msg from ID %d\n", inMsg->androidID);
 
-	if(isIDSaved(inMsg) == 0) {
-		if (storeNewID(inMsg->androidID)  == 0)
-			printf("Error adding Android ID, ID array full\n");
-		else {
-			updateConnUserAlias(inMsg);
-			alertUsersNewUser(inMsg); //alert current users of new user
-			alertUserAllUsers(inMsg); //alert new user of all current users
-		}
-	}
-
 	//obtain length (4 bytes)
 	for(i = ((sizeof(msgLen) / sizeof(msgLen[0])) - 1); i >= 0; i--) {
 		//printf("about to fgetc\n");
@@ -203,6 +193,16 @@ void getMessage(msg * inMsg){
 		printf("num bytes read from serial stream: %d\n", tmp);
 	} else {
 		printf("Error, input Msg buffer not able to be allocated\n");
+	}
+
+	if(isIDSaved(inMsg) == 0) {
+		if (storeNewID(inMsg->androidID)  == 0)
+			printf("Error adding Android ID, ID array full\n");
+		else {
+			updateConnUserAlias(inMsg);
+			alertUsersNewUser(inMsg); //alert current users of new user
+			alertUserAllUsers(inMsg); //alert new user of all current users
+		}
 	}
 
 //	for(i = 0; i < inMsg->len; i++) {

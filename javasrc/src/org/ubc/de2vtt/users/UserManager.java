@@ -60,7 +60,7 @@ public class UserManager {
         	if (data.length == 0) {
         		//Do nothing - erroneous data transmission
         		return;
-        	}else if (data.length == 1) {
+        	}else if (data[1] == 0) {
         		//Disconnecting this device ID - remove from user List
         		int ID = data[0];
         		Log.v(TAG, "handlingUpdateAlias - removing user");
