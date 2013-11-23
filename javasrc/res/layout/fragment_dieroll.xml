@@ -21,6 +21,6 @@
         android:layout_height="fill_parent"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="50dp" />
+        android:textSize="50sp" />
 
 </LinearLayout>

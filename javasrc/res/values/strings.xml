@@ -66,6 +66,9 @@
     <string name="from">From </string>
     <string name="nameColon">Name: </string>
     
+    <!-- Notifications -->
+    <string name="in_msg_notification">NEW_IN_MESSAGE</string>
+    
     <!-- Misc -->
     <string name="desc">desc</string>
 </resources>
