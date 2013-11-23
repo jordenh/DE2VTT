@@ -292,10 +292,18 @@ public class MainActivity extends Activity {
 			case GET_DM_ID:
 				Log.v(TAG, "Updating DM id");
 				
-				int dmID = rcv.DataToInt();
-				Toast.makeText(this, "dm id :" + dmID, Toast.LENGTH_SHORT).show();
-				SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
-				man.putInt(GameConfigFragment.SHARED_PREFS_DM_ID, dmID);
+				byte[] data = rcv.getData();
+				
+				if (data.length == 1) {
+					int dmID = data[0];
+					Toast.makeText(this, "dm id :" + dmID, Toast.LENGTH_SHORT).show();
+					SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
+					man.putInt(GameConfigFragment.SHARED_PREFS_DM_ID, dmID);
+				} else {
+					Log.v(TAG, "Unable to update DMID");
+				}
+				
+				break;
 			default:
 				// signal active fragment
 				if (!activeFragment.passReceived(rcv)) {

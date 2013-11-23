@@ -42,7 +42,7 @@ void getMessage(msg * inMsg);
 
 void sendMessage(msg * sendMsg);
 
-void sendMessageToAllUsers(msg * sendMsg);
+void sendAllUsersDMID(char dmID);
 
 void passMsg(msg * passMsg);
 

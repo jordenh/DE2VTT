@@ -3,7 +3,7 @@
 extern BMP map;
 extern token * tokenArr;
 extern int loadedTokenCnt;
-extern dmID;
+extern char dmID;
 
 int executeCmd(msg * currentMsg) {
 	if(currentMsg == NULL) {
@@ -57,60 +57,33 @@ int executeCmd(msg * currentMsg) {
 
 		break;
 	case GET_DM:
-		printf("In get_dm");
-		if (dmID != -1) {
+		printf("In get_dm\n");
+		if (dmID == 0) {
 			dmID = currentMsg->androidID;
-			printf("New DM: %i\n", dmID);
+			printf("New DM: %x\n", dmID);
 		} else {
-			printf("DM not available\n");
+			printf("DM not available - player %x currently has it\n", dmID);
 		}
 
-		rspnsMsg = malloc(sizeof(msg));
-		rspnsMsg->androidID = 0;
-		rspnsMsg->buffer = malloc(sizeof(int));
-		*(rspnsMsg->buffer) = dmID;
-		rspnsMsg->cmd = GET_DM_ID;
-		rspnsMsg->len = sizeof(int);
+		sendAllUsersDMID(dmID);
 
-		sendMessageToAllUsers(rspnsMsg);
-
-		free(rspnsMsg->buffer);
-		free(rspnsMsg);
-		printf("DM id %i", dmID);
+		printf("DM id %x\n", dmID);
 		break;
 	case RELEASE_DM:
-		printf("In release_dm");
-		dmID = -1;
+		printf("In release_dm\n");
+		dmID = 0;
 
-		rspnsMsg = malloc(sizeof(msg));
-		rspnsMsg->androidID = 0;
-		rspnsMsg->buffer = malloc(sizeof(int));
-		*(rspnsMsg->buffer) = dmID;
-		rspnsMsg->cmd = GET_DM_ID;
-		rspnsMsg->len = sizeof(int);
+		sendAllUsersDMID(dmID);
 
-		sendMessageToAllUsers(rspnsMsg);
-
-		free(rspnsMsg->buffer);
-		free(rspnsMsg);
-		printf("DM id %i", dmID);
+		printf("DM id %x\n", dmID);
 		break;
 	case GET_DM_ID:
-			printf("In test_get_dm");
+		printf("In test_get_dm\n");
 
-			rspnsMsg = malloc(sizeof(msg));
-			rspnsMsg->androidID = 0;
-			rspnsMsg->buffer = malloc(sizeof(int));
-			*(rspnsMsg->buffer) = dmID;
-			rspnsMsg->cmd = GET_DM_ID;
-			rspnsMsg->len = sizeof(int);
+		sendAllUsersDMID(dmID);
 
-			sendMessageToAllUsers(rspnsMsg);
-
-			free(rspnsMsg->buffer);
-			free(rspnsMsg);
-			printf("DM id %i", dmID);
-			break;
+		printf("DM id %x\n", dmID);
+		break;
 	case MOVE_TOKEN:
 		printf("In move_token\n");
 		moveTokenMsg(currentMsg);
