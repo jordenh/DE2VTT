@@ -24,6 +24,7 @@ public class ManageTokenFragment extends WINGFragment {
 
     private GridView mGridView;
     private ImageAdapter mImageAdapter;
+    
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

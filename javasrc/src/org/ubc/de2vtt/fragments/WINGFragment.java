@@ -13,6 +13,17 @@ public abstract class WINGFragment extends Fragment {
 	
 	public abstract boolean passReceived(Received r);
 	
+	public enum FragDrawerId {
+		TableTopFragDrawerId,
+		ManageTokenFragDrawerId,
+		GameConfigFragDrawerId,
+		SendImageFragDrawerId,
+		PassMessageFragDrawerId,
+		BulletinFragDrawerId,
+		DieRollFragDrawerId,
+		ConnectionFragDrawerId
+	}
+	
 	public Command[] commandsAccepted() {
 		if (accept != null) {
 			return accept.clone();
