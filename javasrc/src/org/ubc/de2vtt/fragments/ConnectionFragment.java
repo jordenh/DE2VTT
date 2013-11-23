@@ -1,19 +1,15 @@
 package org.ubc.de2vtt.fragments;
 
-import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Mailbox;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.notifications.notifications;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,8 +54,6 @@ public class ConnectionFragment extends WINGFragment {
 		btn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				openSocket();
-				Context context = MainActivity.getAppContext();
-				notifications.notify(context, context.getResources().getString(R.string.in_msg_notification)); /// temporary!
 			}
 		});
 		
