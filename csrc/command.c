@@ -76,6 +76,7 @@ int executeCmd(msg * currentMsg) {
 
 		free(rspnsMsg->buffer);
 		free(rspnsMsg);
+		printf("DM id %i", dmID);
 		break;
 	case RELEASE_DM:
 		printf("In release_dm");
@@ -92,7 +93,7 @@ int executeCmd(msg * currentMsg) {
 
 		free(rspnsMsg->buffer);
 		free(rspnsMsg);
-
+		printf("DM id %i", dmID);
 		break;
 	case TEST_GET_DM:
 			printf("In test_get_dm");
@@ -108,7 +109,7 @@ int executeCmd(msg * currentMsg) {
 
 			free(rspnsMsg->buffer);
 			free(rspnsMsg);
-
+			printf("DM id %i", dmID);
 			break;
 	case MOVE_TOKEN:
 		printf("In move_token\n");
