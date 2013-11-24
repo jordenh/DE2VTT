@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.fragments.PassMessageFragment;
-
 import android.util.Log;
 
 public class UserManager {

@@ -23,7 +23,7 @@ import android.util.Log;
 
 public class Token {
 	private static final String TAG = Token.class.getSimpleName();
-	private static final int ID_INDEX = 0;
+	private static final int TOKEN_ID_INDEX = 0;
 	private static final int X_INDEX = 1;
 	private static final int Y_INDEX = 3;
 	private static final String NAME_PREFIX = "Token_";
@@ -34,24 +34,42 @@ public class Token {
 	
 	private int x;
 	private int y;
-	private int id;
+	private int tokenID;
+	private int playerID;
+	private String picturePath; // not used
 	private String name;
-	private String picturePath;
 	private Bitmap bmp;
+	private Boolean local;
 	
 	public Token(Received rcv) {
-		// Check command
-		if (rcv.getCommand() != Command.SEND_TOKEN) {
+		byte[] data = rcv.getData();
+		tokenID = (int) data[TOKEN_ID_INDEX];
+		
+		switch (rcv.getCommand()) {
+		case SEND_TOKEN:
+			playerID = 0;
+			x = getX(data);
+			y = getY(data);
+			local = true;
+			break;
+		case OUTPUT_TOKEN_INFO:
+			playerID = (int) data[1];
+			x = getShort(data, 2);
+			y = getShort(data, 4);
+			local = false;
+			break;
+		case REMOVE_TOKEN:
+			playerID = (int) data[1];
+			x = 0;
+			y = 0;
+			break;
+		default:
 			throw new IncorrectCommandDatumExpression();
 		}
 		
-		byte[] data = rcv.getData();
-		id = (int) data[ID_INDEX];
-		x = getX(data);
-		y = getY(data);
-		bmp = null;
-		picturePath = null;
 		name = NAME_PREFIX + count++;
+		bmp = null;
+		picturePath = "";
 	}
 	
 	public void setBmp(Bitmap bmp) {
@@ -68,6 +86,12 @@ public class Token {
 		return y;
 	}
 	
+	/**
+	 * 
+	 * @param Array of bytes
+	 * @param index where short begins
+	 * @return
+	 */
 	private int getShort(byte[] arr, int index) {
 		return (int) (arr[index] << 8 | arr[index + 1]);
 	}
@@ -83,12 +107,12 @@ public class Token {
 //	}
 	
 	public SendableMove getSendable() {
-		return new SendableMove(id, x, y);
+		return new SendableMove(tokenID, x, y);
 	}
 	
 	public String encode() {
 		StringBuilder s = new StringBuilder();
-		s.append(id + separator);
+		s.append(tokenID + separator);
 		s.append(name + separator);
 		s.append(x + separator);
 		s.append(y + separator);
@@ -100,13 +124,17 @@ public class Token {
 	
 	public Token(String code) {
 		String[] s = code.split("\\|\\|");
-		id = Integer.parseInt(s[0]);
+		tokenID = Integer.parseInt(s[0]);
 		name = s[1];
 		x = Integer.parseInt(s[2]);
 		y = Integer.parseInt(s[3]);
 		if (s.length >= 5) {
 			picturePath = s[4];
 		}
+	}
+	
+	public boolean isLocal() {
+		return local;
 	}
 	
 	public void setupBitmap(Uri selectedImage) {
@@ -158,8 +186,8 @@ public class Token {
 	
 	public void move(Received rcv) {
 		byte[] data = rcv.getData();
-		int rcvId = data[ID_INDEX];
-		if (id == rcvId) {
+		int rcvId = data[TOKEN_ID_INDEX];
+		if (tokenID == rcvId) {
 			x = getX(data);
 			y = getY(data);
 		}
@@ -188,6 +216,6 @@ public class Token {
 	}
 	
 	public int getId() {
-		return id;
+		return tokenID;
 	}
 }

@@ -72,18 +72,12 @@ public class SendImageFragment extends WINGFragment {
 			@Override
 			public void onClick(View v) {
 				sendToken();
-				//ImageView imgView = (ImageView) mParentView.findViewById(R.id.imgView);
-				//Bitmap bmp = ((BitmapDrawable)imgView.getDrawable()).getBitmap();
-				
-				//Token tok = new Token("hi", bmp);
-				//TokenManager man = TokenManager.getSharedInstance();
-				//man.add(tok);
 			}
 		});
 		
 		Button sendMapBtn = (Button) mParentView.findViewById(R.id.btnSendMap);
 		sendMapBtn.setOnClickListener(new OnClickListener() {
-			
+		
 			@Override
 			public void onClick(View v) {
 				sendMap();
@@ -120,10 +114,23 @@ public class SendImageFragment extends WINGFragment {
 	
 	public void sendMap() {
 		sendImage(Command.SEND_MAP, MAP_X, MAP_Y);
+		TableTopFragment.setMap(bitmap);
 	}
 	
 	public void sendImage(Command cmd, int x, int y) {
-		if (cmd == Command.SEND_MAP || cmd == Command.SEND_TOKEN) {
+		if (cmd == Command.SEND_MAP) {
+			if (bitmap != null) {
+				Bitmap scaled = Bitmap.createScaledBitmap(bitmap, x, y, false);
+				SendableBitmap bmp = new SendableBitmap(scaled.copy(Bitmap.Config.ARGB_8888, false));
+				Message msg = new Message(cmd, bmp);
+				Messenger messenger = Messenger.GetSharedInstance();
+				
+				messenger.send(msg);
+				updateButtonState();
+			} else {
+				Log.v(TAG, "Attempt to send null bitmap.");
+			}
+		} else if(cmd == Command.SEND_TOKEN) {
 			if (bitmap != null) {
 				Bitmap scaled = Bitmap.createScaledBitmap(bitmap, x, y, false);
 				SendableBitmap bmp = new SendableBitmap(scaled.copy(Bitmap.Config.ARGB_8888, false));
