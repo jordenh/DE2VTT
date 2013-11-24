@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.ubc.de2vtt.Disconnect;
 import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.sendables.SendableString;
 import org.ubc.de2vtt.fragments.ConnectionFragment;
@@ -87,6 +88,10 @@ public class Messenger {
 				mSocket.getOutputStream().close();
 				mSocket.close();
 			} catch (IOException e) {
+				if(!isConnected()) {
+					Disconnect.removeSessionData(); 
+					Log.v(TAG, "Disconnect code hit");
+				}
 				e.printStackTrace();
 			}
 		} else {
@@ -117,6 +122,10 @@ public class Messenger {
 				Thread.sleep(msg[0].getDelay());
 				sendMessage(msg[0]);
 			} catch (InterruptedException e) {
+				if(!isConnected()) {
+					Disconnect.removeSessionData(); 
+					Log.v(TAG, "Disconnect code hit");
+				}
 				e.printStackTrace();
 			}
 			finally {
@@ -140,9 +149,17 @@ public class Messenger {
 						out.flush();
 						Log.v(TAG, "Send complete.");
 					} catch (IOException e) {
+						if(!isConnected()) {
+							Disconnect.removeSessionData(); 
+							Log.v(TAG, "Disconnect code hit");
+						}
 						e.printStackTrace();
 					}
 				} catch (IOException e) {
+					if(!isConnected()) {
+						Disconnect.removeSessionData(); 
+						Log.v(TAG, "Disconnect code hit");
+					}
 					e.printStackTrace();
 				}
 			} else {
@@ -158,15 +175,27 @@ public class Messenger {
 		try {
 			r = task.get(3000, TimeUnit.MILLISECONDS);
 		} catch (TimeoutException e) {
+			if(!isConnected()) {
+				Disconnect.removeSessionData(); 
+				Log.v(TAG, "Disconnect code hit");
+			}
 			Log.e(TAG, "Receive timed out.");
 			resetSocket();
 			//r = attemptReceiveRecovery(r);
 			//e.printStackTrace();
 		} catch (InterruptedException e) {
+			if(!isConnected()) {
+				Disconnect.removeSessionData(); 
+				Log.v(TAG, "Disconnect code hit");
+			}
 			resetSocket();
 			Log.e(TAG, "Receive interrupted out.");
 			//e.printStackTrace();
 		} catch (ExecutionException e) {
+			if(!isConnected()) {
+				Disconnect.removeSessionData(); 
+				Log.v(TAG, "Disconnect code hit");
+			}
 			resetSocket();
 			Log.e(TAG, "Receive computation mucked up.");
 			//e.printStackTrace();
@@ -195,6 +224,10 @@ public class Messenger {
 				try {
 					rcv = getMessage(rcv);
 				} catch (IOException e) {
+					if(!isConnected()) {
+						Disconnect.removeSessionData(); 
+						Log.v(TAG, "Disconnect code hit");
+					}
 					Log.e(TAG, "IOException on receive.");
 				}			
 			} else {

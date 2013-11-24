@@ -41,6 +41,11 @@ public class TokenManager {
 		tokenList.remove(tok.getId());
 	}
 	
+	public void resetTokenManager() {
+		tokenList = new SparseArray<Token>();
+		sendBmps = new LinkedList<Bitmap>();
+	}
+	
 	public void save() {
 		new TokenSave().execute();
 	}

@@ -2,10 +2,14 @@ package org.ubc.de2vtt.token;
 
 import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.R;
+import org.ubc.de2vtt.comm.Command;
+import org.ubc.de2vtt.comm.Message;
+import org.ubc.de2vtt.comm.Messenger;
+import org.ubc.de2vtt.comm.sendables.SendableRemoveToken;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 public class TokenActivity extends Activity {
 	private Token mToken;
 	private TokenManager tokMan = TokenManager.getSharedInstance();
+	private Messenger mMessenger = Messenger.GetSharedInstance();
 	
 	private ImageView mTokenImage;
 	private TextView mTokenID;
@@ -109,6 +114,11 @@ public class TokenActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
+				//delete token from DE2 and android
+				Message msg = new Message(Command.REMOVE_TOKEN, new SendableRemoveToken(mToken.getId()));
+				mMessenger.send(msg);
+				tokMan.remove(mToken);
+				
 				Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
 				myIntent.putExtra("fragment_sel", 1);
 				startActivity(myIntent);
