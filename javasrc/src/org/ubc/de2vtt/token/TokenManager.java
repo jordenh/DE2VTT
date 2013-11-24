@@ -51,7 +51,8 @@ public class TokenManager {
 	}
 	
 	public void resetTokenManager() {
-		tokenList = new SparseArray<Token>();
+		localTokenList = new SparseArray<Token>();
+		remoteTokenList = new SparseArray<Token>();
 		sendBmps = new LinkedList<Bitmap>();
 	}
 	
