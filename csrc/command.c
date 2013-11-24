@@ -134,10 +134,6 @@ int executeCmd(msg * currentMsg) {
 		removeToken(byteInfo);
 		break;
 
-	case GET_DM_ID:
-		printf("In get DM ID, STUB on jorden's comp.\n");
-		break;
-
 	default:
 		printf("Error, invalid command received on DE2!");
 		break;
