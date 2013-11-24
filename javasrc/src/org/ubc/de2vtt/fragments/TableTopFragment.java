@@ -43,35 +43,57 @@ public class TableTopFragment extends WINGFragment {
 
 		final ViewTreeObserver vto = mParentView.findViewById(R.id.tabletop).getViewTreeObserver();
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+			private int fragWidth;
+			
 			@Override
 			public void onGlobalLayout() {
 				final int fragmentWidth = mParentView.findViewById(R.id.tabletop).getWidth();
+				fragWidth = fragmentWidth;
 				if (fragmentWidth != 0){
-					for (Token tok : tokMan.getList()) {
-						final ImageView tokenImageView = new ImageView(mActivity);
-						
-						Matrix matrix = new Matrix();
-						matrix.postRotate(90);
-						
-						Bitmap bmp = tok.getBitmap();
-						Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmp.getHeight(), bmp.getWidth(), true);
-						Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-						tokenImageView.setImageBitmap(rotatedBitmap);
-						
-						tok.setImageView(tokenImageView);
-
-						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(40, 40);
-						params.leftMargin = fragmentWidth - tok.getY() - params.width;
-						params.topMargin = tok.getX();
-						tokenImageView.setLayoutParams(params);
-						mLayout.addView(tokenImageView);
-						
-						tokenImageView.setOnTouchListener(new TableTopOnTouchListener());
-					}
-					
-					getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
+					setupTokenViews(fragmentWidth);
 				}
 
+			}
+
+			private void setupTokenViews(final int fragmentWidth) {
+				for (Token tok : tokMan.getList()) {
+					new TokenViewSetter().execute(tok);
+				}
+				
+				getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
+			}
+			
+			class TokenViewSetter extends AsyncTask<Token, Void, Bitmap> {
+				private Token tok;
+						
+				@Override
+				protected Bitmap doInBackground(Token... params) {
+					tok = params[0];
+					Bitmap bmp = tok.getBitmap();
+					
+					Matrix matrix = new Matrix();
+					matrix.postRotate(90);
+					Bitmap rotatedBitmap = Bitmap.createBitmap(bmp , 0, 0, 
+							bmp.getWidth(), bmp.getHeight(), matrix, true);
+					return rotatedBitmap;
+				}
+				
+				@Override
+				protected void onPostExecute(Bitmap b) {
+					final ImageView tokenImageView = new ImageView(mActivity);
+
+					tokenImageView.setImageBitmap(b);
+					
+					tok.setImageView(tokenImageView);
+
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(40, 40);
+					params.leftMargin = fragWidth - tok.getY() - params.width;
+					params.topMargin = tok.getX();
+					tokenImageView.setLayoutParams(params);
+					mLayout.addView(tokenImageView);
+					
+					tokenImageView.setOnTouchListener(new TableTopOnTouchListener());
+				}
 			}
 
 		});
