@@ -68,7 +68,11 @@ public class TableTopFragment extends WINGFragment {
 	@Override
 	public boolean passReceived(Received r) {
 		// TODO Move token
-		//mAdapter.notifyDataSetChanged(); // hopefully this will move things
+		
+		// update map
+		mMapView = (ImageView) mParentView.findViewById(R.id.MapView);
+		mMapView.setImageBitmap(mBitmap);
+		mMapView.setScaleType(ScaleType.FIT_XY);
 		return true;
 	}
 }

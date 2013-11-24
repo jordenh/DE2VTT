@@ -4,11 +4,11 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import org.ubc.de2vtt.comm.sendables.Sendable;
-import org.ubc.de2vtt.exceptions.IncorrectCommandDatumExpression;
-import org.ubc.de2vtt.exceptions.NotImplementedException;
+import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
 import org.ubc.de2vtt.token.Token;
 
 public class Received implements Sendable {
@@ -86,14 +86,30 @@ public class Received implements Sendable {
 		if (cmd == Command.MOVE_TOKEN || cmd == Command.SEND_TOKEN) {
 			return new Token(this);
 		} else {
-			RuntimeException e = new IncorrectCommandDatumExpression();
+			RuntimeException e = new IncorrectCommandDatumException();
 			e.printStackTrace();
 			throw e;
 		}
 	}
 	
 	public Bitmap DataToBitmap() {
-		throw new NotImplementedException();
-		// if this needs to be done it should be done on a background thread
+		if (cmd == Command.SEND_MAP) {
+//			BitmapFactory.Options opt = new BitmapFactory.Options();
+//			opt.inPreferredConfig(Bitmap.Config.RGB_565);
+//			opt.inMutable(false);
+//			
+			int[] arr = new int[data.length / 2];
+			for (int i = 0; i < data.length; i += 2) {
+				arr[i / 2] = 0;
+				arr[i / 2] = (((data[i] & 0xF8) >> 3) << 16) |
+								((((data[i] & 0x7) << 3) | ((data[i + 1] & 0xE0) >> 6)) << 8) |
+								(data[i + 1] & 0x3F);
+			}
+			
+			Bitmap bmp = Bitmap.createBitmap(arr, 340, 260, Bitmap.Config.RGB_565);			
+			return bmp;
+		} else {
+			throw new IncorrectCommandDatumException();
+		}
 	}
 }
