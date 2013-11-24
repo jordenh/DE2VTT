@@ -9,7 +9,6 @@ import org.ubc.de2vtt.comm.Mailbox;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.fragments.*;
-import org.ubc.de2vtt.fragments.WINGFragment.FragDrawerId;
 import org.ubc.de2vtt.notifications.notifications;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
@@ -20,6 +19,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -300,11 +300,17 @@ public class MainActivity extends Activity {
 				UserManager um = UserManager.getSharedInstance();
 				um.handleUpdateAlias(rcv);
 				break;
+			case SEND_MAP:
+				Log.v(TAG, "Receiving a map.");
+				Bitmap bmp = rcv.DataToBitmap();
+				TableTopFragment.setMap(bmp);
+				break;
 			default:
 				// signal active fragment
 				if (!activeFragment.passReceived(rcv)) {
 					Log.e(TAG, "Failed to pass message to fragment.");
 				}
+				break;
 		}
 	}
 	
