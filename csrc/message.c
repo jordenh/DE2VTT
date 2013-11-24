@@ -265,6 +265,7 @@ void sendAllUsersDMID(char dmID) {
 		}
 	}
 
+	alt_up_char_buffer_clear(char_buffer);
 	free(rspnsMsg->buffer);
 	free(rspnsMsg);
 }

@@ -16,6 +16,7 @@ import org.ubc.de2vtt.fragments.WINGFragment.FragDrawerId;
 import org.ubc.de2vtt.notifications.notifications;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
+import org.ubc.de2vtt.users.DMManager;
 import org.ubc.de2vtt.users.UserManager;
 
 import android.app.Activity;
@@ -248,6 +249,7 @@ public class MainActivity extends Activity {
 		Token t;
 		TokenManager tm;
 		BulletinManager bm;
+		DMManager dmm;
 		Bulletin b;
 		
 		switch (rcv.getCommand()) {
@@ -304,25 +306,19 @@ public class MainActivity extends Activity {
 			case UPDATE_ALIAS:
 				Log.v(TAG, "Updating Alias List.");
 				UserManager um = UserManager.getSharedInstance();
+				dmm = DMManager.getSharedInstance();
 				um.handleUpdateAlias(rcv);
+				dmm.updateDMAlias();
 				break;
 			case GET_DM_ID:
 				Log.v(TAG, "Updating DM id");
 				
-				byte[] data = rcv.getData();
+				dmm = DMManager.getSharedInstance();
+				dmm.handleGetDMId(rcv);
 				
-				if (data.length == 1) {
-					int dmID = data[0];
-					Toast.makeText(this, "dm id :" + dmID, Toast.LENGTH_SHORT).show();
-					SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
-					man.putInt(GameConfigFragment.SHARED_PREFS_DM_ID, dmID);
-					
-					if (activeFragment instanceof GameConfigFragment) {
-						// Notify of new bulletin
-						activeFragment.passReceived(rcv);
-					}
-				} else {
-					Log.v(TAG, "Unable to update DMID");
+				if (activeFragment instanceof GameConfigFragment) {
+					// Notify of new bulletin
+					activeFragment.passReceived(rcv);
 				}
 				
 				break;
