@@ -10,11 +10,13 @@ import java.util.Set;
 import org.ubc.de2vtt.SharedPreferencesManager;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.SparseArray;
 
 public class TokenManager {
 	private static final String TOKENS_KEY = "tokens";
+	private static final int[] COLORS = {Color.CYAN, Color.MAGENTA, Color.WHITE, Color.GREEN, Color.YELLOW};
 	
 	static TokenManager sharedInstance;
 	private SparseArray<Token> localTokenList;
@@ -42,6 +44,11 @@ public class TokenManager {
 			localTokenList.append(tok.getId(), tok);
 		} else {
 			// TODO: set token's bitmap
+			int playerID = tok.getPlayerID();
+			int[] color = new int[1];
+			color[0] = COLORS[playerID % COLORS.length];
+			Bitmap bmp = Bitmap.createBitmap(color, 1, 1, Bitmap.Config.RGB_565);
+			tok.setBmp(bmp);
 			remoteTokenList.append(tok.getId(), tok);
 		}
 	}

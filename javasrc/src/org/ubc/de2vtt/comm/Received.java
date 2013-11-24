@@ -4,10 +4,12 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.util.Log;
 
 import org.ubc.de2vtt.comm.sendables.Sendable;
-import org.ubc.de2vtt.exceptions.IncorrectCommandDatumExpression;
+import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
 import org.ubc.de2vtt.exceptions.NotImplementedException;
 import org.ubc.de2vtt.token.Token;
 
@@ -86,14 +88,22 @@ public class Received implements Sendable {
 		if (cmd == Command.MOVE_TOKEN || cmd == Command.SEND_TOKEN) {
 			return new Token(this);
 		} else {
-			RuntimeException e = new IncorrectCommandDatumExpression();
+			RuntimeException e = new IncorrectCommandDatumException();
 			e.printStackTrace();
 			throw e;
 		}
 	}
 	
 	public Bitmap DataToBitmap() {
-		throw new NotImplementedException();
-		// if this needs to be done it should be done on a background thread
+		if (cmd == Command.SEND_MAP) {
+			BitmapFactory.Options opt = new BitmapFactory.Options();
+			//opt.inPreferredConfig(Bitmap.Config.RGB_565);
+			//opt.inMutable(false);
+			
+			Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length, opt);
+			return bmp;
+		} else {
+			throw new IncorrectCommandDatumException();
+		}
 	}
 }

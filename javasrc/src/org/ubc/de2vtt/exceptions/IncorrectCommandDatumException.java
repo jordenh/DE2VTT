@@ -1,6 +1,6 @@
 package org.ubc.de2vtt.exceptions;
 
-public class IncorrectCommandDatumExpression extends RuntimeException {
+public class IncorrectCommandDatumException extends RuntimeException {
 
 	/**
 	 * 

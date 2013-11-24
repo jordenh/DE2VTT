@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.exceptions.IncorrectCommandDatumExpression;
+import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
 
 public class User {
         private int ID;
@@ -12,7 +12,7 @@ public class User {
         
         public User(Received rcv) {
         	if (rcv.getCommand() != Command.UPDATE_ALIAS) {
-                throw new IncorrectCommandDatumExpression();
+                throw new IncorrectCommandDatumException();
 		    }
 		    
 		    byte[] data = rcv.getData();

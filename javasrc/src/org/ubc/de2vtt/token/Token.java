@@ -9,7 +9,7 @@ import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.exceptions.BitmapNotSetupException;
-import org.ubc.de2vtt.exceptions.IncorrectCommandDatumExpression;
+import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -64,7 +64,7 @@ public class Token {
 			y = 0;
 			break;
 		default:
-			throw new IncorrectCommandDatumExpression();
+			throw new IncorrectCommandDatumException();
 		}
 		
 		name = NAME_PREFIX + count++;
@@ -105,6 +105,11 @@ public class Token {
 //		bmp = bitmap;
 //		picturePath = null;
 //	}
+	
+	
+	public int getPlayerID() {
+		return playerID;
+	}
 	
 	public SendableMove getSendable() {
 		return new SendableMove(tokenID, x, y);
