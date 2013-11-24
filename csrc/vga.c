@@ -1,5 +1,7 @@
 #include "vga.h"
 
+char dmID;
+
 void initVga() {
 	pixel_buffer = alt_up_pixel_buffer_dma_open_dev("/dev/pixel_buffer_dma");
 
@@ -66,9 +68,16 @@ void drawUserIDs(void) {
 
 	int i, xPos;
 	char cArr[2] = {'-', '\0'};
+	char cDMArr[2] = {'*', '\0'};
 
 	for(i = 0; i < 5; i++) {
 		//TBD - make a "constants" h file
+		if (dmID == i+1)
+		{
+			xPos = (SCREEN_CHAR_WIDTH - 6 - strlen(connUserAlias[i]));
+			alt_up_char_buffer_string(char_buffer, cDMArr , xPos, i);
+		}
+
 		xPos = (SCREEN_CHAR_WIDTH - 4 - strlen(connUserAlias[i]));
 		alt_up_char_buffer_string(char_buffer, connUserAlias[i] , xPos, i);
 		xPos = (SCREEN_CHAR_WIDTH - 2);
