@@ -63,6 +63,7 @@ public class TokenActivity extends Activity {
 		Button editSaveBtn = (Button)findViewById(R.id.btnEditSave);
 		Button cancelBtn = (Button)findViewById(R.id.btnCancel);
 		Button tableTopBtn = (Button)findViewById(R.id.btnViewTableTop);
+		Button deleteBtn = (Button)findViewById(R.id.btnDelete);
 		
 		// Listener to listen for short clicks on the buttons within the grid
 		// this should take the user to the tabletop view of their token
@@ -103,10 +104,20 @@ public class TokenActivity extends Activity {
 				myIntent.putExtra("fragment_sel", 0);
 				startActivity(myIntent);
 			}};
+			
+		OnClickListener deleteTokenListener = new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+				myIntent.putExtra("fragment_sel", 1);
+				startActivity(myIntent);
+			}};
 		
 		editSaveBtn.setOnClickListener(editSaveBtnListener);
 		cancelBtn.setOnClickListener(cancelBtnListener);
 		tableTopBtn.setOnClickListener(tableTopBtnListener);
+		deleteBtn.setOnClickListener(deleteTokenListener);
 	}
 
 }
