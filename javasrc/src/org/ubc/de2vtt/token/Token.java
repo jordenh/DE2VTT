@@ -61,6 +61,7 @@ public class Token {
 			playerID = (int) data[1];
 			x = 0;
 			y = 0;
+			local = false;
 			break;
 		default:
 			throw new IncorrectCommandDatumException();
@@ -154,6 +155,10 @@ public class Token {
 	public Bitmap getBitmap() {
 		if (bmp != null) {
 			return bmp;
+		}
+		
+		if (!local) {
+			
 		}
 		
 		if (picturePath == null) {
