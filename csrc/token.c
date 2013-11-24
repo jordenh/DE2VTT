@@ -145,13 +145,8 @@ void alertUsersOfTokenInfo(msg * currentMsg, int tokenID) {
 	alertMsg.buffer = malloc(sizeof(char) * 6);
 	alertMsg.buffer[0] = tokenID; // TokenID
 	alertMsg.buffer[1] = currentMsg->androidID; // Owner of Token's ID
-	if(((command)currentMsg->cmd == REMOVE_TOKEN) || ((command)currentMsg->cmd == DISCONNECT_DEV)) {
-		printf("In alertUsersOfTokenInfo, setting x/y to remove code\n");
-		alertMsg.buffer[2] = (unsigned char)'\0xFF'; // Error code
-		alertMsg.buffer[3] = (unsigned char)'\0xFF';
-		alertMsg.buffer[4] = (unsigned char)'\0xFF';
-		alertMsg.buffer[5] = (unsigned char)'\0xFF';  //TBD REMOVE!!!
-	} else if((command)currentMsg->cmd == SEND_TOKEN) {
+
+	if((command)currentMsg->cmd == SEND_TOKEN) {
 		printf("In alertUsersOfTokenInfo, setting x/y to initial vals\n");
 		alertMsg.buffer[2] = 0; //Initial x,y = 0,0
 		alertMsg.buffer[3] = 0;
@@ -168,6 +163,37 @@ void alertUsersOfTokenInfo(msg * currentMsg, int tokenID) {
 	for(i = 0; i < NUM_USERS; i++) {
 		if((currentMsg->androidID != connUserIDs[i]) && (connUserIDs[i] != 0)) {
 			printf("in alertUsersOfTokenMove - sending to id %d about movement of %d's token\n", connUserIDs[i], currentMsg->androidID);
+			alertMsg.androidID = connUserIDs[i];
+			sendMessage(&alertMsg);
+		}
+	}
+	free(alertMsg.buffer);
+}
+
+//send all currently active Token information to a new user
+void alertUserOfAllTokens(msg * currentMsg) {
+	int i;
+
+	msg alertMsg;
+	alertMsg.androidID = currentMsg->androidID; //send back to the user who is joining WING
+	alertMsg.cmd = (unsigned int)OUTPUT_TOKEN_INFO;
+	alertMsg.len = 6;
+
+	//This maps the token ID, owner ID, and x,y of the token that was moved, to the correct
+	//buffer location for the message to be sent out.
+	alertMsg.buffer = malloc(sizeof(char) * 6);
+
+	alertMsg.buffer[1] = currentMsg->androidID; // Owner of Token's ID
+
+	for(i = 0; i < MAX_TOKENS; i++) {
+		if(tokenArr[i].tokenID != 0) {
+			alertMsg.buffer[0] = tokenArr[i].tokenID; // TokenID
+			alertMsg.buffer[2] = (unsigned char)(tokenArr[i].x / 255); // Token x1
+			alertMsg.buffer[3] = (unsigned char)(tokenArr[i].x % 255); // Token x0
+			alertMsg.buffer[4] = (unsigned char)(tokenArr[i].y / 255); // Token y1
+			alertMsg.buffer[5] = (unsigned char)(tokenArr[i].y % 255); // Token y0
+
+			printf("in alertUserOfAllTokens - sending to id %d about movement of %d's token\n", connUserIDs[i], currentMsg->androidID);
 			alertMsg.androidID = connUserIDs[i];
 			sendMessage(&alertMsg);
 		}
