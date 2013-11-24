@@ -123,14 +123,9 @@ public class PassMessageFragment extends WINGFragment {
 
 	@Override
 	public boolean passReceived(Received r) {
-		final String msgStr = r.DataToString();
 		mActivity.runOnUiThread(new Runnable() {
             public void run() {
             	updateButtonState();
-                TextView tv = (TextView) mParentView.findViewById(R.id.inMsgLabel);
-                if (msgStr != null && msgStr.length() > 0) {
-                    tv.setText(msgStr);
-                }
             }
         });
 		return false;
