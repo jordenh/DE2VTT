@@ -1,5 +1,7 @@
 package org.ubc.de2vtt.token;
 
+import java.util.List;
+
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,28 +9,25 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-public class ImageAdapter extends BaseAdapter {
+public class TokenImageAdapter extends BaseAdapter {
     private Context mContext;
-    private TokenManager tokMan = TokenManager.getSharedInstance();
+    private List<Token> tokens;
 
-    public ImageAdapter(Context c) {
+    public TokenImageAdapter(Context c, List<Token> l) {
         mContext = c;
-        mThumbIds = new Integer[tokMan.sizeLocal()];
-        for (int i = 0; i < tokMan.sizeLocal(); i++) {
-        	mThumbIds[i] = Integer.valueOf(tokMan.getLocalKey(i));
-		}
+        tokens = l;
     }
 
     public int getCount() {
-        return mThumbIds.length;
+        return tokens.size();
     }
 
     public Object getItem(int position) {
-        return tokMan.getLocal(mThumbIds[position].intValue());
+        return tokens.get(position);
     }
 
     public long getItemId(int position) {
-        return mThumbIds[position].intValue();
+        return tokens.get(position).getId();
     }
 
     // create a new ImageView for each item referenced by the Adapter
@@ -43,11 +42,8 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         
-        Token tok = tokMan.getLocal(mThumbIds[position].intValue());
+        Token tok = tokens.get(position);
         imageView.setImageBitmap(tok.getBitmap());
         return imageView;
     }
-
-    // references to our images
-    private Integer[] mThumbIds;
 }

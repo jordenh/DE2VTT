@@ -155,44 +155,7 @@ public class Token {
 	}
 	
 	public Bitmap getBitmap() {
-		if (bmp != null) {
-			return bmp;
-		}
-		
-		if (!local) {
-			
-		}
-		
-		if (picturePath == null) {
-			Log.e(TAG, "Can't get a bitmap before it is setup.");
-			throw new BitmapNotSetupException();
-		} else {
-			BitmapDecoder dec = new BitmapDecoder();
-			dec.execute(picturePath);
-			try {
-				bmp = dec.get(3000, TimeUnit.MILLISECONDS);
-			} catch (InterruptedException e) {
-				Log.e(TAG, "Bitmap decode interrupted out.");
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			} catch (TimeoutException e) {
-				Log.e(TAG, "Bitmap decode timed out.");
-				e.printStackTrace();
-			} 
-			return bmp;
-		}
-	}
-	
-	private class BitmapDecoder extends AsyncTask<String, Integer, Bitmap> {
-
-		@Override
-		protected Bitmap doInBackground(String... params) {
-			Bitmap bmp = BitmapFactory.decodeFile(params[0]);
-			bmp = Bitmap.createScaledBitmap(bmp, 500, 500, false);
-			return bmp;
-		}
-		
+		return bmp;
 	}
 	
 	public void move(Received rcv) {

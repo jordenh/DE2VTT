@@ -1,9 +1,13 @@
 package org.ubc.de2vtt.fragments;
 
+import java.util.List;
+
 import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.token.ImageAdapter;
+import org.ubc.de2vtt.token.Token;
+import org.ubc.de2vtt.token.TokenImageAdapter;
 import org.ubc.de2vtt.token.TokenActivity;
+import org.ubc.de2vtt.token.TokenManager;
 import org.ubc.de2vtt.R;
 
 import android.app.Activity;
@@ -18,12 +22,12 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import android.widget.Toast;
 
-public class ManageTokenFragment extends WINGFragment {
+public class TokenManagerFragment extends WINGFragment {
 	private View mParentView;
 	private Activity mActivity;
 
     private GridView mGridView;
-    private ImageAdapter mImageAdapter;
+    private TokenImageAdapter mImageAdapter;
     
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,7 +36,9 @@ public class ManageTokenFragment extends WINGFragment {
 		mActivity = this.getActivity();
 		
 		mGridView = (GridView)mParentView.findViewById(R.id.gridview);
-		mImageAdapter = new ImageAdapter(this.mActivity);
+		TokenManager tm = TokenManager.getSharedInstance();
+		List<Token> l = tm.getList(); // TODO change back to local 
+		mImageAdapter = new TokenImageAdapter(this.mActivity, l);
 	    mGridView.setAdapter(mImageAdapter);
 		
 	    setupOnClickListeners();
@@ -48,7 +54,7 @@ public class ManageTokenFragment extends WINGFragment {
 			
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-				Toast.makeText(ManageTokenFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+				Toast.makeText(TokenManagerFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
 				
 				((MainActivity)mActivity).switchFragment(0);
 			}} ;
@@ -60,7 +66,7 @@ public class ManageTokenFragment extends WINGFragment {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
 				
-				Toast.makeText(ManageTokenFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+				Toast.makeText(TokenManagerFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
 				
 				Intent myIntent = new Intent(mActivity.getApplicationContext(), TokenActivity.class);
 

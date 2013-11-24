@@ -81,13 +81,16 @@ public class TableTopFragment extends WINGFragment {
 	}
 			
 	public static void setMap(Bitmap map) {
+		Bitmap scaledBitmap = Bitmap.createScaledBitmap(map, 260, 340, true);
+		
 		Matrix matrix = new Matrix();
 		matrix.postRotate(90);
-
-		Bitmap scaledBitmap = Bitmap.createScaledBitmap(map, map.getHeight(), map.getWidth(), true);
-		Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
 		
-		mBitmap = rotatedBitmap;
+		Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, 
+				scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+		scaledBitmap = Bitmap.createScaledBitmap(rotatedBitmap, 240, 260, true);
+		
+		mBitmap = scaledBitmap;
 	}
 
 	@Override

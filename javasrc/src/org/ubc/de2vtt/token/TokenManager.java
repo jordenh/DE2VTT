@@ -116,8 +116,14 @@ public class TokenManager {
 			Token toMove = localTokenList.get(tok.getId());
 			toMove.move(tok.getX(), tok.getY());
 		} else {
-			remoteTokenList.remove(tok.getId());
-			remoteTokenList.append(tok.getId(), tok);
+			if (remoteTokenList.get(tok.getId()) == null) {
+				// Token being added
+				add(tok);
+			}
+			else {
+				// Token being moved
+				remoteTokenList.put(tok.getId(), tok);
+			}
 		}
 	}
 	
@@ -145,10 +151,30 @@ public class TokenManager {
 		return remoteTokenList.get(i);
 	}
 	
+	/**
+	 * 
+	 * @return list of ALL tokens
+	 */
 	public List<Token> getList() {
 		List<Token> l = new ArrayList<Token>();
 		
 		addElementsToList(localTokenList, l);
+		addElementsToList(remoteTokenList, l);
+		
+		return l;
+	}
+	
+	public List<Token> getLocalList() {
+		List<Token> l = new ArrayList<Token>();
+		
+		addElementsToList(localTokenList, l);
+		
+		return l;
+	}
+	
+	public List<Token> getRemoteList() {
+		List<Token> l = new ArrayList<Token>();
+		
 		addElementsToList(remoteTokenList, l);
 		
 		return l;

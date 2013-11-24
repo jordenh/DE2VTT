@@ -209,7 +209,7 @@ public class MainActivity extends Activity {
 				fragment = new TableTopFragment();
 				break;
 			case ManageTokenFragDrawerId:
-				fragment = new ManageTokenFragment();
+				fragment = new TokenManagerFragment();
 				break;
 			case GameConfigFragDrawerId:
 				fragment = new GameConfigFragment();
@@ -269,7 +269,7 @@ public class MainActivity extends Activity {
 				t = new Token(rcv);
 				tm.add(t);		
 				
-				if (activeFragment instanceof ManageTokenFragment) {
+				if (activeFragment instanceof TokenManagerFragment) {
 					// signal fragment that there is a new token
 					activeFragment.passReceived(rcv);
 				}
@@ -310,6 +310,7 @@ public class MainActivity extends Activity {
 				Log.v(TAG, "Receiving a map.");
 				Bitmap bmp = rcv.DataToBitmap();
 				TableTopFragment.setMap(bmp);
+				break;
 			case GET_DM_ID:
 				Log.v(TAG, "Updating DM id");
 				
