@@ -99,7 +99,7 @@ public class DieRollFragment extends WINGFragment {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				Log.v(TAG, "item selected :" + arg2);
-				Toast.makeText(mActivity, "item selected :" + arg2 + ";", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(mActivity, "item selected :" + arg2 + ";", Toast.LENGTH_SHORT).show();
 				mRollValue.setText("1");
 				
 				mRollValue.setBackgroundResource(mDiePictureIds[arg2]);

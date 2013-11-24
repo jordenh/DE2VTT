@@ -13,9 +13,9 @@ public class ImageAdapter extends BaseAdapter {
 
     public ImageAdapter(Context c) {
         mContext = c;
-        mThumbIds = new Integer[tokMan.size()];
-        for (int i = 0; i < tokMan.size(); i++) {
-        	mThumbIds[i] = Integer.valueOf(tokMan.getKey(i));
+        mThumbIds = new Integer[tokMan.sizeLocal()];
+        for (int i = 0; i < tokMan.sizeLocal(); i++) {
+        	mThumbIds[i] = Integer.valueOf(tokMan.getLocalKey(i));
 		}
     }
 
@@ -24,7 +24,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public Object getItem(int position) {
-        return tokMan.get(mThumbIds[position].intValue());
+        return tokMan.getLocal(mThumbIds[position].intValue());
     }
 
     public long getItemId(int position) {
@@ -43,7 +43,7 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         
-        Token tok = tokMan.get(mThumbIds[position].intValue());
+        Token tok = tokMan.getLocal(mThumbIds[position].intValue());
         imageView.setImageBitmap(tok.getBitmap());
         return imageView;
     }

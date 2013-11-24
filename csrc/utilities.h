@@ -2,6 +2,8 @@
 #ifndef UTILITIES_H_
 #define UTILITIES_H_
 
+#define MAX_TOKENS 100
+
 typedef enum command{
 	CONNECT,
 	DISCONNECT,
