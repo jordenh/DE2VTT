@@ -220,8 +220,11 @@ void sendMessage(msg * sendMsg){
 	int i;
 	unsigned char msgLen[4];
 
-	if(sendMsg->buffer == NULL || uart == NULL){
-		printf("Error in sendMessage, buffer or uart is null!");
+	if(sendMsg->buffer == NULL) {
+		printf("Error in sendMessage, buffer is null!");
+		return;
+	} else if(uart == NULL) {
+		printf("Error in sendMessage, uart is null!");
 		return;
 	}
 
@@ -243,6 +246,28 @@ void sendMessage(msg * sendMsg){
 	fwrite(sendMsg->buffer, sizeof(char), sendMsg->len, uart);
 
 	fflush(uart);
+}
+
+void sendAllUsersDMID(char dmID) {
+	msg * rspnsMsg;
+	rspnsMsg = malloc(sizeof(msg));
+	rspnsMsg->androidID = 0;
+	rspnsMsg->buffer = malloc(sizeof(char));
+	*(rspnsMsg->buffer) = dmID;
+	rspnsMsg->cmd = GET_DM_ID;
+	rspnsMsg->len = 1;
+
+	int i;
+
+	for(i = 0; i < NUM_USERS; i++) {
+		if(connUserIDs[i] != 0) {
+			rspnsMsg->androidID = connUserIDs[i];
+			sendMessage(rspnsMsg);
+		}
+	}
+
+	free(rspnsMsg->buffer);
+	free(rspnsMsg);
 }
 
 void passMsg(msg * passMsg) {
