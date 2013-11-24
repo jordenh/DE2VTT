@@ -5,6 +5,8 @@
 #include "message.h"
 #include "utilities.h"
 
+#define REMOVEALLVAL -1
+
 typedef struct token {
 	BMP bmp;
 	unsigned int x;
@@ -33,6 +35,6 @@ msg * createResponsesMsg(msg * initialMsg, token * curTok);
 
 void alertUsersOfTokenInfo(msg * currentMsg, int tokenID);
 
-void removeTokensOfOneUser(msg * currentMsg);
+void removeTokensOfOneUser(msg * currentMsg, int tokenID);
 
 #endif /* TOKEN_H_ */

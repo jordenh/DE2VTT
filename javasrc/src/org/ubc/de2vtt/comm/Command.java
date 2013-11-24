@@ -15,7 +15,8 @@ public enum Command {
 	UPDATE_ALIAS((byte)9),
 	OUTPUT_TOKEN_INFO((byte)10),
 	REMOVE_ALL_TOKEN((byte)11),
-	REMOVE_TOKEN((byte)12)
+	REMOVE_TOKEN((byte)12),
+	GET_DM_ID((byte)13)
 	;
 	
 	public byte code;
@@ -54,6 +55,8 @@ public enum Command {
 			return REMOVE_ALL_TOKEN;
 		case (byte) 12:
 			return REMOVE_TOKEN;
+		case (byte) 13:
+			return GET_DM_ID;
 		default:
 			throw new InvalidCommandException();
 		}
