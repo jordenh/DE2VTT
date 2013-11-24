@@ -90,19 +90,16 @@ public class TableTopFragment extends WINGFragment {
 		
 		@Override
 		protected Void doInBackground(Bitmap... params) {
-			//Bitmap scaledBitmap = Bitmap.createScaledBitmap(params[0], 260, 340, true);
-			
 			Bitmap b = params[0];
 			
 			Matrix matrix = new Matrix();
 			matrix.postRotate(90);
 			float sx = (float) (340.0 / (float)b.getWidth());
-			float sy = (float) (260.0 / (float)b.getHeight());
+			float sy = (float) (240.0 / (float)b.getHeight());
 			matrix.preScale(sy, sx);
 			
 			Bitmap rotatedBitmap = Bitmap.createBitmap(b , 0, 0, 
-					340, 260, matrix, true);
-			//scaledBitmap = Bitmap.createScaledBitmap(rotatedBitmap, 340, 260, true);
+					340, 240, matrix, true);
 			
 			mBitmap = rotatedBitmap;
 			return null;
