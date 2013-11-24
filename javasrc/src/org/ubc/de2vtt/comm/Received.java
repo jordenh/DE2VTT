@@ -118,10 +118,11 @@ public class Received implements Sendable {
 				arr[i / 2] = 0xFF000000 | (r << 16) | (g << 8) | b;
 			}
 			
-			Bitmap bmp = Bitmap.createBitmap(arr, 260, 340, Bitmap.Config.RGB_565);	
+			Bitmap bmp = Bitmap.createBitmap(arr, 340, 260, Bitmap.Config.RGB_565);	
 			
 //			Bitmap bmp = Bitmap.createBitmap(340,  260, Bitmap.Config.RGB_565);
 //			ByteBuffer bb = new MappedByteBuffer();
+			//Bitmap b = Bitmap.createScaledBitmap(bmp, dstWidth, dstHeight, filter)
 
 			
 			return bmp;

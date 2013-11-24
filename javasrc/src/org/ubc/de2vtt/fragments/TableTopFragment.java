@@ -9,6 +9,7 @@ import org.ubc.de2vtt.token.TokenManager;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -81,16 +82,27 @@ public class TableTopFragment extends WINGFragment {
 	}
 			
 	public static void setMap(Bitmap map) {
-		Bitmap scaledBitmap = Bitmap.createScaledBitmap(map, 260, 340, true);
+		MapSetter m = new MapSetter();
+		m.execute(map);
+	}
+	
+	private static class MapSetter extends AsyncTask<Bitmap, Void, Void> {
 		
-		Matrix matrix = new Matrix();
-		matrix.postRotate(90);
+		@Override
+		protected Void doInBackground(Bitmap... params) {
+			Bitmap scaledBitmap = Bitmap.createScaledBitmap(params[0], 260, 340, true);
+			
+			Matrix matrix = new Matrix();
+			matrix.postRotate(90);
+			
+			Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, 
+					260, 340, matrix, true);
+			//scaledBitmap = Bitmap.createScaledBitmap(rotatedBitmap, 340, 260, true);
+			
+			mBitmap = rotatedBitmap;
+			return null;
+		}
 		
-		Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, 
-				scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-		scaledBitmap = Bitmap.createScaledBitmap(rotatedBitmap, 240, 260, true);
-		
-		mBitmap = scaledBitmap;
 	}
 
 	@Override

@@ -55,6 +55,7 @@ public class TokenManager {
 	
 	public void remove(Token tok) {
 		localTokenList.remove(tok.getId());
+		remoteTokenList.remove(tok.getId());
 	}
 	
 	public void resetTokenManager() {
