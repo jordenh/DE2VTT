@@ -12,6 +12,9 @@
 #define NUM_USERS 5
 #define MAX_ALIAS_SIZE 40
 
+//extern token tokenArr[MAX_TOKENS];
+extern int loadedTokenCnt;
+
 struct message {
 	unsigned int androidID;
 	unsigned int len;
@@ -36,11 +39,15 @@ void alertUserAllUsers(msg * currentMsg);
 
 void alertUsersOfUserDC(msg * currentMsg);
 
+void alertUsersOfTokenInfo(msg * currentMsg, int tokenID);
+
 void clearUserInfo(msg * currentMsg);
 
 void getMessage(msg * inMsg);
 
 void sendMessage(msg * sendMsg);
+
+void sendAllUsersDMID(char dmID);
 
 void passMsg(msg * passMsg);
 

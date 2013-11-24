@@ -35,24 +35,38 @@ public class UserManager {
         	return Integer.toString(id);
         }
         
+        public boolean isIDValid(int id) {
+        	for (User u : user) {
+        		if (u.getID() == id) {
+        			return true;
+        		}
+        	}
+        	return false;
+        }
+        
         public User getAtIndex(int i) {
-                return user.get(i);
+            return user.get(i);
         }
         
         public int count() {
-                return user.size();
+            return user.size();
         }
         
         public void removeAtIndex(int index) {
-                user.remove(index);
+            user.remove(index);
         }
         
         public void remove(User u) {
-                user.remove(u);
+            user.remove(u);
+        }
+        
+        public void resetUserManager() {
+        	user = new ArrayList<User>();
+            user.add(new User(0, "Table"));
         }
         
         public void add(User u) {
-                user.add(u);
+            user.add(u);
         }
         
         public void handleUpdateAlias(Received rcv) {
@@ -60,7 +74,7 @@ public class UserManager {
         	if (data.length == 0) {
         		//Do nothing - erroneous data transmission
         		return;
-        	}else if (data.length == 1) {
+        	}else if (data[1] == 0) {
         		//Disconnecting this device ID - remove from user List
         		int ID = data[0];
         		Log.v(TAG, "handlingUpdateAlias - removing user");

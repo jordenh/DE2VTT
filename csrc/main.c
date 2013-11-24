@@ -14,62 +14,62 @@
 #include "sys/alt_irq.h"
 
 int init() {
-	if (openSdCard() == -1) {
-		printf("Error: Failed to open sd card\n");
-		return -1;
-	} else {
-		printf("Opened SD card\n");
-	}
+        if (openSdCard() == -1) {
+                printf("Error: Failed to open sd card\n");
+                return -1;
+        } else {
+                printf("Opened SD card\n");
+        }
 
-	initVga();
-	setupAudio();
-	setupMessage();
-	initTokens();
+        initVga();
+        setupAudio();
+        setupMessage();
+        initTokens();
 
-	initHardwareTimer();
+        initHardwareTimer();
 
-	return 0;
+        return 0;
 }
 
 int main() {
-	msg msg_m;
-	msg_m.buffer = NULL;
-	int statusInt;
+        msg msg_m;
+        msg_m.buffer = NULL;
+        int statusInt;
 
-	if (init() == -1)
-		return -1;
+        if (init() == -1)
+                return -1;
 
-	//startHardwareTimer();
+        //startHardwareTimer();
 
-	while (1) {
-		if(msg_m.buffer != NULL) {
-			free(msg_m.buffer);
-			msg_m.buffer = NULL;
-		}
+        while (1) {
+                if(msg_m.buffer != NULL) {
+                        free(msg_m.buffer);
+                        msg_m.buffer = NULL;
+                }
 
-		drawUserIDs(); // -- continue this! TBD - currently broken...
+                drawUserIDs(); // -- continue this! TBD - currently broken...
 
-		printf("Obtaining message\n");
-		getMessage(&msg_m);
+                printf("Obtaining message\n");
+                getMessage(&msg_m);
 
-		printf("Executing message command\n");
-		statusInt = executeCmd(&msg_m);
+                printf("Executing message command\n");
+                statusInt = executeCmd(&msg_m);
 
-		if(statusInt == -1) {
-			printf("error occurred in executing Command.\n");
-		} else {
-			printf("Completed message command\n");
-		}
+                if(statusInt == -1) {
+                        printf("error occurred in executing Command.\n");
+                } else {
+                        printf("Completed message command\n");
+                }
 
-		/*if (hasHardwareTimerExpired() == 1) {
-			startHardwareTimer();
+                /*if (hasHardwareTimerExpired() == 1) {
+                        startHardwareTimer();
 
-			handleKeyInput();
-			handleSwitchInput();
-			//playEpicMusic();
-			//Check if message to receive?
-		}*/
-	}
+                        handleKeyInput();
+                        handleSwitchInput();
+                        //playEpicMusic();
+                        //Check if message to receive?
+                }*/
+        }
 
-	return 0;
+        return 0;
 }

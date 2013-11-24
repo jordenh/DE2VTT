@@ -2,10 +2,14 @@ package org.ubc.de2vtt.token;
 
 import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.R;
+import org.ubc.de2vtt.comm.Command;
+import org.ubc.de2vtt.comm.Message;
+import org.ubc.de2vtt.comm.Messenger;
+import org.ubc.de2vtt.comm.sendables.SendableRemoveToken;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 public class TokenActivity extends Activity {
 	private Token mToken;
 	private TokenManager tokMan = TokenManager.getSharedInstance();
+	private Messenger mMessenger = Messenger.GetSharedInstance();
 	
 	private ImageView mTokenImage;
 	private TextView mTokenID;
@@ -33,7 +38,7 @@ public class TokenActivity extends Activity {
 		Intent current = getIntent();
         Bundle b = current.getExtras();
         if (b != null) {
-        	mToken = tokMan.get(b.getInt("token_id"));
+        	mToken = tokMan.getLocal(b.getInt("token_id"));
         	
         	mTokenImage = (ImageView) findViewById(R.id.tokenImage);
         	mTokenImage.setImageBitmap(mToken.getBitmap());
@@ -63,6 +68,7 @@ public class TokenActivity extends Activity {
 		Button editSaveBtn = (Button)findViewById(R.id.btnEditSave);
 		Button cancelBtn = (Button)findViewById(R.id.btnCancel);
 		Button tableTopBtn = (Button)findViewById(R.id.btnViewTableTop);
+		Button deleteBtn = (Button)findViewById(R.id.btnDelete);
 		
 		// Listener to listen for short clicks on the buttons within the grid
 		// this should take the user to the tabletop view of their token
@@ -103,10 +109,25 @@ public class TokenActivity extends Activity {
 				myIntent.putExtra("fragment_sel", 0);
 				startActivity(myIntent);
 			}};
+			
+		OnClickListener deleteTokenListener = new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				//delete token from DE2 and android
+				Message msg = new Message(Command.REMOVE_TOKEN, new SendableRemoveToken(mToken.getId()));
+				mMessenger.send(msg);
+				tokMan.remove(mToken);
+				
+				Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+				myIntent.putExtra("fragment_sel", 1);
+				startActivity(myIntent);
+			}};
 		
 		editSaveBtn.setOnClickListener(editSaveBtnListener);
 		cancelBtn.setOnClickListener(cancelBtnListener);
 		tableTopBtn.setOnClickListener(tableTopBtnListener);
+		deleteBtn.setOnClickListener(deleteTokenListener);
 	}
 
 }

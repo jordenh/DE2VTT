@@ -46,10 +46,7 @@ public class TableTopFragment extends WINGFragment {
 			public void onGlobalLayout() {
 				final int fragmentWidth = mParentView.findViewById(R.id.tabletop).getWidth();
 				if (fragmentWidth != 0){
-					for (int i = 0; i < tokMan.size(); i++) {
-						int id = tokMan.getKey(i);
-						Token tok = tokMan.get(id);
-
+					for (Token tok : tokMan.getList()) {
 						final ImageView tokenImageView = new ImageView(mActivity);
 						tokenImageView.setImageBitmap(tok.getBitmap());
 						tok.setImageView(tokenImageView);

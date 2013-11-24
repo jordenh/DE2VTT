@@ -1,11 +1,16 @@
 package org.ubc.de2vtt;
 
+import java.util.Locale;
+
 import org.ubc.de2vtt.bulletin.Bulletin;
 import org.ubc.de2vtt.bulletin.BulletinManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Mailbox;
+import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.sendables.SendableNull;
+import org.ubc.de2vtt.comm.sendables.SendableString;
 import org.ubc.de2vtt.fragments.*;
 import org.ubc.de2vtt.fragments.WINGFragment.FragDrawerId;
 import org.ubc.de2vtt.notifications.notifications;
@@ -73,8 +78,11 @@ public class MainActivity extends Activity {
 		Mailbox.getSharedInstance(this);
 		
 		// Attempt to connect
-		Messenger.GetSharedInstance();
+		Messenger messenger = Messenger.GetSharedInstance();
 		
+		Message msg = new Message(Command.GET_DM_ID, SendableNull.GetSharedInstance());
+        
+		messenger.send(msg);
 	}
 
 	private void setupDrawerList() {
@@ -140,7 +148,7 @@ public class MainActivity extends Activity {
         
         Intent intent = getIntent();
         try{
-            String action = intent.getAction().toUpperCase();
+            String action = intent.getAction().toUpperCase(Locale.CANADA);
             Log.v(TAG, "OnCreate: intent action" + action);
 
             if(action != null){
@@ -243,8 +251,8 @@ public class MainActivity extends Activity {
 		Bulletin b;
 		
 		switch (rcv.getCommand()) {
-			case MOVE_TOKEN:
-				Log.v(TAG, "Moving token.");
+			case OUTPUT_TOKEN_INFO:
+				Log.v(TAG, "Moving other player's token.");
 				tm = TokenManager.getSharedInstance();
 				t = new Token(rcv);
 				tm.move(t);
@@ -267,6 +275,17 @@ public class MainActivity extends Activity {
 				}
 				
 				break;
+			case REMOVE_TOKEN:
+				Log.v(TAG, "Removing token.");
+				tm = TokenManager.getSharedInstance();
+				t = new Token(rcv);
+				tm.remove(t);
+				
+				if (activeFragment instanceof TableTopFragment) {
+					activeFragment.passReceived(null);
+				}
+				
+				break;
 			case PASS_MSG:
 				Log.v(TAG, "Receiving a bulletin.");
 				bm = BulletinManager.getSharedInstance();
@@ -286,6 +305,26 @@ public class MainActivity extends Activity {
 				Log.v(TAG, "Updating Alias List.");
 				UserManager um = UserManager.getSharedInstance();
 				um.handleUpdateAlias(rcv);
+				break;
+			case GET_DM_ID:
+				Log.v(TAG, "Updating DM id");
+				
+				byte[] data = rcv.getData();
+				
+				if (data.length == 1) {
+					int dmID = data[0];
+					Toast.makeText(this, "dm id :" + dmID, Toast.LENGTH_SHORT).show();
+					SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
+					man.putInt(GameConfigFragment.SHARED_PREFS_DM_ID, dmID);
+					
+					if (activeFragment instanceof GameConfigFragment) {
+						// Notify of new bulletin
+						activeFragment.passReceived(rcv);
+					}
+				} else {
+					Log.v(TAG, "Unable to update DMID");
+				}
+				
 				break;
 			default:
 				// signal active fragment

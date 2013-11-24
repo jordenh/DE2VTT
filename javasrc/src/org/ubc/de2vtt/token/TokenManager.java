@@ -1,7 +1,9 @@
 package org.ubc.de2vtt.token;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
@@ -15,7 +17,8 @@ public class TokenManager {
 	private static final String TOKENS_KEY = "tokens";
 	
 	static TokenManager sharedInstance;
-	private SparseArray<Token> tokenList;
+	private SparseArray<Token> localTokenList;
+	private SparseArray<Token> remoteTokenList;
 	private Queue<Bitmap> sendBmps;
 	
 	public static TokenManager getSharedInstance() {
@@ -26,19 +29,31 @@ public class TokenManager {
 	}
 	
 	protected TokenManager() {
-		tokenList = new SparseArray<Token>();
+		localTokenList = new SparseArray<Token>();
+		remoteTokenList = new SparseArray<Token>();
 		sendBmps = new LinkedList<Bitmap>();
 	}
 	
 	public void add(Token tok) {
-		if (!sendBmps.isEmpty()) {
-			tok.setBmp(sendBmps.remove());
+		if (tok.isLocal()) {
+			if (!sendBmps.isEmpty()) {
+				tok.setBmp(sendBmps.remove());
+			}
+			localTokenList.append(tok.getId(), tok);
+		} else {
+			// TODO: set token's bitmap
+			remoteTokenList.append(tok.getId(), tok);
 		}
-		tokenList.append(tok.getId(), tok);
 	}
 	
 	public void remove(Token tok) {
-		tokenList.remove(tok.getId());
+		localTokenList.remove(tok.getId());
+	}
+	
+	public void resetTokenManager() {
+		localTokenList = new SparseArray<Token>();
+		remoteTokenList = new SparseArray<Token>();
+		sendBmps = new LinkedList<Bitmap>();
 	}
 	
 	public void save() {
@@ -57,9 +72,9 @@ public class TokenManager {
 			Set<String> s = new HashSet<String>();
 			int key = 0;
 			
-			for (int i = 0; i < tokenList.size(); i++) {
-				key = tokenList.keyAt(i);
-				Token t = tokenList.get(key);
+			for (int i = 0; i < localTokenList.size(); i++) {
+				key = localTokenList.keyAt(i);
+				Token t = localTokenList.get(key);
 				s.add(t.encode());
 			}
 			
@@ -82,7 +97,7 @@ public class TokenManager {
 			String[] tokens = (String[]) s.toArray();
 			for (int i = 0; i < tokens.length; i++) {
 				Token t = new Token(tokens[i]);
-				tokenList.append(t.getId(), t);
+				localTokenList.append(t.getId(), t);
 			}
 			return null;
 		}
@@ -90,19 +105,53 @@ public class TokenManager {
 	
 	// NOTE: token received from DE2 can be used to move a token, no need for a move object
 	public void move(Token tok) {
-		Token toMove = tokenList.get(tok.getId());
-		toMove.move(tok.getX(), tok.getY());
+		if (tok.isLocal()) {
+			Token toMove = localTokenList.get(tok.getId());
+			toMove.move(tok.getX(), tok.getY());
+		} else {
+			remoteTokenList.remove(tok.getId());
+			remoteTokenList.append(tok.getId(), tok);
+		}
 	}
 	
-	public int size() {
-		return tokenList.size();
+	public int sizeLocal() {
+		return localTokenList.size();
 	}
 	
-	public int getKey(int i) {
-		return tokenList.keyAt(i);
+	public int sizeAll() {
+		return localTokenList.size() + remoteTokenList.size();
 	}
 	
-	public Token get(int i) {
-		return tokenList.get(i);
+	public int getLocalKey(int i) {
+		return localTokenList.keyAt(i);
+	}
+	
+	public Token getLocal(int i) {
+		return localTokenList.get(i);
+	}
+	
+	public int getRemoteKey(int i) {
+		return remoteTokenList.keyAt(i);
+	}
+	
+	public Token getRemote(int i) {
+		return remoteTokenList.get(i);
+	}
+	
+	public List<Token> getList() {
+		List<Token> l = new ArrayList<Token>();
+		
+		addElementsToList(localTokenList, l);
+		addElementsToList(remoteTokenList, l);
+		
+		return l;
+	}
+	
+	private void addElementsToList(SparseArray<Token> a, List<Token> l) {
+		for (int i = 0; i < a.size(); i++) {
+			int key = a.keyAt(i);
+			Token t = a.get(key);
+			l.add(t);
+		}
 	}
 }
