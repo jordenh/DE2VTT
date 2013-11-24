@@ -4,8 +4,10 @@ import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Mailbox;
+import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.sendables.SendableNull;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -99,6 +101,11 @@ public class ConnectionFragment extends WINGFragment {
 			});
 		  }
 		}, 1501);
+		
+		SendableNull sendNull = SendableNull.GetSharedInstance();
+		Message msg = new Message(Command.HANDSHAKE, sendNull);
+		
+		mMessenger.send(msg);
 	}
 	
 	public void sendMessage() {		

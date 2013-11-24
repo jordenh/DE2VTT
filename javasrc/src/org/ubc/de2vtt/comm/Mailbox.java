@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.ubc.de2vtt.Disconnect;
 import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.comm.receivers.RepeatingReceiver;
 import org.ubc.de2vtt.exceptions.InvalidCommandException;
@@ -72,6 +73,8 @@ public class Mailbox extends AsyncTask<Void, Void, Void> {
 	
 	public void kill(Activity a) {
 		kill();
+		Disconnect.removeSessionData(); 
+		Log.v(TAG, "Disconnect code hit");
 		activityHandle = (MainActivity)a;
 	}
 	

@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Received;
-import org.ubc.de2vtt.exceptions.IncorrectCommandDatumExpression;
+import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
 
 public class Bulletin {
 	private int senderID;
@@ -12,7 +12,7 @@ public class Bulletin {
 	
 	public Bulletin(Received rcv) {
 		if (rcv.getCommand() != Command.PASS_MSG) {
-			throw new IncorrectCommandDatumExpression();
+			throw new IncorrectCommandDatumException();
 		}
 		
 		byte[] data = rcv.getData();

@@ -44,10 +44,10 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
             v.setLayoutParams(params);
             break;
         case MotionEvent.ACTION_UP:
-        	y = mFragmentWidth - params.leftMargin - params.width;
-        	x = params.topMargin;
+        	float y_ratio = ((float) (mFragmentWidth - params.leftMargin - params.width))/((float) mFragmentWidth);
+        	float x_ratio = ((float) params.topMargin)/((float) mFragmentHeight);
             
-        	mTok.move(x,y);
+        	mTok.move(x_ratio,y_ratio);
         	break;
         default:
         	break;

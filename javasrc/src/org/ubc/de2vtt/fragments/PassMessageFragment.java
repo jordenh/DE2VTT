@@ -22,7 +22,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 public class PassMessageFragment extends WINGFragment {
 	private static final String TAG = PassMessageFragment.class.getSimpleName();	
@@ -39,7 +38,6 @@ public class PassMessageFragment extends WINGFragment {
 		setupSpinner();
 		setupOnClickListeners();
 
-		//receiver = new SingleReceiver(new ConnectionFragmentReceiveTask());
 		updateButtonState();
 		
 		mActivity = this.getActivity();
@@ -110,7 +108,7 @@ public class PassMessageFragment extends WINGFragment {
 	
 	public void passMsg() {
 		EditText et = (EditText)mParentView.findViewById(R.id.sendMsg);
-		Spinner sp = (Spinner)mParentView.findViewById(R.id.rcvrSpinner); // TODO: - need to make this msg string concatonation correct.
+		Spinner sp = (Spinner)mParentView.findViewById(R.id.rcvrSpinner); 
 		String msg = "\0";  
 		msg += et.getText().toString() + '\0';
 		
@@ -123,14 +121,9 @@ public class PassMessageFragment extends WINGFragment {
 
 	@Override
 	public boolean passReceived(Received r) {
-		final String msgStr = r.DataToString();
 		mActivity.runOnUiThread(new Runnable() {
             public void run() {
             	updateButtonState();
-                TextView tv = (TextView) mParentView.findViewById(R.id.inMsgLabel);
-                if (msgStr != null && msgStr.length() > 0) {
-                    tv.setText(msgStr);
-                }
             }
         });
 		return false;
