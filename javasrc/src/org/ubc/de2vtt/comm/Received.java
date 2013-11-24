@@ -124,7 +124,6 @@ public class Received implements Sendable {
 //			ByteBuffer bb = new MappedByteBuffer();
 			//Bitmap b = Bitmap.createScaledBitmap(bmp, dstWidth, dstHeight, filter)
 
-			
 			return bmp;
 		} else {
 			throw new IncorrectCommandDatumException();

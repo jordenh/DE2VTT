@@ -181,9 +181,8 @@ void getMessage(msg * inMsg){
 		inMsg->len += (0xFF & msgLen[i]) << i*8;
 	}
 
-	printf("About to receive %d characters:\n", inMsg->len);
-
 	inMsg->cmd = (unsigned int) fgetc(uart);
+	printf("About to receive %d characters, from cmd %d:\n", inMsg->len, inMsg->cmd);
 
 	int tmp;
 	inMsg->buffer = malloc(inMsg->len * sizeof(char));

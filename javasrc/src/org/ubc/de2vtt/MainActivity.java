@@ -263,6 +263,7 @@ public class MainActivity extends Activity {
 				}
 				
 				break;
+				
 			case SEND_TOKEN:
 				Log.v(TAG, "Receiving token.");
 				tm = TokenManager.getSharedInstance();
@@ -275,6 +276,7 @@ public class MainActivity extends Activity {
 				}
 				
 				break;
+				
 			case REMOVE_TOKEN:
 				Log.v(TAG, "Removing token.");
 				tm = TokenManager.getSharedInstance();
@@ -301,16 +303,19 @@ public class MainActivity extends Activity {
 				}
 				
 				break;
+				
 			case UPDATE_ALIAS:
 				Log.v(TAG, "Updating Alias List.");
 				UserManager um = UserManager.getSharedInstance();
 				um.handleUpdateAlias(rcv);
 				break;
+
 			case SEND_MAP:
 				Log.v(TAG, "Receiving a map.");
 				Bitmap bmp = rcv.DataToBitmap();
 				TableTopFragment.setMap(bmp);
 				break;
+
 			case GET_DM_ID:
 				Log.v(TAG, "Updating DM id");
 				
@@ -329,8 +334,9 @@ public class MainActivity extends Activity {
 				} else {
 					Log.v(TAG, "Unable to update DMID");
 				}
-				
+
 				break;
+				
 			default:
 				// signal active fragment
 				if (!activeFragment.passReceived(rcv)) {
