@@ -36,23 +36,28 @@ public class UserManager {
         }
         
         public User getAtIndex(int i) {
-                return user.get(i);
+            return user.get(i);
         }
         
         public int count() {
-                return user.size();
+            return user.size();
         }
         
         public void removeAtIndex(int index) {
-                user.remove(index);
+            user.remove(index);
         }
         
         public void remove(User u) {
-                user.remove(u);
+            user.remove(u);
+        }
+        
+        public void resetUserManager() {
+        	user = new ArrayList<User>();
+            user.add(new User(0, "Table"));
         }
         
         public void add(User u) {
-                user.add(u);
+            user.add(u);
         }
         
         public void handleUpdateAlias(Received rcv) {

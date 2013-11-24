@@ -57,6 +57,12 @@ public class TokenManager {
 		localTokenList.remove(tok.getId());
 	}
 	
+	public void resetTokenManager() {
+		localTokenList = new SparseArray<Token>();
+		remoteTokenList = new SparseArray<Token>();
+		sendBmps = new LinkedList<Bitmap>();
+	}
+	
 	public void save() {
 		new TokenSave().execute();
 	}

@@ -202,6 +202,7 @@ void getMessage(msg * inMsg){
 			updateConnUserAlias(inMsg);
 			alertUsersNewUser(inMsg); //alert current users of new user
 			alertUserAllUsers(inMsg); //alert new user of all current users
+			alertUserOfAllTokens(inMsg); //alert new user of all active tokens
 		}
 	}
 

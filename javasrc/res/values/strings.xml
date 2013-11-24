@@ -22,6 +22,7 @@
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_edit">Edit</string>
+    <string name="button_delete">Delete</string>
 
     <!-- Connection Fragment -->
     <string name="connect">Connect</string>

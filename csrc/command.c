@@ -95,7 +95,7 @@ int executeCmd(msg * currentMsg) {
 	case DISCONNECT_DEV:
 		printf("In DISCONNECT_DEV\n");
 		alertUsersOfUserDC(currentMsg); // removes their alias
-		removeTokensOfOneUser(currentMsg); // removes all references to DC'd players tokens from all other users.
+		removeTokensOfOneUser(currentMsg, REMOVEALLVAL); // removes all references to DC'd players tokens from all other users.
 		removeTokenFromUser(currentMsg->androidID);
 		clearUserInfo(currentMsg);
 		alt_up_char_buffer_clear(char_buffer); // refresh buffer.
@@ -104,6 +104,7 @@ int executeCmd(msg * currentMsg) {
 	case REMOVE_TOKEN:
 		printf("In Remove_Token");
 		byteInfo = *(currentMsg->buffer); // first byte in buffer is Token_ID;
+		removeTokensOfOneUser(currentMsg, byteInfo);
 		removeToken(byteInfo);
 		break;
 

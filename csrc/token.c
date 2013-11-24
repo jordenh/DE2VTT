@@ -145,13 +145,8 @@ void alertUsersOfTokenInfo(msg * currentMsg, int tokenID) {
 	alertMsg.buffer = malloc(sizeof(char) * 6);
 	alertMsg.buffer[0] = tokenID; // TokenID
 	alertMsg.buffer[1] = currentMsg->androidID; // Owner of Token's ID
-	if(((command)currentMsg->cmd == REMOVE_TOKEN) || ((command)currentMsg->cmd == DISCONNECT_DEV)) {
-		printf("In alertUsersOfTokenInfo, setting x/y to remove code\n");
-		alertMsg.buffer[2] = (unsigned char)'\0xFF'; // Error code
-		alertMsg.buffer[3] = (unsigned char)'\0xFF';
-		alertMsg.buffer[4] = (unsigned char)'\0xFF';
-		alertMsg.buffer[5] = (unsigned char)'\0xFF';
-	} else if((command)currentMsg->cmd == SEND_TOKEN) {
+
+	if((command)currentMsg->cmd == SEND_TOKEN) {
 		printf("In alertUsersOfTokenInfo, setting x/y to initial vals\n");
 		alertMsg.buffer[2] = 0; //Initial x,y = 0,0
 		alertMsg.buffer[3] = 0;
@@ -175,23 +170,70 @@ void alertUsersOfTokenInfo(msg * currentMsg, int tokenID) {
 	free(alertMsg.buffer);
 }
 
+//send all currently active Token information to a new user
+void alertUserOfAllTokens(msg * currentMsg) {
+	int i;
+
+	msg alertMsg;
+	alertMsg.androidID = currentMsg->androidID; //send back to the user who is joining WING
+	alertMsg.cmd = (unsigned int)OUTPUT_TOKEN_INFO;
+	alertMsg.len = 6;
+
+	//This maps the token ID, owner ID, and x,y of the token that was moved, to the correct
+	//buffer location for the message to be sent out.
+	alertMsg.buffer = malloc(sizeof(char) * 6);
+
+	alertMsg.buffer[1] = currentMsg->androidID; // Owner of Token's ID
+
+	for(i = 0; i < MAX_TOKENS; i++) {
+		if(tokenArr[i].tokenID != 0) {
+			alertMsg.buffer[0] = tokenArr[i].tokenID; // TokenID
+			alertMsg.buffer[2] = (unsigned char)(tokenArr[i].x / 255); // Token x1
+			alertMsg.buffer[3] = (unsigned char)(tokenArr[i].x % 255); // Token x0
+			alertMsg.buffer[4] = (unsigned char)(tokenArr[i].y / 255); // Token y1
+			alertMsg.buffer[5] = (unsigned char)(tokenArr[i].y % 255); // Token y0
+
+			printf("in alertUserOfAllTokens - sending to id %d about token %d\n", alertMsg.androidID, tokenArr[i].tokenID);
+			sendMessage(&alertMsg);
+		}
+	}
+	free(alertMsg.buffer);
+}
+
 //notify all other users that tokens of one user should be removed.
-void removeTokensOfOneUser(msg * currentMsg) {
+//If tokenIDRemove == -1, then removes all tokens, else removes only tokenID
+void removeTokensOfOneUser(msg * currentMsg, int tokenID) {
 	int i,j;
+
+	msg alertMsg;
+	alertMsg.androidID = 0;
+	alertMsg.cmd = (unsigned int)REMOVE_TOKEN;
+	alertMsg.len = 6;
+
+	//This maps the token ID, owner ID, and mock x,y of the token that was moved, to the correct
+	//buffer location for the message to be sent out.
+	alertMsg.buffer = malloc(sizeof(char) * 6);
+	alertMsg.buffer[1] = currentMsg->androidID; // Owner of Token's ID
+
 	for(i = 0; i < NUM_USERS; i++) {
 		if((currentMsg->androidID != connUserIDs[i]) && (connUserIDs[i] != 0)) {
 			printf("in removeTokensOfOneUser - sending to id %d about removal of tokens from %d\n", connUserIDs[i], currentMsg->androidID);
+			alertMsg.androidID = connUserIDs[i];
 
 			//alert user of all of the tokens to be removed.
 			for(j = 0; j < MAX_TOKENS; j++) {
-				printf("O-ID:%d,", tokenArr[j].ownerID);
+				alertMsg.buffer[0] = tokenArr[j].tokenID;
+
 				if(tokenArr[j].ownerID == currentMsg->androidID) {
-					printf("\nremoving  %d's token %d", tokenArr[j].ownerID, tokenArr[j].tokenID);
-					alertUsersOfTokenInfo(currentMsg, tokenArr[j].tokenID);
+					if(tokenID == -1 || tokenID == tokenArr[j].tokenID) {
+						printf("removing  %d's token %d\n", tokenArr[j].ownerID, tokenArr[j].tokenID);
+						sendMessage(&alertMsg);
+					}
 				}
 			}
 		}
 	}
+	free(alertMsg.buffer);
 }
 
 
