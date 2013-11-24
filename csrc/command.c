@@ -71,7 +71,10 @@ int executeCmd(msg * currentMsg) {
 		break;
 	case RELEASE_DM:
 		printf("In release_dm\n");
-		dmID = 0;
+		if (dmID == currentMsg->androidID)
+		{
+			dmID = 0;
+		}
 
 		sendAllUsersDMID(dmID);
 

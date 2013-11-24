@@ -35,6 +35,15 @@ public class UserManager {
         	return Integer.toString(id);
         }
         
+        public boolean isIDValid(int id) {
+        	for (User u : user) {
+        		if (u.getID() == id) {
+        			return true;
+        		}
+        	}
+        	return false;
+        }
+        
         public User getAtIndex(int i) {
                 return user.get(i);
         }

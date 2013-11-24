@@ -1,11 +1,13 @@
 package org.ubc.de2vtt.fragments;
 
 import org.ubc.de2vtt.R;
+import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableNull;
+import org.ubc.de2vtt.users.UserManager;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -25,22 +27,29 @@ public class GameConfigFragment extends WINGFragment {
 	protected View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
+	private SharedPreferencesManager prefMan = SharedPreferencesManager.getSharedInstance();
 	
 	private Button mUpdateAliasBtn;
-	private Button mGetDMBtn;
-	private Button mReleaseDMBtn;
+    private Button mGetDMBtn;
+    private Button mReleaseDMBtn;
+	private TextView mDMName;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mParentView = inflater.inflate(R.layout.fragment_gameconfig,  container, false);
 	
+		Messenger messenger = Messenger.GetSharedInstance();
+		Message msg = new Message(Command.GET_DM_ID, SendableNull.GetSharedInstance());
+		messenger.send(msg);
+		
 		mUpdateAliasBtn = (Button)mParentView.findViewById(R.id.btnUpdateAlias);
-		mGetDMBtn = (Button)mParentView.findViewById(R.id.btnGetDM);
-		mReleaseDMBtn  = (Button) mParentView.findViewById(R.id.btnReleaseDM);
+        mGetDMBtn = (Button)mParentView.findViewById(R.id.btnGetDM);
+        mReleaseDMBtn  = (Button) mParentView.findViewById(R.id.btnReleaseDM);
+		mDMName = (TextView)mParentView.findViewById(R.id.dmName);
 		
 		setupOnClickListeners();
 
-		updateButtonState();
+		updateButtonAndFieldState();
 		
 		mActivity = this.getActivity();
 		
@@ -78,14 +87,40 @@ public class GameConfigFragment extends WINGFragment {
 		});
 	}
 	
-	private void updateButtonState() {
+	private void updateButtonAndFieldState() {
 		boolean canSend = Messenger.readyToSend();
 		
 		mUpdateAliasBtn.setEnabled(canSend);
-		//mGetDMBtn.setEnabled(canSend);
-		//mReleaseDMBtn.setEnabled(canSend);
+		mGetDMBtn.setEnabled(canSend);
+		mReleaseDMBtn.setEnabled(canSend);
+		
+		int dmId = prefMan.getInt(GameConfigFragment.SHARED_PREFS_DM_ID, 0);
+		Log.v(TAG, "dm id:" + dmId);
+		
+		// check to see who is dm
+		
+		if (dmId == 0) {
+			// no one is dm
+			mDMName.setText(R.string.dm_name);
+			mGetDMBtn.setVisibility(View.VISIBLE);
+			mReleaseDMBtn.setVisibility(View.GONE);
+		} else {
+			// check to see if the user is dm
+			UserManager usrMan = UserManager.getSharedInstance();
+			if (usrMan.isIDValid(dmId)) {
+				// User is within the manager therefore it is a different player
+				mDMName.setText(usrMan.getAliasWithID(dmId));
+				mGetDMBtn.setVisibility(View.VISIBLE);
+				mGetDMBtn.setEnabled(false);
+				mReleaseDMBtn.setVisibility(View.GONE);
+			} else {
+				// you are the dm
+				mDMName.setText("You are the DM");
+				mGetDMBtn.setVisibility(View.GONE);
+				mReleaseDMBtn.setVisibility(View.VISIBLE);
+			}
+		}
 	}
-	
 	
 	public void passMsg() {
 		EditText et = (EditText)mParentView.findViewById(R.id.aliasString);
@@ -100,14 +135,9 @@ public class GameConfigFragment extends WINGFragment {
 	
 	@Override
 	public boolean passReceived(Received r) {
-		final String msgStr = r.DataToString();
 		mActivity.runOnUiThread(new Runnable() {
             public void run() {
-            	updateButtonState();
-                TextView tv = (TextView) mParentView.findViewById(R.id.inMsgLabel);
-                if (msgStr != null && msgStr.length() > 0) {
-                    tv.setText(msgStr);
-                }
+            	updateButtonAndFieldState();
             }
         });
 		return false;

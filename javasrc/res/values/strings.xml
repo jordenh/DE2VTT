@@ -56,6 +56,8 @@
     <!-- Game Config Fragment -->
     <string name="button_update_alias">Update Alias</string>
     <string name="in_alias">Input a new Alias</string>
+    <string name="dm_title">Dungeon Master:</string>
+    <string name="dm_name"></string>
     <string name="button_getDM">Become the DM</string>
     <string name="button_releaseDM">Release DM Privileges</string>
     

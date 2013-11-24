@@ -76,7 +76,11 @@ public class MainActivity extends Activity {
 		Mailbox.getSharedInstance(this);
 		
 		// Attempt to connect
-		Messenger.GetSharedInstance();
+		Messenger messenger = Messenger.GetSharedInstance();
+		
+		Message msg = new Message(Command.GET_DM_ID, SendableNull.GetSharedInstance());
+        
+		messenger.send(msg);
 	}
 
 	private void setupDrawerList() {
@@ -299,6 +303,11 @@ public class MainActivity extends Activity {
 					Toast.makeText(this, "dm id :" + dmID, Toast.LENGTH_SHORT).show();
 					SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
 					man.putInt(GameConfigFragment.SHARED_PREFS_DM_ID, dmID);
+					
+					if (activeFragment instanceof GameConfigFragment) {
+						// Notify of new bulletin
+						activeFragment.passReceived(rcv);
+					}
 				} else {
 					Log.v(TAG, "Unable to update DMID");
 				}
