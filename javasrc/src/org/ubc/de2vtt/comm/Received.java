@@ -92,6 +92,12 @@ public class Received implements Sendable {
 		}
 	}
 	
+	public int DataToInt() {
+		ByteBuffer wrapped = ByteBuffer.wrap(data);
+		
+		return wrapped.getInt();
+	}
+	
 	public Bitmap DataToBitmap() {
 		if (cmd == Command.SEND_MAP) {
 //			BitmapFactory.Options opt = new BitmapFactory.Options();
