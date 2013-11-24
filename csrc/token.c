@@ -193,8 +193,7 @@ void alertUserOfAllTokens(msg * currentMsg) {
 			alertMsg.buffer[4] = (unsigned char)(tokenArr[i].y / 255); // Token y1
 			alertMsg.buffer[5] = (unsigned char)(tokenArr[i].y % 255); // Token y0
 
-			printf("in alertUserOfAllTokens - sending to id %d about movement of %d's token\n", connUserIDs[i], currentMsg->androidID);
-			alertMsg.androidID = connUserIDs[i];
+			printf("in alertUserOfAllTokens - sending to id %d about token %d\n", alertMsg.androidID, tokenArr[i].tokenID);
 			sendMessage(&alertMsg);
 		}
 	}
