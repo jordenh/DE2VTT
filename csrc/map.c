@@ -26,6 +26,12 @@ void partialMapReDraw(int x, int y, int width, int height) {
 				drawPixelFast(x+j, y+i, color);
 			}
 		}
+	} else {
+		for(i = 0; i < height; i++) {
+			for(j = 0; j < width; j++) {
+				drawPixelFast(x+j, y+i, 0);
+			}
+		}
 	}
 }
 
