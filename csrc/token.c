@@ -150,7 +150,7 @@ void alertUsersOfTokenInfo(msg * currentMsg, int tokenID) {
 		alertMsg.buffer[2] = (unsigned char)'\0xFF'; // Error code
 		alertMsg.buffer[3] = (unsigned char)'\0xFF';
 		alertMsg.buffer[4] = (unsigned char)'\0xFF';
-		alertMsg.buffer[5] = (unsigned char)'\0xFF';
+		alertMsg.buffer[5] = (unsigned char)'\0xFF';  //TBD REMOVE!!!
 	} else if((command)currentMsg->cmd == SEND_TOKEN) {
 		printf("In alertUsersOfTokenInfo, setting x/y to initial vals\n");
 		alertMsg.buffer[2] = 0; //Initial x,y = 0,0
@@ -176,22 +176,39 @@ void alertUsersOfTokenInfo(msg * currentMsg, int tokenID) {
 }
 
 //notify all other users that tokens of one user should be removed.
-void removeTokensOfOneUser(msg * currentMsg) {
+//If tokenIDRemove == -1, then removes all tokens, else removes only tokenID
+void removeTokensOfOneUser(msg * currentMsg, int tokenID) {
 	int i,j;
+
+	msg alertMsg;
+	alertMsg.androidID = 0;
+	alertMsg.cmd = (unsigned int)REMOVE_TOKEN;
+	alertMsg.len = 6;
+
+	//This maps the token ID, owner ID, and mock x,y of the token that was moved, to the correct
+	//buffer location for the message to be sent out.
+	alertMsg.buffer = malloc(sizeof(char) * 6);
+	alertMsg.buffer[1] = currentMsg->androidID; // Owner of Token's ID
+
 	for(i = 0; i < NUM_USERS; i++) {
 		if((currentMsg->androidID != connUserIDs[i]) && (connUserIDs[i] != 0)) {
 			printf("in removeTokensOfOneUser - sending to id %d about removal of tokens from %d\n", connUserIDs[i], currentMsg->androidID);
+			alertMsg.androidID = connUserIDs[i];
 
 			//alert user of all of the tokens to be removed.
 			for(j = 0; j < MAX_TOKENS; j++) {
-				printf("O-ID:%d,", tokenArr[j].ownerID);
+				alertMsg.buffer[0] = tokenArr[j].tokenID;
+
 				if(tokenArr[j].ownerID == currentMsg->androidID) {
-					printf("\nremoving  %d's token %d", tokenArr[j].ownerID, tokenArr[j].tokenID);
-					alertUsersOfTokenInfo(currentMsg, tokenArr[j].tokenID);
+					if(tokenID == -1 || tokenID == tokenArr[j].tokenID) {
+						printf("removing  %d's token %d\n", tokenArr[j].ownerID, tokenArr[j].tokenID);
+						sendMessage(&alertMsg);
+					}
 				}
 			}
 		}
 	}
+	free(alertMsg.buffer);
 }
 
 
