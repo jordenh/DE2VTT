@@ -15,6 +15,7 @@ import org.ubc.de2vtt.fragments.*;
 import org.ubc.de2vtt.notifications.notifications;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
+import org.ubc.de2vtt.users.DMManager;
 import org.ubc.de2vtt.users.UserManager;
 
 import android.app.Activity;
@@ -209,7 +210,7 @@ public class MainActivity extends Activity {
 				fragment = new TableTopFragment();
 				break;
 			case ManageTokenFragDrawerId:
-				fragment = new ManageTokenFragment();
+				fragment = new TokenManagerFragment();
 				break;
 			case GameConfigFragDrawerId:
 				fragment = new GameConfigFragment();
@@ -248,6 +249,7 @@ public class MainActivity extends Activity {
 		Token t;
 		TokenManager tm;
 		BulletinManager bm;
+		DMManager dmm;
 		Bulletin b;
 		
 		switch (rcv.getCommand()) {
@@ -263,18 +265,20 @@ public class MainActivity extends Activity {
 				}
 				
 				break;
+				
 			case SEND_TOKEN:
 				Log.v(TAG, "Receiving token.");
 				tm = TokenManager.getSharedInstance();
 				t = new Token(rcv);
 				tm.add(t);		
 				
-				if (activeFragment instanceof ManageTokenFragment) {
+				if (activeFragment instanceof TokenManagerFragment) {
 					// signal fragment that there is a new token
 					activeFragment.passReceived(rcv);
 				}
 				
 				break;
+				
 			case REMOVE_TOKEN:
 				Log.v(TAG, "Removing token.");
 				tm = TokenManager.getSharedInstance();
@@ -301,10 +305,13 @@ public class MainActivity extends Activity {
 				}
 				
 				break;
+				
 			case UPDATE_ALIAS:
 				Log.v(TAG, "Updating Alias List.");
 				UserManager um = UserManager.getSharedInstance();
+				dmm = DMManager.getSharedInstance();
 				um.handleUpdateAlias(rcv);
+				dmm.updateDMAlias();
 				break;
 
 			case SEND_MAP:
@@ -312,25 +319,18 @@ public class MainActivity extends Activity {
 				Bitmap bmp = rcv.DataToBitmap();
 				TableTopFragment.setMap(bmp);
 				break;
-				
+
 			case GET_DM_ID:
 				Log.v(TAG, "Updating DM id");
 				
-				byte[] data = rcv.getData();
+				dmm = DMManager.getSharedInstance();
+				dmm.handleGetDMId(rcv);
 				
-				if (data.length == 1) {
-					int dmID = data[0];
-					Toast.makeText(this, "dm id :" + dmID, Toast.LENGTH_SHORT).show();
-					SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
-					man.putInt(GameConfigFragment.SHARED_PREFS_DM_ID, dmID);
-					
-					if (activeFragment instanceof GameConfigFragment) {
-						// Notify of new bulletin
-						activeFragment.passReceived(rcv);
-					}
-				} else {
-					Log.v(TAG, "Unable to update DMID");
+				if (activeFragment instanceof GameConfigFragment) {
+					// Notify of new bulletin
+					activeFragment.passReceived(rcv);
 				}
+
 				break;
 				
 			default:

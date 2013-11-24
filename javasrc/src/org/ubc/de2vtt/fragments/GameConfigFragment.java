@@ -7,6 +7,7 @@ import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableNull;
+import org.ubc.de2vtt.users.DMManager;
 import org.ubc.de2vtt.users.UserManager;
 
 import android.app.Activity;
@@ -22,12 +23,11 @@ import android.widget.TextView;
 
 public class GameConfigFragment extends WINGFragment {	
 	private static final String TAG = GameConfigFragment.class.getSimpleName();
-	public static final String SHARED_PREFS_DM_ID = "dm_id";	
 	
 	protected View mParentView;
 	private Activity mActivity;
 	private Messenger mMessenger = Messenger.GetSharedInstance();
-	private SharedPreferencesManager prefMan = SharedPreferencesManager.getSharedInstance();
+	private DMManager mDMMan = DMManager.getSharedInstance();
 	
 	private Button mUpdateAliasBtn;
     private Button mGetDMBtn;
@@ -94,32 +94,20 @@ public class GameConfigFragment extends WINGFragment {
 		mGetDMBtn.setEnabled(canSend);
 		mReleaseDMBtn.setEnabled(canSend);
 		
-		int dmId = prefMan.getInt(GameConfigFragment.SHARED_PREFS_DM_ID, 0);
-		Log.v(TAG, "dm id:" + dmId);
-		
-		// check to see who is dm
-		
-		if (dmId == 0) {
-			// no one is dm
-			mDMName.setText(R.string.dm_name);
+		if (mDMMan.isDMAvailable()) {
 			mGetDMBtn.setVisibility(View.VISIBLE);
-			mReleaseDMBtn.setVisibility(View.GONE);
 		} else {
-			// check to see if the user is dm
-			UserManager usrMan = UserManager.getSharedInstance();
-			if (usrMan.isIDValid(dmId)) {
-				// User is within the manager therefore it is a different player
-				mDMName.setText(usrMan.getAliasWithID(dmId));
-				mGetDMBtn.setVisibility(View.VISIBLE);
-				mGetDMBtn.setEnabled(false);
-				mReleaseDMBtn.setVisibility(View.GONE);
-			} else {
-				// you are the dm
-				mDMName.setText("You are the DM");
-				mGetDMBtn.setVisibility(View.GONE);
-				mReleaseDMBtn.setVisibility(View.VISIBLE);
-			}
+			mGetDMBtn.setVisibility(View.VISIBLE);
+			mGetDMBtn.setEnabled(false);
 		}
+		
+		if (mDMMan.isUserDM()) {
+			mReleaseDMBtn.setVisibility(View.VISIBLE);
+		} else {
+			mReleaseDMBtn.setVisibility(View.GONE);
+		}
+		
+		mDMName.setText(mDMMan.getDMAlias());
 	}
 	
 	public void passMsg() {
