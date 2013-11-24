@@ -45,27 +45,25 @@ public class TableTopFragment extends WINGFragment {
 			@Override
 			public void onGlobalLayout() {
 				final int fragmentWidth = mParentView.findViewById(R.id.tabletop).getWidth();
+				final int fragmentHeight = mParentView.findViewById(R.id.tabletop).getHeight();
+				
+				final int tokenWidth = fragmentWidth/12;
+				final int tokenHeight = fragmentHeight/17;
+				
 				if (fragmentWidth != 0){
 					for (Token tok : tokMan.getList()) {
 						final ImageView tokenImageView = new ImageView(mActivity);
 						
-						Matrix matrix = new Matrix();
-						matrix.postRotate(90);
-						
-						Bitmap bmp = tok.getBitmap();
-						Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmp.getHeight(), bmp.getWidth(), true);
-						Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-						tokenImageView.setImageBitmap(rotatedBitmap);
-						
+						tokenImageView.setImageBitmap(rotateBitmap(tok.getBitmap()));
 						tok.setImageView(tokenImageView);
 
-						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(40, 40);
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(tokenWidth, tokenHeight);
 						params.leftMargin = fragmentWidth - tok.getY() - params.width;
 						params.topMargin = tok.getX();
 						tokenImageView.setLayoutParams(params);
 						mLayout.addView(tokenImageView);
 						
-						tokenImageView.setOnTouchListener(new TableTopOnTouchListener());
+						tokenImageView.setOnTouchListener(new TableTopOnTouchListener(tok, fragmentWidth, fragmentHeight));
 					}
 					
 					getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -81,13 +79,7 @@ public class TableTopFragment extends WINGFragment {
 	}
 			
 	public static void setMap(Bitmap map) {
-		Matrix matrix = new Matrix();
-		matrix.postRotate(90);
-
-		Bitmap scaledBitmap = Bitmap.createScaledBitmap(map, map.getHeight(), map.getWidth(), true);
-		Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-		
-		mBitmap = rotatedBitmap;
+		mBitmap = rotateBitmap(map);
 	}
 
 	@Override
@@ -95,5 +87,15 @@ public class TableTopFragment extends WINGFragment {
 		// TODO Move token
 		//mAdapter.notifyDataSetChanged(); // hopefully this will move things
 		return true;
+	}
+	
+	private static Bitmap rotateBitmap(Bitmap bmp) {
+		Matrix matrix = new Matrix();
+		matrix.postRotate(90);
+
+		Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmp.getHeight(), bmp.getWidth(), true);
+		Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+		
+		return rotatedBitmap;
 	}
 }

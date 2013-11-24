@@ -6,6 +6,8 @@ import java.util.concurrent.TimeoutException;
 
 import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.comm.Command;
+import org.ubc.de2vtt.comm.Message;
+import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.exceptions.BitmapNotSetupException;
@@ -98,16 +100,6 @@ public class Token {
 		return (int) (arr[index] << 8 | arr[index + 1]);
 	}
 	
-//	public Token(String tokName, Bitmap bitmap)
-//	{
-//		id = count++;
-//		name = NAME_PREFIX + id;
-//		x = 0;
-//		y = 0;
-//		bmp = bitmap;
-//		picturePath = null;
-//	}
-	
 	public SendableMove getSendable() {
 		return new SendableMove(tokenID, x, y);
 	}
@@ -198,7 +190,11 @@ public class Token {
 	public void move(int x, int y) {
 		this.x = x;
 		this.y = y;
-		// send?
+		
+		SendableMove mv = new SendableMove(tokenID, 20*(x/17), 20*(y/12));
+		Messenger m = Messenger.GetSharedInstance();
+		Message msg = new Message(Command.MOVE_TOKEN, mv);
+		m.send(msg);
 	}
 	
 	public void setName(String name) {
