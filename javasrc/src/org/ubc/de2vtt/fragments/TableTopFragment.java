@@ -48,7 +48,15 @@ public class TableTopFragment extends WINGFragment {
 				if (fragmentWidth != 0){
 					for (Token tok : tokMan.getList()) {
 						final ImageView tokenImageView = new ImageView(mActivity);
-						tokenImageView.setImageBitmap(tok.getBitmap());
+						
+						Matrix matrix = new Matrix();
+						matrix.postRotate(90);
+						
+						Bitmap bmp = tok.getBitmap();
+						Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmp.getHeight(), bmp.getWidth(), true);
+						Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+						tokenImageView.setImageBitmap(rotatedBitmap);
+						
 						tok.setImageView(tokenImageView);
 
 						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(40, 40);
