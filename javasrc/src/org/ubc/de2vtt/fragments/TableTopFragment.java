@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,33 +33,48 @@ public class TableTopFragment extends WINGFragment {
 		mActivity = this.getActivity();
 
 		mLayout = (RelativeLayout) mParentView.findViewById(R.id.tabletop);
-
+		
 		if (mBitmap != null) {
 			mMapView = (ImageView) mParentView.findViewById(R.id.MapView);
 			mMapView.setImageBitmap(mBitmap);
 			mMapView.setScaleType(ScaleType.FIT_XY);
 		}
 
-		for (int i = 0; i < tokMan.size(); i++) {
-			int id = tokMan.getKey(i);
-			Token tok = tokMan.get(id);
-			
-			final ImageView tokenImageView = new ImageView(mActivity);
-			tokenImageView.setImageBitmap(tok.getBitmap());
-			
-			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(40, 40);
-			params.topMargin = tok.getX();
-			params.rightMargin = tok.getY();
-			mLayout.addView(tokenImageView, params);
-			
-			tokenImageView.setOnTouchListener(new TableTopOnTouchListener());
-		}
+		final ViewTreeObserver vto = mParentView.findViewById(R.id.tabletop).getViewTreeObserver();
+		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				final int fragmentWidth = mParentView.findViewById(R.id.tabletop).getWidth();
+				if (fragmentWidth != 0){
+					for (int i = 0; i < tokMan.size(); i++) {
+						int id = tokMan.getKey(i);
+						Token tok = tokMan.get(id);
 
+						final ImageView tokenImageView = new ImageView(mActivity);
+						tokenImageView.setImageBitmap(tok.getBitmap());
+						tok.setImageView(tokenImageView);
+
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(40, 40);
+						params.leftMargin = fragmentWidth - tok.getY() - params.width;
+						params.topMargin = tok.getX();
+						tokenImageView.setLayoutParams(params);
+						mLayout.addView(tokenImageView);
+						
+						tokenImageView.setOnTouchListener(new TableTopOnTouchListener());
+					}
+					
+					getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
+				}
+
+			}
+
+		});
+		
 		//setAcceptedCommands(new Command[0]);
 
 		return mParentView;
 	}
-	
+			
 	public static void setMap(Bitmap map) {
 		Matrix matrix = new Matrix();
 		matrix.postRotate(90);

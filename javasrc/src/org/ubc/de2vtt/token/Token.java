@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.ImageView;
 
 public class Token {
 	private static final String TAG = Token.class.getSimpleName();
@@ -38,6 +39,7 @@ public class Token {
 	private String name;
 	private String picturePath;
 	private Bitmap bmp;
+	private ImageView mImgView;
 	
 	public Token(Received rcv) {
 		// Check command
@@ -189,5 +191,13 @@ public class Token {
 	
 	public int getId() {
 		return id;
+	}
+	
+	public void setImageView(ImageView v) {
+		mImgView = v;
+	}
+	
+	public ImageView getImageView() {
+		return mImgView;
 	}
 }
