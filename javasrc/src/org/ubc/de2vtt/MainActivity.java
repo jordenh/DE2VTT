@@ -1,5 +1,7 @@
 package org.ubc.de2vtt;
 
+import java.util.Locale;
+
 import org.ubc.de2vtt.bulletin.Bulletin;
 import org.ubc.de2vtt.bulletin.BulletinManager;
 import org.ubc.de2vtt.comm.Command;
@@ -140,7 +142,7 @@ public class MainActivity extends Activity {
         
         Intent intent = getIntent();
         try{
-            String action = intent.getAction().toUpperCase();
+            String action = intent.getAction().toUpperCase(Locale.CANADA);
             Log.v(TAG, "OnCreate: intent action" + action);
 
             if(action != null){
@@ -243,8 +245,8 @@ public class MainActivity extends Activity {
 		Bulletin b;
 		
 		switch (rcv.getCommand()) {
-			case MOVE_TOKEN:
-				Log.v(TAG, "Moving token.");
+			case OUTPUT_TOKEN_INFO:
+				Log.v(TAG, "Moving other player's token.");
 				tm = TokenManager.getSharedInstance();
 				t = new Token(rcv);
 				tm.move(t);
@@ -264,6 +266,17 @@ public class MainActivity extends Activity {
 				if (activeFragment instanceof ManageTokenFragment) {
 					// signal fragment that there is a new token
 					activeFragment.passReceived(rcv);
+				}
+				
+				break;
+			case REMOVE_TOKEN:
+				Log.v(TAG, "Removing token.");
+				tm = TokenManager.getSharedInstance();
+				t = new Token(rcv);
+				tm.remove(t);
+				
+				if (activeFragment instanceof TableTopFragment) {
+					activeFragment.passReceived(null);
 				}
 				
 				break;

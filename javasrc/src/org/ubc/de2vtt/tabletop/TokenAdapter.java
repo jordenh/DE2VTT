@@ -1,5 +1,8 @@
 package org.ubc.de2vtt.tabletop;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
@@ -19,39 +22,31 @@ public class TokenAdapter extends BaseAdapter {
 	private static final int blackId = R.drawable.black;
 	
 	private Context mContext;
-	private Integer[] mThumbIds = new Integer[width*height];
-	private boolean[] isBlack = new boolean[width*height];
+	private ArrayList<Integer> mThumbIds = new ArrayList<Integer>();
+	private ArrayList<Boolean> isBlack = new ArrayList<Boolean>();
 	private TokenManager tokMan = TokenManager.getSharedInstance();
 	
     public TokenAdapter(Context c) {
         mContext = c;
         
-        for (int i = 0; i < isBlack.length; i++) {
-        	isBlack[i] = true;
-        }
-        
-        int id, cell;
+        Integer id;
         Token tok;
         
-        for (int i = 0; i < tokMan.size(); i++) {
-        	id = tokMan.getKey(i);
-        	tok = tokMan.get(id);
+        for (int i = 0; i < tokMan.sizeLocal(); i++) {
+        	id = tokMan.getLocalKey(i);
+        	tok = tokMan.getLocal(id);
         	
-        	cell = tok.getX() + width*tok.getY();
-        	
-        	if (isBlack[cell]) {
-        		isBlack[cell] = false;
-        		mThumbIds[cell] = Integer.valueOf(id);
-        	}
+    		isBlack.add(Boolean.valueOf(true));
+    		mThumbIds.add(Integer.valueOf(id));
 		}
     }
 
     public int getCount() {
-        return mThumbIds.length;
+        return mThumbIds.size();
     }
 
     public Object getItem(int position) {
-        return mThumbIds[position];
+        return mThumbIds.get(position);
     }
 
     public long getItemId(int position) {
@@ -60,20 +55,20 @@ public class TokenAdapter extends BaseAdapter {
     
     public void swapThumbnails(int pos1, int pos2)
     {
-    	if ((mThumbIds.length <= pos1) || (pos1 < 0)) {
+    	if ((mThumbIds.size() <= pos1) || (pos1 < 0)) {
     		return;
-    	} else if ((mThumbIds.length <= pos2) || (pos2 < 0)) {
+    	} else if ((mThumbIds.size() <= pos2) || (pos2 < 0)) {
     		return;
     	}
     	
-    	Integer tmpInt = mThumbIds[pos1];
-    	boolean tmpBool = isBlack[pos1];
+    	Integer tmpInt = mThumbIds.get(pos1);
+    	Boolean tmpBool = isBlack.get(pos1);
     	
-    	mThumbIds[pos1] = mThumbIds[pos2];
-    	isBlack[pos1] = isBlack[pos2];
+    	mThumbIds.set(pos1, mThumbIds.get(pos2));
+    	isBlack.set(pos1, isBlack.get(pos2));
     	
-    	mThumbIds[pos2] = tmpInt;
-    	isBlack[pos2] = tmpBool;
+    	mThumbIds.set(pos2, tmpInt);
+    	isBlack.set(pos2, tmpBool);
     }	
 
     // create a new ImageView for each item referenced by the Adapter
@@ -87,14 +82,14 @@ public class TokenAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-       if (isBlack[position]) {
+       if (isBlack.get(position)) {
         	imageView.setImageResource(blackId);
        } else {
-    	   if(mThumbIds[position] == null){
+    	   if(mThumbIds.get(position) == null){
     		   Log.d(TAG,"THUMBNAILS AT " + position + " IS NULL BROTHER");
     	   }
     		
-    	   Token tok = tokMan.get(mThumbIds[position].intValue());
+    	   Token tok = tokMan.getLocal(mThumbIds.get(position).intValue());
            imageView.setImageBitmap(tok.getBitmap());
        }
        

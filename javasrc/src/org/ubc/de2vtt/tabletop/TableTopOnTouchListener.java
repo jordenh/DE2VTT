@@ -1,5 +1,7 @@
 package org.ubc.de2vtt.tabletop;
 
+import java.util.List;
+
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
@@ -33,18 +35,16 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
 	public TableTopOnTouchListener()
 	{
 		super();
-		mTokPos = new int[mTokMan.size()];
+		mTokPos = new int[mTokMan.sizeLocal()];
 
-		int id, cell;
-		Token tok;
-
-		for (int i = 0; i < mTokMan.size(); i++) {
-			id = mTokMan.getKey(i);
-			tok = mTokMan.get(id);
-
-			cell = tok.getX() + width*tok.getY();
-
-			mTokPos[i] = cell;
+		int cell;
+		int i = 0;
+		
+		List<Token> l = mTokMan.getList();
+		
+		for (Token t : l) {
+			cell = t.getX() + width * t.getY();
+			mTokPos[i++] = cell;
 		}
 	}
 	
@@ -117,8 +117,8 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
 		Log.d(TAG, mTokPos[mTokIndex] + " drag to " + pos);
 	
 		// update the token itself
-		Token tok1 = mTokMan.get(mTokMan.getKey(mTokIndex));
-		tok1.move(pos%width, pos/width);
+		Token tok1 = mTokMan.getLocal(mTokMan.getLocalKey(mTokIndex)); // TODO: broken now, but apparently going away
+		tok1.move(pos % width, pos / width);
 		
 		Log.d(TAG, "Token now at (" + tok1.getX() + ", " + tok1.getY() + ")");
 	
@@ -127,7 +127,7 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
 		
 		if (res != -1)
 		{
-				Token tok2 = mTokMan.get(mTokMan.getKey(res));
+				Token tok2 = mTokMan.getLocal(mTokMan.getLocalKey(res));
 				srcImage.setImageBitmap(tok2.getBitmap());
 		}
 		
