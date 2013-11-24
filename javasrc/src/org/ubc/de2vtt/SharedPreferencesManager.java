@@ -47,6 +47,11 @@ public class SharedPreferencesManager {
 		return mEditor.commit();
 	}
 	
+	public boolean putBoolean(String key, boolean val) {
+		mEditor.putBoolean(key, val);
+		return mEditor.commit();
+	}
+	
 	/**
 	 * @return value in shared prefs matching key, otherwise defaultValue
 	 */
@@ -63,5 +68,9 @@ public class SharedPreferencesManager {
 	
 	public Set<String> getStringSet(String key) {
 		return mSharedPrefs.getStringSet(key, null);
+	}
+	
+	public boolean getBoolean(String key, boolean defaultVal) {
+		return mSharedPrefs.getBoolean(key, defaultVal);
 	}
 }

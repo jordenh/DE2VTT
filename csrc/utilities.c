@@ -1,5 +1,7 @@
 #include "utilities.h"
 
+char dmID = 0;
+
 char * IntToCharBuf(unsigned int inputInt, unsigned int numChars) {
 	char * charBuf = malloc(numChars * sizeof(char));
 	int i;

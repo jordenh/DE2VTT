@@ -8,7 +8,7 @@ public class SendableNull implements Sendable {
 	protected SendableNull() {	
 	}
 	
-	public SendableNull GetSharedInstance() {
+	public static SendableNull GetSharedInstance() {
 		if (instance == null) {
 			instance = new SendableNull();
 		}

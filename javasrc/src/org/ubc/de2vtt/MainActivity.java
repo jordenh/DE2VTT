@@ -6,8 +6,11 @@ import org.ubc.de2vtt.bulletin.Bulletin;
 import org.ubc.de2vtt.bulletin.BulletinManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Mailbox;
+import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
+import org.ubc.de2vtt.comm.sendables.SendableNull;
+import org.ubc.de2vtt.comm.sendables.SendableString;
 import org.ubc.de2vtt.fragments.*;
 import org.ubc.de2vtt.fragments.WINGFragment.FragDrawerId;
 import org.ubc.de2vtt.notifications.notifications;
@@ -75,8 +78,11 @@ public class MainActivity extends Activity {
 		Mailbox.getSharedInstance(this);
 		
 		// Attempt to connect
-		Messenger.GetSharedInstance();
+		Messenger messenger = Messenger.GetSharedInstance();
 		
+		Message msg = new Message(Command.GET_DM_ID, SendableNull.GetSharedInstance());
+        
+		messenger.send(msg);
 	}
 
 	private void setupDrawerList() {
@@ -299,6 +305,26 @@ public class MainActivity extends Activity {
 				Log.v(TAG, "Updating Alias List.");
 				UserManager um = UserManager.getSharedInstance();
 				um.handleUpdateAlias(rcv);
+				break;
+			case GET_DM_ID:
+				Log.v(TAG, "Updating DM id");
+				
+				byte[] data = rcv.getData();
+				
+				if (data.length == 1) {
+					int dmID = data[0];
+					Toast.makeText(this, "dm id :" + dmID, Toast.LENGTH_SHORT).show();
+					SharedPreferencesManager man = SharedPreferencesManager.getSharedInstance();
+					man.putInt(GameConfigFragment.SHARED_PREFS_DM_ID, dmID);
+					
+					if (activeFragment instanceof GameConfigFragment) {
+						// Notify of new bulletin
+						activeFragment.passReceived(rcv);
+					}
+				} else {
+					Log.v(TAG, "Unable to update DMID");
+				}
+				
 				break;
 			default:
 				// signal active fragment

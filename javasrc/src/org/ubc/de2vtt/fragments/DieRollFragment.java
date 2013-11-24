@@ -142,7 +142,6 @@ public class DieRollFragment extends WINGFragment {
 		
 		int pos = (int) mDieTypeSelector.getSelectedItemId();
 		Log.v(TAG, "item selected :" + pos);
-		Toast.makeText(mActivity, "item selected :" + pos, Toast.LENGTH_SHORT).show();
 		
 		int randomInt = 1 + randomGen.nextInt(mDieValues[pos]);
     	mRollValue.setText("" + randomInt);
