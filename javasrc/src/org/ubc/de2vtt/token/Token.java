@@ -5,11 +5,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.ubc.de2vtt.MainActivity;
-import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.exceptions.BitmapNotSetupException;
-import org.ubc.de2vtt.exceptions.IncorrectCommandDatumExpression;
+import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -64,9 +63,10 @@ public class Token {
 			playerID = (int) data[1];
 			x = 0;
 			y = 0;
+			local = false;
 			break;
 		default:
-			throw new IncorrectCommandDatumExpression();
+			throw new IncorrectCommandDatumException();
 		}
 		
 		name = NAME_PREFIX + count++;
@@ -107,6 +107,11 @@ public class Token {
 //		bmp = bitmap;
 //		picturePath = null;
 //	}
+	
+	
+	public int getPlayerID() {
+		return playerID;
+	}
 	
 	public SendableMove getSendable() {
 		return new SendableMove(tokenID, x, y);
@@ -150,40 +155,7 @@ public class Token {
 	}
 	
 	public Bitmap getBitmap() {
-		if (bmp != null) {
-			return bmp;
-		}
-		
-		if (picturePath == null) {
-			Log.e(TAG, "Can't get a bitmap before it is setup.");
-			throw new BitmapNotSetupException();
-		} else {
-			BitmapDecoder dec = new BitmapDecoder();
-			dec.execute(picturePath);
-			try {
-				bmp = dec.get(3000, TimeUnit.MILLISECONDS);
-			} catch (InterruptedException e) {
-				Log.e(TAG, "Bitmap decode interrupted out.");
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			} catch (TimeoutException e) {
-				Log.e(TAG, "Bitmap decode timed out.");
-				e.printStackTrace();
-			} 
-			return bmp;
-		}
-	}
-	
-	private class BitmapDecoder extends AsyncTask<String, Integer, Bitmap> {
-
-		@Override
-		protected Bitmap doInBackground(String... params) {
-			Bitmap bmp = BitmapFactory.decodeFile(params[0]);
-			bmp = Bitmap.createScaledBitmap(bmp, 500, 500, false);
-			return bmp;
-		}
-		
+		return bmp;
 	}
 	
 	public void move(Received rcv) {

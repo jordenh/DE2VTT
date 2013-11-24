@@ -9,6 +9,7 @@ import org.ubc.de2vtt.token.TokenManager;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -81,19 +82,42 @@ public class TableTopFragment extends WINGFragment {
 	}
 			
 	public static void setMap(Bitmap map) {
-		Matrix matrix = new Matrix();
-		matrix.postRotate(90);
-
-		Bitmap scaledBitmap = Bitmap.createScaledBitmap(map, map.getHeight(), map.getWidth(), true);
-		Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+		MapSetter m = new MapSetter();
+		m.execute(map);
+	}
+	
+	private static class MapSetter extends AsyncTask<Bitmap, Void, Void> {
 		
-		mBitmap = rotatedBitmap;
+		@Override
+		protected Void doInBackground(Bitmap... params) {
+			//Bitmap scaledBitmap = Bitmap.createScaledBitmap(params[0], 260, 340, true);
+			
+			Bitmap b = params[0];
+			
+			Matrix matrix = new Matrix();
+			matrix.postRotate(90);
+			float sx = (float) (340.0 / (float)b.getWidth());
+			float sy = (float) (260.0 / (float)b.getHeight());
+			matrix.preScale(sy, sx);
+			
+			Bitmap rotatedBitmap = Bitmap.createBitmap(b , 0, 0, 
+					340, 260, matrix, true);
+			//scaledBitmap = Bitmap.createScaledBitmap(rotatedBitmap, 340, 260, true);
+			
+			mBitmap = rotatedBitmap;
+			return null;
+		}
+		
 	}
 
 	@Override
 	public boolean passReceived(Received r) {
 		// TODO Move token
-		//mAdapter.notifyDataSetChanged(); // hopefully this will move things
+		
+		// update map
+		mMapView = (ImageView) mParentView.findViewById(R.id.MapView);
+		mMapView.setImageBitmap(mBitmap);
+		mMapView.setScaleType(ScaleType.FIT_XY);
 		return true;
 	}
 }

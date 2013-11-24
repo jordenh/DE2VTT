@@ -1,5 +1,6 @@
 package org.ubc.de2vtt.fragments;
 
+import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
@@ -9,11 +10,13 @@ import org.ubc.de2vtt.comm.sendables.SendableBitmap;
 import org.ubc.de2vtt.token.TokenManager;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -38,6 +41,7 @@ public class SendImageFragment extends WINGFragment {
 	private static final int REQUEST_CODE = 1;
 	private Bitmap bitmap;
 	private Uri selectedImage;
+	private ProgressDialog progress;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -160,6 +164,11 @@ public class SendImageFragment extends WINGFragment {
 		super.onActivityResult(requestCode, resultCode, data);
 		Log.v(TAG, "onActivityResult entered.");
 		if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && null != data) {
+			progress = new ProgressDialog(getActivity());
+			progress.setTitle("Loading");
+			progress.setMessage("Loading your image...");
+			progress.show();
+			
 			selectedImage = data.getData();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
 			Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
@@ -168,17 +177,35 @@ public class SendImageFragment extends WINGFragment {
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
-
-			bitmap = BitmapFactory.decodeFile(picturePath);
-			final Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
-
-			Log.v(TAG, "Setting image bmp");
+			
 			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
-			imageView.setImageBitmap(scaled);
-
-			updateButtonState();
+			imageView.setImageResource(R.drawable.black);
+			
+			ThumbnailSetter ts = new ThumbnailSetter();
+			ts.execute(picturePath);
 		}
 		Log.v(TAG, "onActivityResult finished.");
+	}
+	
+	private class ThumbnailSetter extends AsyncTask<String, Void, Bitmap> {
+		@Override
+		protected Bitmap doInBackground(String... params) {
+			String picturePath = params[0];
+			
+			Bitmap bmp = BitmapFactory.decodeFile(picturePath);
+			return Bitmap.createScaledBitmap(bmp, 500, 500, false);
+		}
+		
+		@Override
+		protected void onPostExecute(Bitmap b) {
+			Log.v(TAG, "Setting image bmp");
+			bitmap = b;
+			ImageView imageView = (ImageView) mParentView.findViewById(R.id.imgView);
+			imageView.setImageBitmap(b);
+
+			progress.dismiss();
+			updateButtonState();
+		}
 	}
 
 	@Override
