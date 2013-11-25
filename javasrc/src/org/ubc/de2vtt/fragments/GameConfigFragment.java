@@ -102,8 +102,10 @@ public class GameConfigFragment extends WINGFragment {
 		}
 		
 		if (mDMMan.isUserDM()) {
+			mGetDMBtn.setVisibility(View.GONE);
 			mReleaseDMBtn.setVisibility(View.VISIBLE);
 		} else {
+			mGetDMBtn.setVisibility(View.VISIBLE);
 			mReleaseDMBtn.setVisibility(View.GONE);
 		}
 		

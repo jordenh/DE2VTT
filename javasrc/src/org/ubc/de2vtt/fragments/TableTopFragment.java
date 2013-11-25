@@ -5,6 +5,7 @@ import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.tabletop.TableTopOnTouchListener;
 import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenManager;
+import org.ubc.de2vtt.users.DMManager;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -26,6 +27,7 @@ public class TableTopFragment extends WINGFragment {
 	private RelativeLayout mLayout;
 	private ImageView mMapView;
 	private TokenManager tokMan = TokenManager.getSharedInstance();
+	private DMManager dmMan = DMManager.getSharedInstance();
 	private static Bitmap mBitmap;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,26 +49,12 @@ public class TableTopFragment extends WINGFragment {
 			public void onGlobalLayout() {
 				final int fragmentWidth = mParentView.findViewById(R.id.tabletop).getWidth();
 				if (fragmentWidth != 0){
-					for (Token tok : tokMan.getList()) {
-						final ImageView tokenImageView = new ImageView(mActivity);
-						
-						Matrix matrix = new Matrix();
-						matrix.postRotate(90);
-						
-						Bitmap bmp = tok.getBitmap();
-						Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmp.getHeight(), bmp.getWidth(), true);
-						Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-						tokenImageView.setImageBitmap(rotatedBitmap);
-						
-						tok.setImageView(tokenImageView);
-
-						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(40, 40);
-						params.leftMargin = fragmentWidth - tok.getY() - params.width;
-						params.topMargin = tok.getX();
-						tokenImageView.setLayoutParams(params);
-						mLayout.addView(tokenImageView);
-						
-						tokenImageView.setOnTouchListener(new TableTopOnTouchListener());
+					for (Token tok : tokMan.getLocalList()) {
+						addImage(fragmentWidth, tok, true);
+					}
+					
+					for (Token tok : tokMan.getRemoteList()) {
+						addImage(fragmentWidth, tok, dmMan.isUserDM());
 					}
 					
 					getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -80,7 +68,31 @@ public class TableTopFragment extends WINGFragment {
 
 		return mParentView;
 	}
-			
+	
+	private void addImage(int fragmentWidth, Token tok, boolean isLocal) {
+		final ImageView tokenImageView = new ImageView(mActivity);
+		
+		Matrix matrix = new Matrix();
+		matrix.postRotate(90);
+		
+		Bitmap bmp = tok.getBitmap();
+		Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmp.getHeight(), bmp.getWidth(), true);
+		Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+		tokenImageView.setImageBitmap(rotatedBitmap);
+		
+		tok.setImageView(tokenImageView);
+
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(40, 40);
+		params.leftMargin = fragmentWidth - tok.getY() - params.width;
+		params.topMargin = tok.getX();
+		tokenImageView.setLayoutParams(params);
+		mLayout.addView(tokenImageView);
+		
+		if (isLocal) {
+			tokenImageView.setOnTouchListener(new TableTopOnTouchListener());
+		}
+	}
+	
 	public static void setMap(Bitmap map) {
 		MapSetter m = new MapSetter();
 		m.execute(map);

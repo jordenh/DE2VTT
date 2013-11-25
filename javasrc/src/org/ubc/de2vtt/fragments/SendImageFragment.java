@@ -8,6 +8,7 @@ import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableBitmap;
 import org.ubc.de2vtt.token.TokenManager;
+import org.ubc.de2vtt.users.DMManager;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -55,6 +56,12 @@ public class SendImageFragment extends WINGFragment {
 			imageView.setScaleType(ScaleType.FIT_XY);
 		}
 
+		DMManager dmm = DMManager.getSharedInstance();
+		if (!dmm.isUserDM()) {
+			Button sendManBtn = (Button) mParentView.findViewById(R.id.btnSendMap);
+			sendManBtn.setVisibility(View.GONE);
+		}
+		
 		updateButtonState();
 
 		return mParentView;

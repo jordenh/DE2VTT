@@ -1,24 +1,16 @@
 package org.ubc.de2vtt.token;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableMove;
-import org.ubc.de2vtt.exceptions.BitmapNotSetupException;
 import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.ImageView;
 
 public class Token {
