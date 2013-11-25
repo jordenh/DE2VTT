@@ -29,6 +29,10 @@ public class TokenImageAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return tokens.get(position).getId();
     }
+    
+    public void updateList(List<Token> l) {
+    	tokens = l;
+    }
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
