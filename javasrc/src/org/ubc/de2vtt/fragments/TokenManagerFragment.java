@@ -30,23 +30,23 @@ public class TokenManagerFragment extends WINGFragment {
     private GridView mGridView;
     private TokenImageAdapter mImageAdapter;
     
-	
+	DMManager mDMM = DMManager.getSharedInstance();
+	TokenManager mTM = TokenManager.getSharedInstance();
+    
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mParentView = inflater.inflate(R.layout.fragment_movetoken,  container, false);
 		mActivity = this.getActivity();
 		
 		mGridView = (GridView)mParentView.findViewById(R.id.gridview);
-		TokenManager tm = TokenManager.getSharedInstance();
-		DMManager dmm = DMManager.getSharedInstance();
 		
 		List<Token> l;
 		
-		if (dmm.isUserDM()) {
+		if (mDMM.isUserDM()) {
 			// DM should be able to see all the tokens
-			l = tm.getList();
+			l = mTM.getList();
 		} else {
-			l = tm.getLocalList();
+			l = mTM.getLocalList();
 		}
 		mImageAdapter = new TokenImageAdapter(this.mActivity, l);
 	    mGridView.setAdapter(mImageAdapter);
@@ -94,6 +94,15 @@ public class TokenManagerFragment extends WINGFragment {
 
 	@Override
 	public boolean passReceived(Received r) {
+		List<Token> l;
+		if (mDMM.isUserDM()) {
+			// DM should be able to see all the tokens
+			l = mTM.getList();
+		} else {
+			l = mTM.getLocalList();
+		}
+		
+		mImageAdapter.updateList(l);
 		mImageAdapter.notifyDataSetChanged();
 		return true;
 	}
