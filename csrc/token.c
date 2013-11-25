@@ -158,10 +158,10 @@ void alertUsersOfTokenInfo(msg * currentMsg, int tokenID) {
 		alertMsg.buffer[5] = 0;
 	} else {
 		printf("In alertUsersOfTokenInfo, setting x/y to moved values");
-		alertMsg.buffer[2] = currentMsg->buffer[7]; // Token x1
-		alertMsg.buffer[3] = currentMsg->buffer[8]; // Token x0
-		alertMsg.buffer[4] = currentMsg->buffer[9]; // Token y1
-		alertMsg.buffer[5] = currentMsg->buffer[10]; // Token y0
+		alertMsg.buffer[2] = currentMsg->buffer[1]; // Token x1
+		alertMsg.buffer[3] = currentMsg->buffer[2]; // Token x0
+		alertMsg.buffer[4] = currentMsg->buffer[3]; // Token y1
+		alertMsg.buffer[5] = currentMsg->buffer[4]; // Token y0
 	}
 
 	for(i = 0; i < NUM_USERS; i++) {
