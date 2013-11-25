@@ -55,7 +55,7 @@ int executeCmd(msg * currentMsg) {
 		free(rspnsMsg->buffer);
 		free(rspnsMsg);
 
-		alertUsersOfTokenInfo(currentMsg, newTok->tokenID); // UNTESTED. -- NEEDS TO BE IMPLEMENTED ON ANDROID SIDE - TBD
+		alertUsersOfTokenInfo(currentMsg, newTok->tokenID);
 
 		break;
 	case GET_DM:
@@ -92,7 +92,7 @@ int executeCmd(msg * currentMsg) {
 	case MOVE_TOKEN:
 		printf("In move_token\n");
 		moveTokenMsg(currentMsg);
-		alertUsersOfTokenInfo(currentMsg, currentMsg->buffer[0]); // UNTESTED. -- NEEDS TO BE IMPLEMENTED ON ANDROID SIDE - TBD
+		alertUsersOfTokenInfo(currentMsg, currentMsg->buffer[0]);
 		break;
 
 	case HANDSHAKE:
