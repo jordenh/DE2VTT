@@ -2,8 +2,6 @@ package org.ubc.de2vtt.comm;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-
 import org.ubc.de2vtt.comm.sendables.Sendable;
 import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
 import org.ubc.de2vtt.token.Token;
