@@ -163,7 +163,7 @@ void alertUsersOfTokenInfo(msg * currentMsg, int tokenID) {
 	for(i = 0; i < NUM_USERS; i++) {
 		if((currentMsg->androidID != connUserIDs[i]) && (connUserIDs[i] != 0)) {
 			printf("in alertUsersOfTokenMove - sending to id %d about movement of %d's token\n", connUserIDs[i], currentMsg->androidID);
-			alertMsg.androidID = connUserIDs[i];
+			alertMsg.androidID = connUserIDs[i]; // id of who is to receive the alert.
 			sendMessage(&alertMsg);
 		}
 	}
