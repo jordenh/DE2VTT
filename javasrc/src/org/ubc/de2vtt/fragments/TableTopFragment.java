@@ -144,6 +144,9 @@ public class TableTopFragment extends WINGFragment {
 		mMapView = (ImageView) mParentView.findViewById(R.id.MapView);
 		mMapView.setImageBitmap(mBitmap);
 		mMapView.setScaleType(ScaleType.FIT_XY);
+		
+		
+		
 		return true;
 	}
 	

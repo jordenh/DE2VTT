@@ -271,7 +271,8 @@ public class MainActivity extends Activity {
 				t = new Token(rcv);
 				tm.add(t);		
 				
-				if (activeFragment instanceof TokenManagerFragment) {
+				if (activeFragment instanceof TokenManagerFragment ||
+						activeFragment instanceof TableTopFragment) {
 					// signal fragment that there is a new token
 					activeFragment.passReceived(rcv);
 				}
