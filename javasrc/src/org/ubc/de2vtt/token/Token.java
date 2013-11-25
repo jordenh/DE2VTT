@@ -1,6 +1,11 @@
 package org.ubc.de2vtt.token;
 
 import org.ubc.de2vtt.MainActivity;
+
+import org.ubc.de2vtt.comm.Command;
+import org.ubc.de2vtt.comm.Message;
+import org.ubc.de2vtt.comm.Messenger;
+
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
@@ -24,8 +29,8 @@ public class Token {
 	static private String separator = "||";
 	static private int count = 0;
 	
-	private int x;
-	private int y;
+	private float x;
+	private float y;
 	private int tokenID;
 	private int playerID;
 	private String picturePath; // not used
@@ -89,24 +94,13 @@ public class Token {
 	private int getShort(byte[] arr, int index) {
 		return (int) (arr[index] << 8 | arr[index + 1]);
 	}
-	
-//	public Token(String tokName, Bitmap bitmap)
-//	{
-//		id = count++;
-//		name = NAME_PREFIX + id;
-//		x = 0;
-//		y = 0;
-//		bmp = bitmap;
-//		picturePath = null;
-//	}
-	
-	
+		
 	public int getPlayerID() {
 		return playerID;
 	}
 	
 	public SendableMove getSendable() {
-		return new SendableMove(tokenID, x, y);
+		return new SendableMove(tokenID, (int) (x*340), (int) (y*240));
 	}
 	
 	public String encode() {
@@ -159,10 +153,14 @@ public class Token {
 		}
 	}
 	
-	public void move(int x, int y) {
+	public void move(float x, float y) {
 		this.x = x;
 		this.y = y;
-		// send?
+		
+		SendableMove mv = new SendableMove(tokenID, (int) (x*340), (int) (y*240));
+		Messenger m = Messenger.GetSharedInstance();
+		Message msg = new Message(Command.MOVE_TOKEN, mv);
+		m.send(msg);
 	}
 	
 	public void setName(String name) {
@@ -173,11 +171,11 @@ public class Token {
 		return name;
 	}
 	
-	public int getX() {
+	public float getX() {
 		return x;
 	}
 	
-	public int getY() {
+	public float getY() {
 		return y;
 	}
 	

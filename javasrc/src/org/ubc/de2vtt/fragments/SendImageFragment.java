@@ -35,7 +35,7 @@ public class SendImageFragment extends WINGFragment {
 	private static final int TOKEN_X = 20;
 	private static final int TOKEN_Y = 20;
 	private static final int MAP_X = 340;
-	private static final int MAP_Y = 260;
+	private static final int MAP_Y = 240;
 
 	protected View mParentView;
 
@@ -125,7 +125,6 @@ public class SendImageFragment extends WINGFragment {
 
 	public void sendMap() {
 		sendImage(Command.SEND_MAP, MAP_X, MAP_Y);
-		TableTopFragment.setMap(bitmap);
 	}
 
 	public void sendImage(Command cmd, int x, int y) {
