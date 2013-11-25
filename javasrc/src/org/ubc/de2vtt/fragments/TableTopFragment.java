@@ -43,33 +43,65 @@ public class TableTopFragment extends WINGFragment {
 
 		final ViewTreeObserver vto = mParentView.findViewById(R.id.tabletop).getViewTreeObserver();
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+			private int fragWidth;
+			private int fragHeight; 
+			
 			@Override
 			public void onGlobalLayout() {
 				final int fragmentWidth = mParentView.findViewById(R.id.tabletop).getWidth();
 				final int fragmentHeight = mParentView.findViewById(R.id.tabletop).getHeight();
-				
-				final int tokenWidth = fragmentWidth/12;
-				final int tokenHeight = fragmentHeight/17;
+			
+				fragWidth = fragmentWidth;
+				fragHeight = fragmentHeight;
 				
 				if (fragmentWidth != 0){
-					for (Token tok : tokMan.getList()) {
-						final ImageView tokenImageView = new ImageView(mActivity);
-						
-						tokenImageView.setImageBitmap(rotateBitmap(tok.getBitmap()));
-						tok.setImageView(tokenImageView);
-
-						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(tokenWidth, tokenHeight);
-						params.leftMargin = fragmentWidth - (int) (tok.getY()*fragmentWidth) - params.width;
-						params.topMargin = (int) (tok.getX()*fragmentHeight);
-						tokenImageView.setLayoutParams(params);
-						mLayout.addView(tokenImageView);
-						
-						tokenImageView.setOnTouchListener(new TableTopOnTouchListener(tok, fragmentWidth, fragmentHeight));
-					}
-					
-					getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
+					setupTokenViews();
 				}
 
+			}
+
+			private void setupTokenViews() {
+				for (Token tok : tokMan.getList()) {
+					new TokenViewSetter().execute(tok);
+				}
+				
+				getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
+			}
+			
+			class TokenViewSetter extends AsyncTask<Token, Void, Bitmap> {
+				private Token tok;
+						
+				@Override
+				protected Bitmap doInBackground(Token... params) {
+					tok = params[0];
+					Bitmap bmp = tok.getBitmap();
+					
+					Matrix matrix = new Matrix();
+					matrix.postRotate(90);
+					Bitmap rotatedBitmap = Bitmap.createBitmap(bmp , 0, 0, 
+							bmp.getWidth(), bmp.getHeight(), matrix, true);
+					return rotatedBitmap;
+				}
+				
+				@Override
+				protected void onPostExecute(Bitmap b) {
+					final ImageView tokenImageView = new ImageView(mActivity);
+
+					tokenImageView.setImageBitmap(b);
+					
+					tok.setImageView(tokenImageView);
+					
+					final int tokenWidth = fragWidth/12;
+					final int tokenHeight = fragHeight/17;
+
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(tokenWidth, tokenHeight);
+					params.leftMargin = fragWidth - (int) (tok.getY()*fragWidth) - params.width;
+					params.topMargin = (int) (tok.getX()*fragHeight);
+					tokenImageView.setLayoutParams(params);
+					mLayout.addView(tokenImageView);
+					
+					tokenImageView.setOnTouchListener(new TableTopOnTouchListener(tok, fragWidth, fragHeight));
+				}
 			}
 
 		});
@@ -88,19 +120,16 @@ public class TableTopFragment extends WINGFragment {
 		
 		@Override
 		protected Void doInBackground(Bitmap... params) {
-			//Bitmap scaledBitmap = Bitmap.createScaledBitmap(params[0], 260, 340, true);
-			
 			Bitmap b = params[0];
 			
 			Matrix matrix = new Matrix();
 			matrix.postRotate(90);
 			float sx = (float) (340.0 / (float)b.getWidth());
-			float sy = (float) (260.0 / (float)b.getHeight());
+			float sy = (float) (240.0 / (float)b.getHeight());
 			matrix.preScale(sy, sx);
 			
 			Bitmap rotatedBitmap = Bitmap.createBitmap(b , 0, 0, 
 					340, 240, matrix, true);
-			//scaledBitmap = Bitmap.createScaledBitmap(rotatedBitmap, 340, 240, true);
 			
 			mBitmap = rotatedBitmap;
 			return null;
