@@ -263,6 +263,7 @@ public class MainActivity extends Activity {
 			tm = TokenManager.getSharedInstance();
 			t = new Token(rcv);
 			tm.move(t);
+			Log.v(TAG, "x: " + t.getX() + " y: " + t.getY());
 
 			if (activeFragment instanceof TableTopFragment) {
 				// signal fragment that a token moved

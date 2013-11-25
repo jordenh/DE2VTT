@@ -24,11 +24,11 @@ public class Token {
 	private static final int X_INDEX = 1;
 	private static final int Y_INDEX = 3;
 	private static final String NAME_PREFIX = "Token_";
-	
+
 	static private String[] filePathColumn = { MediaStore.Images.Media.DATA };
 	static private String separator = "||";
 	static private int count = 0;
-	
+
 	private float x;
 	private float y;
 	private int tokenID;
@@ -38,23 +38,23 @@ public class Token {
 	private Bitmap bmp;
 	private ImageView mImgView;
 	private Boolean local;
-	
+
 	public Token(Received rcv) {
 		byte[] data = rcv.getData();
 		tokenID = (int) data[TOKEN_ID_INDEX];
-		
+
 		switch (rcv.getCommand()) {
 		case SEND_TOKEN:
 			playerID = 0;
-			x = ((float) getX(data))/((float) 340);
-			y = ((float) getY(data))/((float) 240);
+			x = ((float) getX(data)) / ((float) 340);
+			y = ((float) getY(data)) / ((float) 240);
 			local = true;
 			break;
 		case MOVE_TOKEN:
 		case OUTPUT_TOKEN_INFO:
 			playerID = (int) data[1];
-			x = ((float) getShort(data, 2))/((float) 340);
-			y = ((float)getShort(data, 4))/((float) 240);
+			x = ((float) getShort(data, 2)) / ((float) 340);
+			y = ((float) getShort(data, 4)) / ((float) 240);
 			local = false;
 			break;
 		case REMOVE_TOKEN:
@@ -67,43 +67,48 @@ public class Token {
 			throw new IncorrectCommandDatumException();
 		}
 		
+		x = Math.abs(x);
+		y = Math.abs(y);
+
 		name = NAME_PREFIX + count++;
 		bmp = null;
 		picturePath = "";
 	}
-	
+
 	public void setBmp(Bitmap bmp) {
 		this.bmp = bmp;
 	}
-	
+
 	private int getX(byte[] data) {
 		int x = getShort(data, X_INDEX);
 		return x;
 	}
-	
+
 	private int getY(byte[] data) {
 		int y = getShort(data, Y_INDEX);
 		return y;
 	}
-	
+
 	/**
 	 * 
-	 * @param Array of bytes
-	 * @param index where short begins
+	 * @param Array
+	 *            of bytes
+	 * @param index
+	 *            where short begins
 	 * @return
 	 */
 	private int getShort(byte[] arr, int index) {
 		return (int) (arr[index] << 8 | arr[index + 1]);
 	}
-		
+
 	public int getPlayerID() {
 		return playerID;
 	}
-	
+
 	public SendableMove getSendable() {
-		return new SendableMove(tokenID, (int) (x*340), (int) (y*240));
+		return new SendableMove(tokenID, (int) (x * 340), (int) (y * 240));
 	}
-	
+
 	public String encode() {
 		StringBuilder s = new StringBuilder();
 		s.append(tokenID + separator);
@@ -115,7 +120,7 @@ public class Token {
 		}
 		return s.toString();
 	}
-	
+
 	public Token(String code) {
 		String[] s = code.split("\\|\\|");
 		tokenID = Integer.parseInt(s[0]);
@@ -126,25 +131,26 @@ public class Token {
 			picturePath = s[4];
 		}
 	}
-	
+
 	public boolean isLocal() {
 		return local;
 	}
-	
+
 	public void setupBitmap(Uri selectedImage) {
 		Context cxt = MainActivity.getAppContext();
 		ContentResolver res = cxt.getContentResolver();
-		Cursor cursor = res.query(selectedImage, filePathColumn, null, null, null);
+		Cursor cursor = res.query(selectedImage, filePathColumn, null, null,
+				null);
 
 		int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 		picturePath = cursor.getString(columnIndex);
 		cursor.close();
 	}
-	
+
 	public Bitmap getBitmap() {
 		return bmp;
 	}
-	
+
 	public void move(Received rcv) {
 		byte[] data = rcv.getData();
 		int rcvId = data[TOKEN_ID_INDEX];
@@ -153,41 +159,42 @@ public class Token {
 			y = getY(data);
 		}
 	}
-	
+
 	public void move(float x, float y) {
-		this.x = x;
-		this.y = y;
-		
-		SendableMove mv = new SendableMove(tokenID, (int) (x*340), (int) (y*240));
+		this.x = Math.abs(x);
+		this.y = Math.abs(y);
+
+		SendableMove mv = new SendableMove(tokenID, (int) (x * 340),
+				(int) (y * 240));
 		Messenger m = Messenger.GetSharedInstance();
 		Message msg = new Message(Command.MOVE_TOKEN, mv);
 		m.send(msg);
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public float getX() {
 		return x;
 	}
-	
+
 	public float getY() {
 		return y;
 	}
-	
+
 	public int getId() {
 		return tokenID;
 	}
-	
+
 	public void setImageView(ImageView v) {
 		mImgView = v;
 	}
-	
+
 	public ImageView getImageView() {
 		return mImgView;
 	}
