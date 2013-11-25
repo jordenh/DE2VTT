@@ -46,14 +46,14 @@ public class Token {
 		switch (rcv.getCommand()) {
 		case SEND_TOKEN:
 			playerID = 0;
-			x = getX(data);
-			y = getY(data);
+			x = ((float) getX(data))/((float) 340);
+			y = ((float) getY(data))/((float) 240);
 			local = true;
 			break;
 		case OUTPUT_TOKEN_INFO:
 			playerID = (int) data[1];
-			x = getShort(data, 2);
-			y = getShort(data, 4);
+			x = ((float) getShort(data, 2))/((float) 340);
+			y = ((float)getShort(data, 4))/((float) 240);
 			local = false;
 			break;
 		case REMOVE_TOKEN:
