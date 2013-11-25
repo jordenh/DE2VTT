@@ -2,8 +2,6 @@ package org.ubc.de2vtt.comm;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-
 import org.ubc.de2vtt.comm.sendables.Sendable;
 import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
 import org.ubc.de2vtt.token.Token;
@@ -99,30 +97,22 @@ public class Received implements Sendable {
 	}
 	
 	public Bitmap DataToBitmap() {
-		if (cmd == Command.SEND_MAP) {
-//			BitmapFactory.Options opt = new BitmapFactory.Options();
-//			opt.inPreferredConfig(Bitmap.Config.RGB_565);
-//			opt.inMutable(false);
-			
+		if (cmd == Command.SEND_MAP) {			
 			int r, g, b;
 			int[] arr = new int[data.length / 2];
 			for (int i = 0; i < data.length; i += 2) {
 				arr[i / 2] = 0;
 				r = (data[i] & 0xF8) >> 3;
-				r &= 0xFF;
+				r = (r << 3) & 0xFF;
 				g = ((data[i] & 0x7) << 3) | ((data[i + 1] & 0xE0) >> 6);
-				g &= 0xFF;
+				g = (g << 2) & 0xFF;
 				b = (data[i + 1] & 0x3F);
-				b &= 0xFF;
+				b = (b << 3) & 0xFF;
 				
 				arr[i / 2] = 0xFF000000 | (r << 16) | (g << 8) | b;
 			}
 			
-			Bitmap bmp = Bitmap.createBitmap(arr, 340, 260, Bitmap.Config.RGB_565);	
-			
-//			Bitmap bmp = Bitmap.createBitmap(340,  260, Bitmap.Config.RGB_565);
-//			ByteBuffer bb = new MappedByteBuffer();
-			//Bitmap b = Bitmap.createScaledBitmap(bmp, dstWidth, dstHeight, filter)
+			Bitmap bmp = Bitmap.createBitmap(arr, 340, 240, Bitmap.Config.RGB_565);
 
 			return bmp;
 		} else {

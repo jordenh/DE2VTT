@@ -1,6 +1,5 @@
 package org.ubc.de2vtt.fragments;
 
-import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.R;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
@@ -8,6 +7,7 @@ import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableBitmap;
 import org.ubc.de2vtt.token.TokenManager;
+import org.ubc.de2vtt.users.DMManager;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -34,7 +34,7 @@ public class SendImageFragment extends WINGFragment {
 	private static final int TOKEN_X = 20;
 	private static final int TOKEN_Y = 20;
 	private static final int MAP_X = 340;
-	private static final int MAP_Y = 260;
+	private static final int MAP_Y = 240;
 
 	protected View mParentView;
 
@@ -55,6 +55,12 @@ public class SendImageFragment extends WINGFragment {
 			imageView.setScaleType(ScaleType.FIT_XY);
 		}
 
+		DMManager dmm = DMManager.getSharedInstance();
+		if (!dmm.isUserDM()) {
+			Button sendManBtn = (Button) mParentView.findViewById(R.id.btnSendMap);
+			sendManBtn.setVisibility(View.GONE);
+		}
+		
 		updateButtonState();
 
 		return mParentView;
@@ -118,7 +124,6 @@ public class SendImageFragment extends WINGFragment {
 
 	public void sendMap() {
 		sendImage(Command.SEND_MAP, MAP_X, MAP_Y);
-		TableTopFragment.setMap(bitmap);
 	}
 
 	public void sendImage(Command cmd, int x, int y) {

@@ -25,7 +25,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class DieRollFragment extends WINGFragment {
 	private static final String TAG = DieRollFragment.class.getSimpleName();	

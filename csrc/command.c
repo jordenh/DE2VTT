@@ -120,6 +120,12 @@ int executeCmd(msg * currentMsg) {
 
 	case DISCONNECT_DEV:
 		printf("In DISCONNECT_DEV\n");
+
+		if (dmID == currentMsg->androidID) {
+			dmID = 0;
+			sendAllUsersDMID(dmID);
+		}
+
 		alertUsersOfUserDC(currentMsg); // removes their alias
 		removeTokensOfOneUser(currentMsg, REMOVEALLVAL); // removes all references to DC'd players tokens from all other users.
 		removeTokenFromUser(currentMsg->androidID);

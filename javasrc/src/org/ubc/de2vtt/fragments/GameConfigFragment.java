@@ -1,15 +1,12 @@
 package org.ubc.de2vtt.fragments;
 
 import org.ubc.de2vtt.R;
-import org.ubc.de2vtt.SharedPreferencesManager;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableNull;
 import org.ubc.de2vtt.users.DMManager;
-import org.ubc.de2vtt.users.UserManager;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -102,8 +99,10 @@ public class GameConfigFragment extends WINGFragment {
 		}
 		
 		if (mDMMan.isUserDM()) {
+			mGetDMBtn.setVisibility(View.GONE);
 			mReleaseDMBtn.setVisibility(View.VISIBLE);
 		} else {
+			mGetDMBtn.setVisibility(View.VISIBLE);
 			mReleaseDMBtn.setVisibility(View.GONE);
 		}
 		
