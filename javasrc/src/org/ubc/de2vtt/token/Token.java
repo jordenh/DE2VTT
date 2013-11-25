@@ -50,6 +50,7 @@ public class Token {
 			y = getY(data);
 			local = true;
 			break;
+		case MOVE_TOKEN:
 		case OUTPUT_TOKEN_INFO:
 			playerID = (int) data[1];
 			x = getShort(data, 2);

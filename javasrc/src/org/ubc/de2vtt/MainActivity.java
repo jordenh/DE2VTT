@@ -40,7 +40,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 	private static final String TAG = MainActivity.class.getSimpleName();
 	private static Context mContext;
-	
+
 	private String[] mDrawerItems;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
@@ -74,14 +74,15 @@ public class MainActivity extends Activity {
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-		
+
 		Mailbox.getSharedInstance(this);
-		
+
 		// Attempt to connect
 		Messenger messenger = Messenger.GetSharedInstance();
-		
-		Message msg = new Message(Command.GET_DM_ID, SendableNull.GetSharedInstance());
-        
+
+		Message msg = new Message(Command.GET_DM_ID,
+				SendableNull.GetSharedInstance());
+
 		messenger.send(msg);
 	}
 
@@ -113,10 +114,9 @@ public class MainActivity extends Activity {
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
 				// close keyboard
-				InputMethodManager inputManager = (InputMethodManager)            
-					  getSystemService(Context.INPUT_METHOD_SERVICE); 
-					    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),      
-					    InputMethodManager.HIDE_NOT_ALWAYS);
+				InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				inputManager.hideSoftInputFromWindow(getCurrentFocus()
+						.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 			}
 		};
 	}
@@ -130,40 +130,46 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
 
-        Intent current = getIntent();
-        Bundle b = current.getExtras();
-        if (b != null) {
-        	int fragment = b.getInt("fragment_sel");
-            Toast.makeText(MainActivity.this, "" + fragment, Toast.LENGTH_SHORT).show();
-            switchFragment(fragment);
-        } else {
-        	switchFragment(0);
-        }
+		Intent current = getIntent();
+		Bundle b = current.getExtras();
+		if (b != null) {
+			int fragment = b.getInt("fragment_sel");
+			Toast.makeText(MainActivity.this, "" + fragment, Toast.LENGTH_SHORT)
+					.show();
+			switchFragment(fragment);
+		} else {
+			switchFragment(0);
+		}
 
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-        
-        Intent intent = getIntent();
-        try{
-            String action = intent.getAction().toUpperCase(Locale.CANADA);
-            Log.v(TAG, "OnCreate: intent action" + action);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		mDrawerToggle.syncState();
 
-            if(action != null){
-                if(action.equalsIgnoreCase(mContext.getResources().getString(R.string.in_msg_notification))){
-                	notifications.removeNotify(mContext, 
-                			mContext.getResources().getString(R.string.in_msg_notification));
-                	switchFragment(WINGFragment.FragDrawerId.BulletinFragDrawerId.ordinal()); // hard coded to switch to bulletin board!
-                }
-            }else{
-                Log.v(TAG, "Oncreate: Intent was null");
-            }
-        }catch(Exception e){
-            Log.e(TAG, "Problem consuming action from intent", e);              
-        }
-    }
+		Intent intent = getIntent();
+		try {
+			String action = intent.getAction().toUpperCase(Locale.CANADA);
+			Log.v(TAG, "OnCreate: intent action" + action);
+
+			if (action != null) {
+				if (action.equalsIgnoreCase(mContext.getResources().getString(
+						R.string.in_msg_notification))) {
+					notifications.removeNotify(
+							mContext,
+							mContext.getResources().getString(
+									R.string.in_msg_notification));
+					switchFragment(WINGFragment.FragDrawerId.BulletinFragDrawerId
+							.ordinal()); // hard coded to switch to bulletin
+											// board!
+				}
+			} else {
+				Log.v(TAG, "Oncreate: Intent was null");
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "Problem consuming action from intent", e);
+		}
+	}
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
@@ -196,8 +202,8 @@ public class MainActivity extends Activity {
 				long id) {
 			switchFragment(position);
 		}
-    }
-  
+	}
+
 	public void switchFragment(int position) {
 		Log.v(TAG, "Switching fragments.");
 		WINGFragment fragment = new PlaceholderFragment();
@@ -205,32 +211,32 @@ public class MainActivity extends Activity {
 		fragment.setArguments(args);
 
 		switch (WINGFragment.FragDrawerId.values()[position]) {
-			case TableTopFragDrawerId:
-				fragment = new TableTopFragment();
-				break;
-			case ManageTokenFragDrawerId:
-				fragment = new TokenManagerFragment();
-				break;
-			case GameConfigFragDrawerId:
-				fragment = new GameConfigFragment();
-				break;
-			case SendImageFragDrawerId:
-				fragment = new SendImageFragment();
-				break;
-			case PassMessageFragDrawerId:
-				fragment = new PassMessageFragment();
-				break;
-			case BulletinFragDrawerId:
-				fragment = new BulletinFragment();
-				break;
-			case DieRollFragDrawerId:
-				fragment = new DieRollFragment();
-				break;
-			case ConnectionFragDrawerId:
-	    		fragment = new ConnectionFragment();
-	    		break;
+		case TableTopFragDrawerId:
+			fragment = new TableTopFragment();
+			break;
+		case ManageTokenFragDrawerId:
+			fragment = new TokenManagerFragment();
+			break;
+		case GameConfigFragDrawerId:
+			fragment = new GameConfigFragment();
+			break;
+		case SendImageFragDrawerId:
+			fragment = new SendImageFragment();
+			break;
+		case PassMessageFragDrawerId:
+			fragment = new PassMessageFragment();
+			break;
+		case BulletinFragDrawerId:
+			fragment = new BulletinFragment();
+			break;
+		case DieRollFragDrawerId:
+			fragment = new DieRollFragment();
+			break;
+		case ConnectionFragDrawerId:
+			fragment = new ConnectionFragment();
+			break;
 		}
-		
+
 		activeFragment = fragment;
 
 		FragmentManager fragmentManager = getFragmentManager();
@@ -242,7 +248,7 @@ public class MainActivity extends Activity {
 		mTitle = mDrawerItems[position];
 		mDrawerLayout.closeDrawer(mDrawerList);
 	}
-	
+
 	public synchronized void onReceiveData(Received rcv) {
 		Log.v(TAG, "Received data.");
 		Token t;
@@ -250,98 +256,99 @@ public class MainActivity extends Activity {
 		BulletinManager bm;
 		DMManager dmm;
 		Bulletin b;
-		
+
 		switch (rcv.getCommand()) {
-			case OUTPUT_TOKEN_INFO:
-				Log.v(TAG, "Moving other player's token.");
-				tm = TokenManager.getSharedInstance();
-				t = new Token(rcv);
-				tm.move(t);
-				
-				if (activeFragment instanceof TableTopFragment) {
-					// signal fragment that a token moved
-					activeFragment.passReceived(rcv);
-				}
-				
-				break;
-				
-			case SEND_TOKEN:
-				Log.v(TAG, "Receiving token.");
-				tm = TokenManager.getSharedInstance();
-				t = new Token(rcv);
-				tm.add(t);		
-				
-				if (activeFragment instanceof TokenManagerFragment ||
-						activeFragment instanceof TableTopFragment) {
-					// signal fragment that there is a new token
-					activeFragment.passReceived(rcv);
-				}
-				
-				break;
-				
-			case REMOVE_TOKEN:
-				Log.v(TAG, "Removing token.");
-				tm = TokenManager.getSharedInstance();
-				t = new Token(rcv);
-				tm.remove(t);
-				
-				if (activeFragment instanceof TableTopFragment) {
-					activeFragment.passReceived(null);
-				}
-				
-				break;
-			case PASS_MSG:
-				Log.v(TAG, "Receiving a bulletin.");
-				bm = BulletinManager.getSharedInstance();
-				b = new Bulletin(rcv);
-				bm.add(b);
-				
-				if (activeFragment instanceof BulletinFragment) {
-					// Notify of new bulletin
-					activeFragment.passReceived(rcv);
-				} else {
-					notifications.notify(mContext, 
-							mContext.getResources().getString(R.string.in_msg_notification));
-				}
-				
-				break;
-				
-			case UPDATE_ALIAS:
-				Log.v(TAG, "Updating Alias List.");
-				UserManager um = UserManager.getSharedInstance();
-				dmm = DMManager.getSharedInstance();
-				um.handleUpdateAlias(rcv);
-				dmm.updateDMAlias();
-				break;
+		case OUTPUT_TOKEN_INFO:
+			Log.v(TAG, "Moving other player's token.");
+			tm = TokenManager.getSharedInstance();
+			t = new Token(rcv);
+			tm.move(t);
 
-			case SEND_MAP:
-				Log.v(TAG, "Receiving a map.");
-				Bitmap bmp = rcv.DataToBitmap();
-				TableTopFragment.setMap(bmp);
-				break;
+			if (activeFragment instanceof TableTopFragment) {
+				// signal fragment that a token moved
+				activeFragment.passReceived(rcv);
+			}
 
-			case GET_DM_ID:
-				Log.v(TAG, "Updating DM id");
-				
-				dmm = DMManager.getSharedInstance();
-				dmm.handleGetDMId(rcv);
-				
-				if (activeFragment instanceof GameConfigFragment) {
-					// Notify of new bulletin
-					activeFragment.passReceived(rcv);
-				}
+			break;
 
-				break;
-				
-			default:
-				// signal active fragment
-				if (!activeFragment.passReceived(rcv)) {
-					Log.e(TAG, "Failed to pass message to fragment.");
-				}
-				break;
+		case SEND_TOKEN:
+			Log.v(TAG, "Receiving token.");
+			tm = TokenManager.getSharedInstance();
+			t = new Token(rcv);
+			tm.add(t);
+
+			if (activeFragment instanceof TokenManagerFragment
+					|| activeFragment instanceof TableTopFragment) {
+				// signal fragment that there is a new token
+				activeFragment.passReceived(rcv);
+			}
+
+			break;
+
+		case REMOVE_TOKEN:
+			Log.v(TAG, "Removing token.");
+			tm = TokenManager.getSharedInstance();
+			t = new Token(rcv);
+			tm.remove(t);
+
+			if (activeFragment instanceof TableTopFragment) {
+				activeFragment.passReceived(null);
+			}
+
+			break;
+			
+		case PASS_MSG:
+			Log.v(TAG, "Receiving a bulletin.");
+			bm = BulletinManager.getSharedInstance();
+			b = new Bulletin(rcv);
+			bm.add(b);
+
+			if (activeFragment instanceof BulletinFragment) {
+				// Notify of new bulletin
+				activeFragment.passReceived(rcv);
+			} else {
+				notifications.notify(mContext, mContext.getResources()
+						.getString(R.string.in_msg_notification));
+			}
+
+			break;
+
+		case UPDATE_ALIAS:
+			Log.v(TAG, "Updating Alias List.");
+			UserManager um = UserManager.getSharedInstance();
+			dmm = DMManager.getSharedInstance();
+			um.handleUpdateAlias(rcv);
+			dmm.updateDMAlias();
+			break;
+
+		case SEND_MAP:
+			Log.v(TAG, "Receiving a map.");
+			Bitmap bmp = rcv.DataToBitmap();
+			TableTopFragment.setMap(bmp);
+			break;
+
+		case GET_DM_ID:
+			Log.v(TAG, "Updating DM id");
+
+			dmm = DMManager.getSharedInstance();
+			dmm.handleGetDMId(rcv);
+
+			if (activeFragment instanceof GameConfigFragment) {
+				// Notify of new bulletin
+				activeFragment.passReceived(rcv);
+			}
+
+			break;
+
+		default:
+			// signal active fragment
+			if (!activeFragment.passReceived(rcv)) {
+				Log.e(TAG, "Failed to pass message to fragment.");
+			}
+			break;
 		}
 	}
-	
+
 	public boolean acceptCommand(Command cmd) {
 		// should be based on active fragment
 		return false;
@@ -352,7 +359,7 @@ public class MainActivity extends Activity {
 		getActionBar().setTitle(title);
 	}
 
-    static public Context getAppContext() {
-    	return mContext;
-    }
+	static public Context getAppContext() {
+		return mContext;
+	}
 }
