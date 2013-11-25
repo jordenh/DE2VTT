@@ -100,8 +100,6 @@ public class Token {
 	private int getShort(byte[] arr, int index) {
 		ByteBuffer wrapped = ByteBuffer.wrap(arr, index, 2); // big-endian by default
 		short num = wrapped.getShort(); 
-		
-		int s = (arr[index] * 255) + arr[index + 1];
 		return num;
 	}
 
