@@ -39,12 +39,12 @@ void removeTokenFromUser(unsigned int ownerID) {
 	int i;
 	for(i = 0; i < MAX_TOKENS; i++) {
 		if(tokenArr[i].ownerID == ownerID) {
+			partialMapReDraw(tokenArr[i].x, tokenArr[i].y, tokenArr[i].bmp.infoheader.width, tokenArr[i].bmp.infoheader.height);
+
 			tokenArr[i].tokenID = 0;
 			tokenArr[i].ownerID = 0;
 			tokenArr[i].x = 0;
 			tokenArr[i].y = 0;
-
-			partialMapReDraw(tokenArr[i].x, tokenArr[i].y, tokenArr[i].bmp.infoheader.width, tokenArr[i].bmp.infoheader.height);
 
 			if(tokenArr[i].bmp.color) free(tokenArr[i].bmp.color);
 			loadedTokenCnt--;
@@ -56,12 +56,12 @@ void removeToken(unsigned int tokenID) {
 	int i;
 	for(i = 0; i < MAX_TOKENS; i++) {
 		if(tokenArr[i].tokenID == tokenID) {
+			partialMapReDraw(tokenArr[i].x, tokenArr[i].y, tokenArr[i].bmp.infoheader.width, tokenArr[i].bmp.infoheader.height);
+
 			tokenArr[i].tokenID = 0;
 			tokenArr[i].ownerID = 0;
 			tokenArr[i].x = 0;
 			tokenArr[i].y = 0;
-
-			partialMapReDraw(tokenArr[i].x, tokenArr[i].y, tokenArr[i].bmp.infoheader.width, tokenArr[i].bmp.infoheader.height);
 
 			if(tokenArr[i].bmp.color) free(tokenArr[i].bmp.color);
 			loadedTokenCnt--;
