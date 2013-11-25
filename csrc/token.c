@@ -41,6 +41,8 @@ void removeTokenFromUser(unsigned int ownerID) {
 		if(tokenArr[i].ownerID == ownerID) {
 			tokenArr[i].tokenID = 0;
 			tokenArr[i].ownerID = 0;
+			tokenArr[i].x = 0;
+			tokenArr[i].y = 0;
 
 			partialMapReDraw(tokenArr[i].x, tokenArr[i].y, tokenArr[i].bmp.infoheader.width, tokenArr[i].bmp.infoheader.height);
 
@@ -56,6 +58,8 @@ void removeToken(unsigned int tokenID) {
 		if(tokenArr[i].tokenID == tokenID) {
 			tokenArr[i].tokenID = 0;
 			tokenArr[i].ownerID = 0;
+			tokenArr[i].x = 0;
+			tokenArr[i].y = 0;
 
 			partialMapReDraw(tokenArr[i].x, tokenArr[i].y, tokenArr[i].bmp.infoheader.width, tokenArr[i].bmp.infoheader.height);
 
