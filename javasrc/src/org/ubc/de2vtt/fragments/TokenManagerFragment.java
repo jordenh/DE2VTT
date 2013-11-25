@@ -8,6 +8,7 @@ import org.ubc.de2vtt.token.Token;
 import org.ubc.de2vtt.token.TokenImageAdapter;
 import org.ubc.de2vtt.token.TokenActivity;
 import org.ubc.de2vtt.token.TokenManager;
+import org.ubc.de2vtt.users.DMManager;
 import org.ubc.de2vtt.R;
 
 import android.app.Activity;
@@ -37,7 +38,16 @@ public class TokenManagerFragment extends WINGFragment {
 		
 		mGridView = (GridView)mParentView.findViewById(R.id.gridview);
 		TokenManager tm = TokenManager.getSharedInstance();
-		List<Token> l = tm.getList(); // TODO change back to local 
+		DMManager dmm = DMManager.getSharedInstance();
+		
+		List<Token> l;
+		
+		if (dmm.isUserDM()) {
+			// DM should be able to see all the tokens
+			l = tm.getList();
+		} else {
+			l = tm.getLocalList();
+		}
 		mImageAdapter = new TokenImageAdapter(this.mActivity, l);
 	    mGridView.setAdapter(mImageAdapter);
 		

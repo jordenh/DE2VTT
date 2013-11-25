@@ -10,7 +10,6 @@ import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableNull;
-import org.ubc.de2vtt.comm.sendables.SendableString;
 import org.ubc.de2vtt.fragments.*;
 import org.ubc.de2vtt.notifications.notifications;
 import org.ubc.de2vtt.token.Token;
