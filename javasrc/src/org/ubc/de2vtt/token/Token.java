@@ -1,11 +1,11 @@
 package org.ubc.de2vtt.token;
 
-import org.ubc.de2vtt.MainActivity;
+import java.nio.ByteBuffer;
 
+import org.ubc.de2vtt.MainActivity;
 import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Message;
 import org.ubc.de2vtt.comm.Messenger;
-
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
@@ -98,7 +98,11 @@ public class Token {
 	 * @return
 	 */
 	private int getShort(byte[] arr, int index) {
-		return (int) (arr[index] << 8 | arr[index + 1]);
+		ByteBuffer wrapped = ByteBuffer.wrap(arr, index, 2); // big-endian by default
+		short num = wrapped.getShort(); 
+		
+		int s = (arr[index] * 255) + arr[index + 1];
+		return num;
 	}
 
 	public int getPlayerID() {
