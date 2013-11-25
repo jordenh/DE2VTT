@@ -124,6 +124,7 @@ public class PassMessageFragment extends WINGFragment {
 		mActivity.runOnUiThread(new Runnable() {
             public void run() {
             	updateButtonState();
+            	setupSpinner();
             }
         });
 		return false;
