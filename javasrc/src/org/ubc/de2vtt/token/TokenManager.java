@@ -44,13 +44,17 @@ public class TokenManager {
 			localTokenList.append(tok.getId(), tok);
 		} else {
 			// TODO: set token's bitmap
-			int playerID = tok.getPlayerID();
-			int[] color = new int[1];
-			color[0] = COLORS[playerID % COLORS.length];
-			Bitmap bmp = Bitmap.createBitmap(color, 1, 1, Bitmap.Config.RGB_565);
-			tok.setBmp(bmp);
+			setColorBitmap(tok);
 			remoteTokenList.append(tok.getId(), tok);
 		}
+	}
+
+	private void setColorBitmap(Token tok) {
+		int playerID = tok.getPlayerID();
+		int[] color = new int[1];
+		color[0] = COLORS[playerID % COLORS.length];
+		Bitmap bmp = Bitmap.createBitmap(color, 1, 1, Bitmap.Config.RGB_565);
+		tok.setBmp(bmp);
 	}
 	
 	public void remove(Token tok) {
@@ -125,6 +129,9 @@ public class TokenManager {
 				// Token being moved
 				remoteTokenList.put(tok.getId(), tok);
 			}
+		}
+		if (tok.getBitmap() == null) {
+			setColorBitmap(tok);
 		}
 	}
 	
