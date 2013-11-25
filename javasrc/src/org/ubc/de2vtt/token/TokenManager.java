@@ -195,4 +195,14 @@ public class TokenManager {
 			l.add(t);
 		}
 	}
+	
+	public Token getTokenById(int id) {
+		List<Token> l = getList();
+		for (Token t : l) {
+			if (t.getId() == id) {
+				return t;
+			}
+		}
+		return null;
+	}
 }

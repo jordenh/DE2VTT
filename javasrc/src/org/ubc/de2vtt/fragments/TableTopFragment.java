@@ -1,6 +1,7 @@
 package org.ubc.de2vtt.fragments;
 
 import org.ubc.de2vtt.R;
+import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.tabletop.TableTopOnTouchListener;
 import org.ubc.de2vtt.token.Token;
@@ -12,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.LayoutInflater;
@@ -29,12 +31,17 @@ public class TableTopFragment extends WINGFragment {
 	private TokenManager tokMan = TokenManager.getSharedInstance();
 	private DMManager dmMan = DMManager.getSharedInstance();
 	private static Bitmap mBitmap;
+	private SparseArray<ImageView> tokenViews;
+
+	private int fragWidth;
+	private int fragHeight;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mParentView = inflater.inflate(R.layout.fragment_tabletop, container,
 				false);
 		mActivity = this.getActivity();
+		tokenViews = new SparseArray<ImageView>();
 
 		mLayout = (RelativeLayout) mParentView.findViewById(R.id.tabletop);
 
@@ -47,8 +54,6 @@ public class TableTopFragment extends WINGFragment {
 		final ViewTreeObserver vto = mParentView.findViewById(R.id.tabletop)
 				.getViewTreeObserver();
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-			private int fragWidth;
-			private int fragHeight;
 
 			@Override
 			public void onGlobalLayout() {
@@ -63,7 +68,6 @@ public class TableTopFragment extends WINGFragment {
 				if (fragmentWidth != 0) {
 					setupTokenViews();
 				}
-
 			}
 
 			private void setupTokenViews() {
@@ -109,6 +113,8 @@ public class TableTopFragment extends WINGFragment {
 					tokenImageView.setLayoutParams(params);
 					mLayout.addView(tokenImageView);
 
+					tokenViews.put(tok.getId(), tokenImageView);
+
 					if ((tok.isLocal()) || (dmMan.isUserDM())) {
 						tokenImageView
 								.setOnTouchListener(new TableTopOnTouchListener(
@@ -152,13 +158,39 @@ public class TableTopFragment extends WINGFragment {
 	@Override
 	public boolean passReceived(Received r) {
 		// TODO Move token
-		mLayout.invalidate();
-		
-		
+		if (r.getCommand() == Command.OUTPUT_TOKEN_INFO) {
+			Token tok = new Token(r);
+			
+			TokenManager tm = TokenManager.getSharedInstance();
+			int id = tok.getId();
+			Token t = tm.getTokenById(id);
+			
+			//ImageView changedView = t == null ? null : t.getImageView();
+			ImageView changedView = tokenViews.get(id);
+			
+			if (changedView != null) {				
+				final int tokenWidth = fragWidth / 12;
+				final int tokenHeight = fragHeight / 17;
+
+				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+						tokenWidth, tokenHeight);
+				params.leftMargin = fragWidth - (int) (tok.getY() * fragWidth)
+						- params.width;
+				params.topMargin = (int) (tok.getX() * fragHeight);
+				changedView.setLayoutParams(params);
+
+				changedView.invalidate();
+			}
+		}
+
 		// update map
-		mMapView = (ImageView) mParentView.findViewById(R.id.MapView);
-		mMapView.setImageBitmap(mBitmap);
-		mMapView.setScaleType(ScaleType.FIT_XY);
+		if (r.getCommand() == Command.SEND_MAP) {
+			mMapView = (ImageView) mParentView.findViewById(R.id.MapView);
+			mMapView.setImageBitmap(mBitmap);
+			mMapView.setScaleType(ScaleType.FIT_XY);
+			mMapView.invalidate();
+		}
+
 		return true;
 	}
 }
