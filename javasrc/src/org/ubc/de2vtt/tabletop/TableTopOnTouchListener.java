@@ -36,12 +36,15 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
             dx = x - prev_x;
             dy = y - prev_y;
             
-            prev_x = x;
-            prev_y = y;
-
-            params.leftMargin += dx;
-            params.topMargin += dy;
-            v.setLayoutParams(params);
+            if ((params.topMargin + dy + params.height) < mFragmentHeight && (params.leftMargin + dx + params.width) < mFragmentWidth
+            		&& (params.topMargin + dy)  > 0 && (params.leftMargin + dx)  > 0) {
+            	prev_x = x;
+                prev_y = y;
+            	
+            	params.leftMargin += dx;
+            	params.topMargin += dy;
+            	v.setLayoutParams(params);
+            }
             break;
         case MotionEvent.ACTION_UP:
         	float y_ratio = ((float) (mFragmentWidth - params.leftMargin - params.width))/((float) mFragmentWidth);
