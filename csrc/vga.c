@@ -63,25 +63,32 @@ int convert24BitRgbTo16(unsigned int rgb24bit) {
 }
 
 void drawUserIDs(void) {
-	//extern int connUserIDs[];
-	//extern char * connUserAlias[];
 
 	int i, xPos;
+	int minXPos = SCREEN_CHAR_WIDTH - 2;
 	char cArr[2] = {'-', '\0'};
 	char cDMArr[2] = {'*', '\0'};
 
 	for(i = 0; i < 5; i++) {
 		//TBD - make a "constants" h file
-		if (dmID == i+1)
+		if (dmID && (dmID == connUserIDs[i]))
 		{
 			xPos = (SCREEN_CHAR_WIDTH - 6 - strlen(connUserAlias[i]));
+			if(xPos < minXPos)
+				minXPos = xPos;
 			alt_up_char_buffer_string(char_buffer, cDMArr , xPos, i);
 		}
 
 		xPos = (SCREEN_CHAR_WIDTH - 4 - strlen(connUserAlias[i]));
-		alt_up_char_buffer_string(char_buffer, connUserAlias[i] , xPos, i);
+		alt_up_char_buffer_string(char_buffer, connUserAlias[i] , xPos, i + 1);
 		xPos = (SCREEN_CHAR_WIDTH - 2);
 		cArr[0] = (connUserIDs[i] % 10) + '0'; // unique IDs for 0-9
-		alt_up_char_buffer_string(char_buffer, cArr , xPos, i);
+		alt_up_char_buffer_string(char_buffer, cArr , xPos, i + 1);
 	}
+	char DMStr[3] = {'D', 'M', '\0'};
+	char nameStr[5] = {'N', 'a', 'm', 'e', '\0'};
+	char IDStr[3] = {'I', 'D', '\0'};
+	alt_up_char_buffer_string(char_buffer, DMStr , minXPos - 4, 0);
+	alt_up_char_buffer_string(char_buffer, nameStr , SCREEN_CHAR_WIDTH - strlen(nameStr) - strlen(IDStr) - 2, 0);
+	alt_up_char_buffer_string(char_buffer, IDStr , SCREEN_CHAR_WIDTH - strlen(IDStr) - 1, 0);
 }
