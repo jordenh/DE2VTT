@@ -54,15 +54,15 @@ public class Messenger {
 	}
 	
 	public synchronized void resetSocket() {
-		if (ip == null || port == null) {
-			Log.e(TAG, "Unable to reset null socket.");
-		} 
-		else {
-			if (isConnected()) {
-				closeSocket();
-			}
-			openSocket(ip, port);
-		}
+//		if (ip == null || port == null) {
+//			Log.e(TAG, "Unable to reset null socket.");
+//		} 
+//		else {
+//			if (isConnected()) {
+//				closeSocket();
+//			}
+//			openSocket(ip, port);
+//		}
 	}
 	
 	public synchronized void openSocket(String ip, Integer port) {

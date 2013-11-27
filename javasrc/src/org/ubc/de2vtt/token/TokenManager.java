@@ -12,16 +12,20 @@ import org.ubc.de2vtt.SharedPreferencesManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.SparseArray;
 
 public class TokenManager {
+	private static final String TAG = TokenManager.class.getSimpleName();
+	
 	private static final String TOKENS_KEY = "tokens";
-	private static final int[] COLORS = {Color.CYAN, Color.MAGENTA, Color.WHITE, Color.GREEN, Color.YELLOW};
+	private static final int[] COLORS = {Color.CYAN, Color.MAGENTA, Color.GREEN, Color.YELLOW, Color.BLUE, Color.WHITE};
 	
 	static TokenManager sharedInstance;
 	private SparseArray<Token> localTokenList;
 	private SparseArray<Token> remoteTokenList;
 	private Queue<Bitmap> sendBmps;
+	private SparseArray<Bitmap> colorMap;
 	
 	public static TokenManager getSharedInstance() {
 		if (sharedInstance == null) {
@@ -34,18 +38,25 @@ public class TokenManager {
 		localTokenList = new SparseArray<Token>();
 		remoteTokenList = new SparseArray<Token>();
 		sendBmps = new LinkedList<Bitmap>();
+		colorMap = new SparseArray<Bitmap>();
 	}
 	
 	public void add(Token tok) {
 		if (tok.isLocal()) {
 			if (!sendBmps.isEmpty()) {
 				tok.setBmp(sendBmps.remove());
+			} else {
+				Log.e(TAG, "Added local token without a bitmap.");
+				setColorBitmap(tok);
 			}
 			localTokenList.append(tok.getId(), tok);
 		} else {
-			// TODO: set token's bitmap
 			setColorBitmap(tok);
 			remoteTokenList.append(tok.getId(), tok);
+		}
+		
+		if (tok.getBitmap() == null) {
+			setColorBitmap(tok);
 		}
 	}
 
@@ -53,8 +64,16 @@ public class TokenManager {
 		int playerID = tok.getPlayerID();
 		int[] color = new int[1];
 		color[0] = COLORS[playerID % COLORS.length];
-		Bitmap bmp = Bitmap.createBitmap(color, 1, 1, Bitmap.Config.RGB_565);
-		tok.setBmp(bmp);
+		
+		if (colorMap.get(color[0]) == null) {
+			// new color
+			Bitmap bmp = Bitmap.createBitmap(color, 1, 1, Bitmap.Config.RGB_565);
+			colorMap.put(color[0], bmp);
+			tok.setBmp(bmp);
+		} else {
+			Bitmap b = colorMap.get(color[0]);
+			tok.setBmp(b);
+		}
 	}
 	
 	public void remove(Token tok) {
@@ -117,7 +136,7 @@ public class TokenManager {
 	
 	// NOTE: token received from DE2 can be used to move a token, no need for a move object
 	public void move(Token tok) {
-		if (tok.isLocal()) {
+		if (tok.isLocal() || ownToken(tok)) {
 			Token toMove = localTokenList.get(tok.getId());
 			toMove.move(tok.getX(), tok.getY());
 		} else {
@@ -133,6 +152,10 @@ public class TokenManager {
 		if (tok.getBitmap() == null) {
 			setColorBitmap(tok);
 		}
+	}
+	
+	public boolean ownToken(Token tok) {
+		return localTokenList.get(tok.getId()) != null;
 	}
 	
 	public int sizeLocal() {

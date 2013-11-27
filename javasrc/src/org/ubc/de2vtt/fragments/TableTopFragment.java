@@ -24,6 +24,9 @@ import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
 public class TableTopFragment extends WINGFragment {
+	private static final int Y_FACTOR = 17;
+	private static final int X_FACTOR = 12;
+
 	protected View mParentView;
 	private Activity mActivity;
 	private RelativeLayout mLayout;
@@ -79,50 +82,6 @@ public class TableTopFragment extends WINGFragment {
 						this);
 			}
 
-			class TokenViewSetter extends AsyncTask<Token, Void, Bitmap> {
-				private Token tok;
-
-				@Override
-				protected Bitmap doInBackground(Token... params) {
-					tok = params[0];
-					Bitmap bmp = tok.getBitmap();
-
-					Matrix matrix = new Matrix();
-					matrix.postRotate(90);
-					Bitmap rotatedBitmap = Bitmap.createBitmap(bmp, 0, 0,
-							bmp.getWidth(), bmp.getHeight(), matrix, true);
-					return rotatedBitmap;
-				}
-
-				@Override
-				protected void onPostExecute(Bitmap b) {
-					final ImageView tokenImageView = new ImageView(mActivity);
-
-					tokenImageView.setImageBitmap(b);
-
-					tok.setImageView(tokenImageView);
-
-					final int tokenWidth = fragWidth / 12;
-					final int tokenHeight = fragHeight / 17;
-
-					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-							tokenWidth, tokenHeight);
-					params.leftMargin = fragWidth
-							- (int) (tok.getY() * fragWidth) - params.width;
-					params.topMargin = (int) (tok.getX() * fragHeight);
-					tokenImageView.setLayoutParams(params);
-					mLayout.addView(tokenImageView);
-
-					tokenViews.put(tok.getId(), tokenImageView);
-
-					if ((tok.isLocal()) || (dmMan.isUserDM())) {
-						tokenImageView
-								.setOnTouchListener(new TableTopOnTouchListener(
-										tok, fragWidth, fragHeight));
-					}
-				}
-			}
-
 		});
 
 		// setAcceptedCommands(new Command[0]);
@@ -160,17 +119,17 @@ public class TableTopFragment extends WINGFragment {
 		// TODO Move token
 		if (r.getCommand() == Command.OUTPUT_TOKEN_INFO) {
 			Token tok = new Token(r);
-			
+
 			TokenManager tm = TokenManager.getSharedInstance();
 			int id = tok.getId();
 			Token t = tm.getTokenById(id);
-			
-			//ImageView changedView = t == null ? null : t.getImageView();
+
 			ImageView changedView = tokenViews.get(id);
-			
-			if (changedView != null) {				
-				final int tokenWidth = fragWidth / 12;
-				final int tokenHeight = fragHeight / 17;
+
+			if (changedView != null) {
+				// Need to update a view
+				final int tokenWidth = fragWidth / X_FACTOR;
+				final int tokenHeight = fragHeight / Y_FACTOR;
 
 				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 						tokenWidth, tokenHeight);
@@ -180,6 +139,9 @@ public class TableTopFragment extends WINGFragment {
 				changedView.setLayoutParams(params);
 
 				changedView.invalidate();
+			} else {
+				// Need to create a new view
+				new TokenViewSetter().execute(t);
 			}
 		}
 
@@ -193,4 +155,48 @@ public class TableTopFragment extends WINGFragment {
 
 		return true;
 	}
+
+	class TokenViewSetter extends AsyncTask<Token, Void, Bitmap> {
+		private Token tok;
+
+		@Override
+		protected Bitmap doInBackground(Token... params) {
+			tok = params[0];
+			Bitmap bmp = tok.getBitmap();
+
+			Matrix matrix = new Matrix();
+			matrix.postRotate(90);
+			Bitmap rotatedBitmap = Bitmap.createBitmap(bmp, 0, 0,
+					bmp.getWidth(), bmp.getHeight(), matrix, true);
+			return rotatedBitmap;
+		}
+
+		@Override
+		protected void onPostExecute(Bitmap b) {
+			final ImageView tokenImageView = new ImageView(mActivity);
+
+			tokenImageView.setImageBitmap(b);
+
+			tok.setImageView(tokenImageView);
+
+			final int tokenWidth = fragWidth / X_FACTOR;
+			final int tokenHeight = fragHeight / Y_FACTOR;
+
+			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+					tokenWidth, tokenHeight);
+			params.leftMargin = fragWidth - (int) (tok.getY() * fragWidth)
+					- params.width;
+			params.topMargin = (int) (tok.getX() * fragHeight);
+			tokenImageView.setLayoutParams(params);
+			mLayout.addView(tokenImageView);
+
+			tokenViews.put(tok.getId(), tokenImageView);
+
+			if ((tok.isLocal()) || (dmMan.isUserDM())) {
+				tokenImageView.setOnTouchListener(new TableTopOnTouchListener(
+						tok, fragWidth, fragHeight));
+			}
+		}
+	}
+
 }

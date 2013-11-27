@@ -38,7 +38,11 @@ public class TokenActivity extends Activity {
 		Intent current = getIntent();
         Bundle b = current.getExtras();
         if (b != null) {
-        	mToken = tokMan.getLocal(b.getInt("token_id"));
+        	int tokenId = b.getInt("token_id");
+        	mToken = tokMan.getLocal(tokenId);
+        	if (mToken == null) {
+        		mToken = tokMan.getRemote(tokenId);
+        	}
         	
         	mTokenImage = (ImageView) findViewById(R.id.tokenImage);
         	mTokenImage.setImageBitmap(mToken.getBitmap());

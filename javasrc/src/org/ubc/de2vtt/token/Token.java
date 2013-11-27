@@ -9,6 +9,7 @@ import org.ubc.de2vtt.comm.Messenger;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
+import org.ubc.de2vtt.exceptions.InvalidTokenPositionException;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -24,6 +25,8 @@ public class Token {
 	private static final int X_INDEX = 1;
 	private static final int Y_INDEX = 3;
 	private static final String NAME_PREFIX = "Token_";
+	public static final int SCREEN_WIDTH = 340;
+	public static final int SCREEN_HEIGHT = 240;
 
 	static private String[] filePathColumn = { MediaStore.Images.Media.DATA };
 	static private String separator = "||";
@@ -46,15 +49,15 @@ public class Token {
 		switch (rcv.getCommand()) {
 		case SEND_TOKEN:
 			playerID = 0;
-			x = ((float) getX(data)) / ((float) 340);
-			y = ((float) getY(data)) / ((float) 240);
+			x = ((float) getX(data)) / ((float) SCREEN_WIDTH);
+			y = ((float) getY(data)) / ((float) SCREEN_HEIGHT);
 			local = true;
 			break;
 		case MOVE_TOKEN:
 		case OUTPUT_TOKEN_INFO:
 			playerID = (int) data[1];
-			x = ((float) getShort(data, 2)) / ((float) 340);
-			y = ((float) getShort(data, 4)) / ((float) 240);
+			x = ((float) getShort(data, 2)) / ((float) SCREEN_WIDTH);
+			y = ((float) getShort(data, 4)) / ((float) SCREEN_HEIGHT);
 			local = false;
 			break;
 		case REMOVE_TOKEN:
@@ -67,8 +70,9 @@ public class Token {
 			throw new IncorrectCommandDatumException();
 		}
 		
-		x = Math.abs(x);
-		y = Math.abs(y);
+		if (x < 0 || y < 0) {
+			throw new InvalidTokenPositionException();
+		}
 
 		name = NAME_PREFIX + count++;
 		bmp = null;
@@ -108,7 +112,7 @@ public class Token {
 	}
 
 	public SendableMove getSendable() {
-		return new SendableMove(tokenID, (int) (x * 340), (int) (y * 240));
+		return new SendableMove(tokenID, (int) (x * SCREEN_WIDTH), (int) (y * SCREEN_HEIGHT));
 	}
 
 	public String encode() {
@@ -165,12 +169,6 @@ public class Token {
 	public void move(float x, float y) {
 		this.x = Math.abs(x);
 		this.y = Math.abs(y);
-
-		SendableMove mv = new SendableMove(tokenID, (int) (x * 340),
-				(int) (y * 240));
-		Messenger m = Messenger.GetSharedInstance();
-		Message msg = new Message(Command.MOVE_TOKEN, mv);
-		m.send(msg);
 	}
 
 	public void setName(String name) {
