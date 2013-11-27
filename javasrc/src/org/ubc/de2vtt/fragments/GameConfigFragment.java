@@ -93,20 +93,21 @@ public class GameConfigFragment extends WINGFragment {
 		
 		if (mDMMan.isDMAvailable()) {
 			mGetDMBtn.setVisibility(View.VISIBLE);
+			mDMName.setText("");
 		} else {
 			mGetDMBtn.setVisibility(View.VISIBLE);
 			mGetDMBtn.setEnabled(false);
+			mDMName.setText(mDMMan.getDMAlias());
 		}
 		
 		if (mDMMan.isUserDM()) {
 			mGetDMBtn.setVisibility(View.GONE);
 			mReleaseDMBtn.setVisibility(View.VISIBLE);
+			mDMName.setText("You are the DM");
 		} else {
 			mGetDMBtn.setVisibility(View.VISIBLE);
 			mReleaseDMBtn.setVisibility(View.GONE);
 		}
-		
-		mDMName.setText(mDMMan.getDMAlias());
 	}
 	
 	public void passMsg() {

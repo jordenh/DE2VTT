@@ -64,7 +64,6 @@ public class TokenManagerFragment extends WINGFragment {
 			
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-				Toast.makeText(TokenManagerFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
 				
 				((MainActivity)mActivity).switchFragment(0);
 			}} ;
@@ -75,8 +74,6 @@ public class TokenManagerFragment extends WINGFragment {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
-				
-				Toast.makeText(TokenManagerFragment.this.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
 				
 				Intent myIntent = new Intent(mActivity.getApplicationContext(), TokenActivity.class);
 
