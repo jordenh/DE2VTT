@@ -36,12 +36,12 @@ int executeCmd(msg * currentMsg) {
 	case SEND_TOKEN:
 		printf("Entering send Token\n");
 
+		//obtain free address in token array
 		token *newTok = allocateToken();
-		newTok->ownerID = currentMsg->androidID;
 
 		if(newTok){
+			newTok->ownerID = currentMsg->androidID;
 			receiveTokenPixArr(currentMsg->buffer, &(newTok->bmp));
-			loadedTokenCnt++;
 
 			drawBmp(&newTok->bmp, newTok->x, newTok->y);
 		} else {
@@ -50,12 +50,12 @@ int executeCmd(msg * currentMsg) {
 		}
 
 		// respond with token ID
-		rspnsMsg = createResponsesMsg(currentMsg, newTok);
+		rspnsMsg = createSendTokenResponsesMsg(currentMsg, newTok);
 		sendMessage(rspnsMsg);
 		free(rspnsMsg->buffer);
 		free(rspnsMsg);
 
-		alertUsersOfTokenInfo(currentMsg, newTok->tokenID); // UNTESTED. -- NEEDS TO BE IMPLEMENTED ON ANDROID SIDE - TBD
+		alertUsersOfTokenInfo(currentMsg, newTok->tokenID);
 
 		break;
 	case GET_DM:
@@ -91,8 +91,8 @@ int executeCmd(msg * currentMsg) {
 		break;
 	case MOVE_TOKEN:
 		printf("In move_token\n");
-		moveTokenMsg(currentMsg);
-		alertUsersOfTokenInfo(currentMsg, currentMsg->buffer[0]); // UNTESTED. -- NEEDS TO BE IMPLEMENTED ON ANDROID SIDE - TBD
+		handleMoveTokenMsg(currentMsg);
+		alertUsersOfTokenInfo(currentMsg, currentMsg->buffer[0]);
 		break;
 
 	case HANDSHAKE:

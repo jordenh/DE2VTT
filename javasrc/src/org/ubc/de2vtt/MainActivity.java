@@ -257,6 +257,10 @@ public class MainActivity extends Activity {
 		BulletinManager bm;
 		DMManager dmm;
 		Bulletin b;
+		
+		if (rcv == null) {
+			return;
+		}
 
 		switch (rcv.getCommand()) {
 		case OUTPUT_TOKEN_INFO:
