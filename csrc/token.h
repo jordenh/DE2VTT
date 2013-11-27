@@ -27,6 +27,8 @@ void removeToken(unsigned int tokenID);
 
 void drawAllTokens(void);
 
+void redrawOverlappedTokens(int tokenIndex);
+
 void moveTokenMsg(msg * moveMsg);
 
 void moveToken(unsigned int tokenID, int x, int y);

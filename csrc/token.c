@@ -78,6 +78,20 @@ void drawAllTokens(void) {
 	}
 }
 
+void redrawOverlappedTokens(int tokenIndex) {
+	int i;
+
+	for (i = 0; i < MAX_TOKENS; i++) {
+		if (i != tokenIndex) {
+			if((int) tokenArr[i].x >= ((int) tokenArr[tokenIndex].x - 20) && tokenArr[i].x <= (tokenArr[tokenIndex].x + 20)) {
+				if((int) tokenArr[i].y >= ((int) tokenArr[tokenIndex].y - 20) && tokenArr[i].y <= (tokenArr[tokenIndex].y + 20)) {
+					drawBmp(&tokenArr[i].bmp, tokenArr[i].x, tokenArr[i].y);
+				}
+			}
+		}
+	}
+}
+
 void moveTokenMsg(msg * moveMsg){
 	unsigned int tokenID = (unsigned int)(*(moveMsg->buffer));
 	unsigned int x1 = (unsigned int)(*(moveMsg->buffer + 1));
@@ -97,6 +111,7 @@ void moveToken(unsigned int tokenID, int x, int y) {
 	for (i = 0; i < MAX_TOKENS; i++) {
 		if(tokenArr[i].tokenID == tokenID) {
 			partialMapReDraw(tokenArr[i].x, tokenArr[i].y, tokenArr[i].bmp.infoheader.width, tokenArr[i].bmp.infoheader.height);
+			redrawOverlappedTokens(i);
 
 			tokenArr[i].x = x;
 			tokenArr[i].y = y;
