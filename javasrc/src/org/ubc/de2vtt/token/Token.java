@@ -25,8 +25,8 @@ public class Token {
 	private static final int X_INDEX = 1;
 	private static final int Y_INDEX = 3;
 	private static final String NAME_PREFIX = "Token_";
-	private static final int SCREEN_WIDTH = 340;
-	private static final int SCREEN_HEIGHT = 240;
+	public static final int SCREEN_WIDTH = 340;
+	public static final int SCREEN_HEIGHT = 240;
 
 	static private String[] filePathColumn = { MediaStore.Images.Media.DATA };
 	static private String separator = "||";
@@ -169,12 +169,6 @@ public class Token {
 	public void move(float x, float y) {
 		this.x = Math.abs(x);
 		this.y = Math.abs(y);
-
-		SendableMove mv = new SendableMove(tokenID, (int) (x * SCREEN_WIDTH),
-				(int) (y * SCREEN_HEIGHT));
-		Messenger m = Messenger.GetSharedInstance();
-		Message msg = new Message(Command.MOVE_TOKEN, mv);
-		m.send(msg);
 	}
 
 	public void setName(String name) {

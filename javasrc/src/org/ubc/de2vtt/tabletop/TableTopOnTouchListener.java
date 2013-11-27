@@ -1,5 +1,9 @@
 package org.ubc.de2vtt.tabletop;
 
+import org.ubc.de2vtt.comm.Command;
+import org.ubc.de2vtt.comm.Message;
+import org.ubc.de2vtt.comm.Messenger;
+import org.ubc.de2vtt.comm.sendables.SendableMove;
 import org.ubc.de2vtt.token.Token;
 
 import android.view.MotionEvent;
@@ -51,6 +55,11 @@ public class TableTopOnTouchListener implements View.OnTouchListener {
         	float x_ratio = ((float) params.topMargin)/((float) mFragmentHeight);
             
         	mTok.move(x_ratio,y_ratio);
+        	SendableMove mv = new SendableMove(mTok.getId(), (int) (mTok.getX() * Token.SCREEN_WIDTH),
+    				(int) (mTok.getY() * Token.SCREEN_HEIGHT));
+    		Messenger m = Messenger.GetSharedInstance();
+    		Message msg = new Message(Command.MOVE_TOKEN, mv);
+    		m.send(msg);
         	break;
         default:
         	break;
