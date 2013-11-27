@@ -78,7 +78,7 @@ void drawAllTokens(void) {
 	}
 }
 
-void moveTokenMsg(msg * moveMsg){
+void handleMoveTokenMsg(msg * moveMsg){
 	unsigned int tokenID = (unsigned int)(*(moveMsg->buffer));
 	unsigned int x1 = (unsigned int)(*(moveMsg->buffer + 1));
 	unsigned int x0 = (unsigned int)(*(moveMsg->buffer + 2));
@@ -107,7 +107,7 @@ void moveToken(unsigned int tokenID, int x, int y) {
 	}
 }
 
-msg * createResponsesMsg(msg * initialMsg, token * curTok) {
+msg * createSendTokenResponsesMsg(msg * initialMsg, token * curTok) {
 	int i;
 	msg *responseMsg = malloc(sizeof(msg));
 	responseMsg->androidID = initialMsg->androidID;

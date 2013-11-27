@@ -27,11 +27,11 @@ void removeToken(unsigned int tokenID);
 
 void drawAllTokens(void);
 
-void moveTokenMsg(msg * moveMsg);
+void handleMoveTokenMsg(msg * moveMsg);
 
 void moveToken(unsigned int tokenID, int x, int y);
 
-msg * createResponsesMsg(msg * initialMsg, token * curTok);
+msg * createSendTokenResponsesMsg(msg * initialMsg, token * curTok);
 
 void alertUsersOfTokenInfo(msg * currentMsg, int tokenID);
 

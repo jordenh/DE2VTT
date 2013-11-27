@@ -129,7 +129,7 @@ def tcp_worker(conn, conn_id, tcp_send_queue, uart_send_queue, tcp_send_queues):
                 #5 is for command length, and 4 bytes of message length info
                 while len(data) < (msgLen + 5):
                     oldLen = len(data)
-                    data += conn.recv(msgLen)
+                    data += conn.recv(msgLen - len(data) + 5)
                     print("received ", len(data), " data of ", (msgLen + 5), " so far!")
                     if oldLen == len(data):
                         break;
