@@ -4,6 +4,8 @@ msg interMsg;
 
 extern FILE* uart;
 
+//purpose: handle key input from the DE2 - this can be set up to call specific functions when keys are 
+//pressed, released, or held down.
 void handleKeyInput(void){
 	static char keyInput;
 	static short int edgeDetect0 = 0;
@@ -77,7 +79,8 @@ void handleKeyInput(void){
 	}
 }
 
-//Stub for Switch Handling
+//purpose: handle switch input from the DE2 - this can be set up to call specific functions when keys are switched, 
+//or held in position
 void handleSwitchInput(void){
 	static char SWInput;
 	static short int prevSwitchState = 0;
