@@ -5,12 +5,15 @@ extern token * tokenArr;
 extern int loadedTokenCnt;
 extern char dmID;
 
+//inputs: a message to be decoded and executed
+//output: -1 for an error, 0 otherwise
+//purpose: Take in a raw message from middleman and execute the required functions depending on what the input command is. 
 int executeCmd(msg * currentMsg) {
 	if(currentMsg == NULL) {
 		return -1;
 	}
 
-	unsigned int nextCmd = currentMsg->cmd;//cmdInt;
+	unsigned int nextCmd = currentMsg->cmd;
 	unsigned char byteInfo;
 	msg * rspnsMsg;
 
@@ -60,6 +63,7 @@ int executeCmd(msg * currentMsg) {
 		break;
 	case GET_DM:
 		printf("In get_dm\n");
+		//only allow DM to be taken if it is not already taken
 		if (dmID == 0) {
 			dmID = currentMsg->androidID;
 			printf("New DM: %x\n", dmID);
@@ -73,6 +77,7 @@ int executeCmd(msg * currentMsg) {
 		break;
 	case RELEASE_DM:
 		printf("In release_dm\n");
+		//only the DM can release their status
 		if (dmID == currentMsg->androidID)
 		{
 			dmID = 0;
@@ -108,7 +113,6 @@ int executeCmd(msg * currentMsg) {
 	case UPDATE_ALIAS:
 		printf("In Update_Alias\n");
 		updateConnUserAlias(currentMsg);
-		//TBD - send new alias name to all phones
 		alertUsersNewUser(currentMsg);
 		break;
 
