@@ -6,6 +6,7 @@ import org.ubc.de2vtt.comm.Command;
 import org.ubc.de2vtt.comm.Received;
 import org.ubc.de2vtt.exceptions.IncorrectCommandDatumException;
 
+//Class to store the basic information of a User and allow a handle on that data
 public class User {
         private int ID;
         private String Alias;
