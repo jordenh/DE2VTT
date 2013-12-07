@@ -19,12 +19,13 @@ int executeCmd(msg * currentMsg) {
 
 	switch ((command)nextCmd) {
 	case CONNECT:
-
+		//not implemented
 		break;
 	case DISCONNECT:
-
+		//not implemented
 		break;
 	case SEND_MAP:
+		//Android sends map to DE2 - needs to be recieved, stored and drawn
 		printf("Entering send SEND_MAP\n");
 
 		if(loadedTokenCnt < MAX_TOKENS){
@@ -37,6 +38,8 @@ int executeCmd(msg * currentMsg) {
 
 		break;
 	case SEND_TOKEN:
+		//Android sends token to DE2 - needs to be recieved, stored as a token, and drawn
+		//	Then others need to be notified of new token
 		printf("Entering send Token\n");
 
 		//obtain free address in token array
@@ -62,6 +65,7 @@ int executeCmd(msg * currentMsg) {
 
 		break;
 	case GET_DM:
+		//Android attempts to get DM and new DM information is sent to all Android Users
 		printf("In get_dm\n");
 		//only allow DM to be taken if it is not already taken
 		if (dmID == 0) {
@@ -76,6 +80,7 @@ int executeCmd(msg * currentMsg) {
 		printf("DM id %x\n", dmID);
 		break;
 	case RELEASE_DM:
+		//Android attempts to release DM and new DM information is sent to all Androi Users
 		printf("In release_dm\n");
 		//only the DM can release their status
 		if (dmID == currentMsg->androidID)
@@ -88,6 +93,7 @@ int executeCmd(msg * currentMsg) {
 		printf("DM id %x\n", dmID);
 		break;
 	case GET_DM_ID:
+		//All Android users get DM information
 		printf("In test_get_dm\n");
 
 		sendAllUsersDMID(dmID);
@@ -95,22 +101,27 @@ int executeCmd(msg * currentMsg) {
 		printf("DM id %x\n", dmID);
 		break;
 	case MOVE_TOKEN:
+		//Android moves token on DE2 - needs structure to be updated, and redrawn
+		//	Then others need to be notified of new token position
 		printf("In move_token\n");
 		handleMoveTokenMsg(currentMsg);
 		alertUsersOfTokenInfo(currentMsg, currentMsg->buffer[0]);
 		break;
 
 	case HANDSHAKE:
+		//return identical message to Android that was recieved
 		printf("In hand_shake command\n");
 		sendMessage(currentMsg);
 		break;
 
 	case PASS_MSG:
+		//Pass message between Android users
 		printf("In Pass_msg command statement\n");
 		passMsg(currentMsg);
 		break;
 
 	case UPDATE_ALIAS:
+		//Update the user's alias to a new string
 		printf("In Update_Alias\n");
 		updateConnUserAlias(currentMsg);
 		alertUsersNewUser(currentMsg);
@@ -123,6 +134,8 @@ int executeCmd(msg * currentMsg) {
 		break;
 
 	case DISCONNECT_DEV:
+		//A device disconnected, so cleanup everything it owns and alert all other users that this player,
+		//	and their tokens no longer exist
 		printf("In DISCONNECT_DEV\n");
 
 		if (dmID == currentMsg->androidID) {
@@ -138,6 +151,8 @@ int executeCmd(msg * currentMsg) {
 		break;
 
 	case REMOVE_TOKEN:
+		//Android removes token from DE2 - needs to be cleaned up
+		//	Then others need to be notified of token removed from game
 		printf("In Remove_Token");
 		byteInfo = *(currentMsg->buffer); // first byte in buffer is Token_ID;
 		removeTokensOfOneUser(currentMsg, byteInfo);
