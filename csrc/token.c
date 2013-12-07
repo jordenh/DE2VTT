@@ -3,6 +3,7 @@
 token tokenArr[MAX_TOKENS];
 int loadedTokenCnt = 0;
 
+//purpose: initialization code
 void initTokens(void) {
 	int i;
 	for(i = 0; i < MAX_TOKENS; i++) {
@@ -16,6 +17,8 @@ void initTokens(void) {
 	loadedTokenCnt = 0;
 }
 
+
+//purpose: return the address of a preallocated token in the token array of MAX_TOKENS size
 token * allocateToken(void) {
 	int i;
 
@@ -29,12 +32,15 @@ token * allocateToken(void) {
 	return NULL;
 }
 
+//purpose: given a msg with the command "removeToken", perform all actions necessary to remove that users token
+//		ie clean up it's BMP
 void removeTokenMsg(msg * rmvMsg){
 	unsigned int ownerID = (unsigned int)(*(rmvMsg->buffer));
 
 	removeTokenFromUser(ownerID);
 }
 
+//purpose: remove all tokens from one user (cleanup BMPs)
 void removeTokenFromUser(unsigned int ownerID) {
 	int i;
 	for(i = 0; i < MAX_TOKENS; i++) {
@@ -52,6 +58,7 @@ void removeTokenFromUser(unsigned int ownerID) {
 	}
 }
 
+//purpose: remove one token from WING (cleanup the BMP)
 void removeToken(unsigned int tokenID) {
 	int i;
 	for(i = 0; i < MAX_TOKENS; i++) {
@@ -69,6 +76,7 @@ void removeToken(unsigned int tokenID) {
 	}
 }
 
+//draw tokens over map
 void drawAllTokens(void) {
 	int i;
 	for (i = 0; i < MAX_TOKENS; i++) {
@@ -78,6 +86,7 @@ void drawAllTokens(void) {
 	}
 }
 
+//ensure moved tokens that were overlapped get redrawn
 void redrawOverlappedTokens(int tokenIndex) {
 	int i;
 
@@ -92,6 +101,7 @@ void redrawOverlappedTokens(int tokenIndex) {
 	}
 }
 
+//update token information given a moveToken message
 void handleMoveTokenMsg(msg * moveMsg){
 	unsigned int tokenID = (unsigned int)(*(moveMsg->buffer));
 	unsigned int x1 = (unsigned int)(*(moveMsg->buffer + 1));
@@ -105,6 +115,7 @@ void handleMoveTokenMsg(msg * moveMsg){
 	moveToken(tokenID, x, y);
 }
 
+//actually update the token information and redraw the BMP
 void moveToken(unsigned int tokenID, int x, int y) {
 	int i;
 
@@ -122,6 +133,7 @@ void moveToken(unsigned int tokenID, int x, int y) {
 	}
 }
 
+//generate the msg struct required to respond to a sendMsg command (given the communication specs of WING)
 msg * createSendTokenResponsesMsg(msg * initialMsg, token * curTok) {
 	int i;
 	msg *responseMsg = malloc(sizeof(msg));
