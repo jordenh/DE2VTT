@@ -1,5 +1,6 @@
 #include "bmp.h"
 
+//purpose: parse a BMP file and package in a BMP structure
 void parseBmp (char *fileName, BMP *bmp) {
 	int i, j, k;
 	char b, g, r;
@@ -56,7 +57,7 @@ void parseBmp (char *fileName, BMP *bmp) {
 	closeFile(fh);
 }
 
-//TBD
+//purpose: Recieve a token in WING from a given bmp buffer and package in a BMP struct
 void receiveToken (char *buffer, BMP *bmp) {
 	int i, j, k;
 	char b, g, r;
@@ -127,6 +128,9 @@ void receiveToken (char *buffer, BMP *bmp) {
 	closeFile(fh);
 }
 
+//purpose: Recieve a token in WING from a given pixel array buffer and package in a BMP struct
+//		This function makes use of knowing how the pixel arrays are created on the Android devices 
+//		(sent with xxxx/yyyyy/actualPixelArrayIn565Format)
 void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 	unsigned char sizeArr[4];
 	int i, j;
@@ -172,10 +176,12 @@ void receiveTokenPixArr (unsigned char *buffer, BMP *bmp) {
 	}
 }
 
+//return a byte from a character buffer
 unsigned char readByteChar(char * buffer) {
 	return *buffer;
 }
 
+//return 2 bytes in a short int from a character buffer
 short int readWordChar(char * buffer) {
 	short int byte1, byte2;
 
@@ -185,6 +191,7 @@ short int readWordChar(char * buffer) {
 	return ((unsigned short int)byte1 << 8) | ((unsigned short int)byte2 & 0x00FF);
 }
 
+//return a 4 bytes in an int from a character buffer
 int readDWordChar(char * buffer) {
 	short int byte1, byte2, byte3, byte4;
 
@@ -196,6 +203,7 @@ int readDWordChar(char * buffer) {
 	return ((unsigned short int)byte1 << 24) | ((unsigned short int)byte2 << 16) | ((unsigned short int)byte3 << 8) | (unsigned short int)byte4;
 }
 
+//draw a BMP at a given x/y location on the monitor, making use of drawPixelFast
 void drawBmp (BMP *bmp, int x, int y) {
 	int i,j;
 	int offset;
@@ -214,6 +222,7 @@ void drawBmp (BMP *bmp, int x, int y) {
 	}
 }
 
+//draw black over a given BMP at a given x/y on the monitor, making use of drawPixelFast.
 void eraseBmp (BMP *bmp, int x, int y) {
 	int i,j;
 	int offset;
