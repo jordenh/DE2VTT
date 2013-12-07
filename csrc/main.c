@@ -22,7 +22,7 @@ int init() {
         }
 
         initVga();
-        setupAudio();
+        setupAudio(); //stub for audio, it is functional, but not used in WING currently
         setupMessage();
         initTokens();
 
@@ -41,13 +41,15 @@ int main() {
 
         //startHardwareTimer();
 
+        //Loop as a command center, continually receiving and executing commands
         while (1) {
                 if(msg_m.buffer != NULL) {
                         free(msg_m.buffer);
                         msg_m.buffer = NULL;
                 }
 
-                drawUserIDs(); // -- continue this! TBD - currently broken...
+                //overlay user Aliases and IDs on screen
+                drawUserIDs(); 
 
                 printf("Obtaining message\n");
                 getMessage(&msg_m);
@@ -61,6 +63,7 @@ int main() {
                         printf("Completed message command\n");
                 }
 
+                //stub for audio, it is functional, but not used in WING currently
                 /*if (hasHardwareTimerExpired() == 1) {
                         startHardwareTimer();
 
