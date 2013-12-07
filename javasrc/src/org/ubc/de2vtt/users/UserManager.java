@@ -7,6 +7,10 @@ import java.util.List;
 import org.ubc.de2vtt.comm.Received;
 import android.util.Log;
 
+
+//User Manager is used to store all of the currently active Users in WING on each Android device.
+//	This information is used for DM purposes, as well as for message passing purposes.
+//	It allows each Android user to know the Alias and IDs of all other users
 public class UserManager {
 		private static final String TAG = UserManager.class.getSimpleName();
         
