@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+//Fragment in which allows users to write private messages, choose the recipient via a spinner, and send them off.
 public class PassMessageFragment extends WINGFragment {
 	private static final String TAG = PassMessageFragment.class.getSimpleName();	
 	
