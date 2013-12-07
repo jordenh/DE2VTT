@@ -2,6 +2,7 @@
 
 char dmID = 0;
 
+//return a character array given an input integer and the size of the array to create
 char * IntToCharBuf(unsigned int inputInt, unsigned int numChars) {
 	char * charBuf = malloc(numChars * sizeof(char));
 	int i;
