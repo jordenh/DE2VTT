@@ -1,10 +1,18 @@
 #include "message.h"
 
+//Note: This file serves two purposes:
+//1) It sets up functions that are used to receive, package, and send messages 
+//
+//2) It has a lot of functions that deal with the WING user information (ID/Alias, etc)
+//	This also includes functions that can be called to send out specific messages back
+//	to the android side to notify all users of DE2 updates (tokens added, players added/removed, etc)
+
 int connUserIDs[NUM_USERS] = {0,0,0,0,0};
 char * connUserAlias[NUM_USERS];
 
 FILE* uart;
 
+//initializatino code for serial UART and User alias array data structure
 void setupMessage(void) {
 	int i;
 
@@ -74,8 +82,7 @@ unsigned int updateConnUserAlias(msg * inMsg) {
 	return 0;
 }
 
-//takes the message that called UPDATE_ALIAS and uses that new alias/ID
-//	in order to alert all other devices that the alias has changed.
+//purpose: Alert all current Android users of a user change (addition or alias update)
 void alertUsersNewUser(msg * currentMsg) {
 	int i;
 
@@ -103,6 +110,8 @@ void alertUsersNewUser(msg * currentMsg) {
 	free(alertMsg.buffer);
 }
 
+//purpose: Alert one user about all of the other active Android user's information
+//		To be used when a phone connects, when others are already connected.
 void alertUserAllUsers(msg * currentMsg) {
 	int i;
 
@@ -126,6 +135,8 @@ void alertUserAllUsers(msg * currentMsg) {
 	free(alertMsg.buffer);
 }
 
+//purpose: Alerta all users that one user has disconnected, in order to alert Android users to remove
+//		all associated user information.
 void alertUsersOfUserDC(msg * currentMsg) {
 	int i, j;
 
@@ -148,6 +159,7 @@ void alertUsersOfUserDC(msg * currentMsg) {
 	free(alertMsg.buffer);
 }
 
+//purpose: cleanup the alias array when a user leaves WING
 void clearUserInfo(msg * currentMsg) {
 	int i;
 
@@ -159,6 +171,8 @@ void clearUserInfo(msg * currentMsg) {
 	}
 }
 
+//purpose: recieve a message from the UART and package it into a msg struct
+//		This function allocates room for the msg buffer
 void getMessage(msg * inMsg){
 	int i;
 	unsigned char msgLen[4];
@@ -214,6 +228,7 @@ void getMessage(msg * inMsg){
 	return;
 }
 
+//purpose: sends the msg struct in the correct order to the UART given our communication protocol
 //requires: pre-allocated char buffer
 void sendMessage(msg * sendMsg){
 	int i;
@@ -247,6 +262,7 @@ void sendMessage(msg * sendMsg){
 	fflush(uart);
 }
 
+//purpose: alert all Android users about the ID of the DM
 void sendAllUsersDMID(char dmID) {
 	msg * rspnsMsg;
 	rspnsMsg = malloc(sizeof(msg));
@@ -270,6 +286,7 @@ void sendAllUsersDMID(char dmID) {
 	free(rspnsMsg);
 }
 
+//purpose: Pass a message along to the correct recipient
 void passMsg(msg * passMsg) {
 	printf("in passMsg\n");
 	if(passMsg->buffer == NULL || uart == NULL){
