@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+//Fragment used to allow users to update their Aliases and attempt to obtain DM status, as well as remove DM status
 public class GameConfigFragment extends WINGFragment {	
 	private static final String TAG = GameConfigFragment.class.getSimpleName();
 	
