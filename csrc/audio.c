@@ -1,5 +1,7 @@
 #include "audio.h"
 
+//Note: This file is NOT USED in WING currently - it is a stub, for if future development of audio is implemented. 
+//		It is left over from EECE 381 project 1.
 
 #ifdef ALT_ENHANCED_INTERRUPT_API_PRESENT
 static void playSoundISR(void* isr_context);
