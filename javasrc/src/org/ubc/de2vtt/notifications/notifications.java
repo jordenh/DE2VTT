@@ -10,7 +10,8 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 
-
+//Class that allows notifications to easily be implemented within WING - uses the notification service
+//	that Android offers, and abstracts some of the API functinos to make it easier to use via WING
 public class notifications {
 	private static int mId;
 	private static String action;
